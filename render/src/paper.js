@@ -93,6 +93,11 @@ vec3 paperColor(int kind, vec2 Pw, float seed){
     base *= 1. - edge * 0.22;
     if (kind == 3) base = base * vec3(0.38, 0.40, 0.52) ; // silk at night: a cool indigo wash over the silk
     return base;
+  } else if (kind == 4) {  // 拓 rubbing: ink pounced onto paper over stone — near-black, mottled, paper pores show
+    float pounce = fbm(Pw * 0.05 + seed) * 0.6 + vnoise(Pw * 0.4) * 0.4;
+    vec3 base = vec3(0.075, 0.072, 0.07) * (0.7 + 0.6 * pounce) + cloud * 0.03;
+    base += step(0.985, hash12(floor(Pw * 0.8) + seed)) * 0.06 + f.r * 0.02;
+    return base;
   } else {                 // 磁青 indigo: #16213E dyed paper, mottled, faint fibres
     vec3 base = vec3(0.090, 0.130, 0.245);
     base *= 1. + cloud * 0.28 + mid * 0.10 + fine * 0.04;

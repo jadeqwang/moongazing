@@ -1,0 +1,55 @@
+{
+ "_doc": "Lip-sync shots. window = song seconds the edit uses (script.md). ref_t0 = song time of the reference audio's first sample (= clip t 0 if the model places the audio at the start); ref_dur = reference length = clip duration. Lead-in: ref_t0 = first sung word - 0.30 s. Tail: covers window end + 0.65 s (largest Seedance lag seen). Optional: measure_window (song span used for the lag; default = window), held (span that must stay open).",
+ "LS1": {
+  "keyframe": "media/keyframes/jade/J_LS1.png",
+  "window": [
+   39.53,
+   45.98
+  ],
+  "first_word": 39.531,
+  "ref_t0": 39.23,
+  "ref_dur": 8,
+  "lyric": "the West Lake wind sings over water, / like smoothing silk, and late",
+  "lines": [
+   "L03",
+   "L04"
+  ]
+ },
+ "LS2": {
+  "keyframe": "media/keyframes/jade/J_LS2.png",
+  "window": [
+   54.09,
+   57.83
+  ],
+  "first_word": 54.09,
+  "ref_t0": 53.79,
+  "ref_dur": 5,
+  "lyric": "举杯邀明月，对影成三人",
+  "lines": [
+   "L07"
+  ]
+ },
+ "LS3": {
+  "keyframe": "media/keyframes/jade/J_LS3.png",
+  "window": [
+   80.0,
+   86.2
+  ],
+  "first_word": 79.643,
+  "ref_t0": 79.34,
+  "ref_dur": 8,
+  "lyric": "(寒)…我思念你 (你 held 83.27-86.16)",
+  "lines": [
+   "L10"
+  ],
+  "note": "window opens inside the held 寒 (79.64-81.46); the lead-in is cut 0.3 s before 寒's onset; lag is measured on the articulated part (measure_window, clipped to the take's reference audio) - a held note carries no timing; the held 你 is checked as 'held_open' = fraction of frames in 'held' with the mouth open (> 35 % of the take's 5..95 % openness range)",
+  "measure_window": [
+   77.16,
+   83.3
+  ],
+  "held": [
+   83.27,
+   86.16
+  ]
+ }
+}

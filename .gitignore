@@ -12,3 +12,4 @@ render/fonts/*.ttf
 render/fonts/*.otf
 *.ttf
 *.otf
+inputs/*.png

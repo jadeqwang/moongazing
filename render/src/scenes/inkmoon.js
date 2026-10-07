@@ -160,7 +160,7 @@ export const inkmoon = {
     }
   },
   // p: { tImpact, mode: 'bloom' | 'photo', resolveAt: [t0,t1], C:{cx,cy,R} override for photo mode }
-  draw(ctx, shot, t) {
+  draw(ctx, shot, t, lt) {
     const L = ctx.layout.moon;
     const p = shot.params || {};
     const tI = p.tImpact ?? 0.48;
@@ -199,6 +199,7 @@ export const inkmoon = {
       sp.push(k.x, k.y, s > k.land || p.mode === 'photo' ? k.rad : 0, grow * grow * (3 - 2 * grow));
     }
     const extra = {};
+    if (p.placeAt) p.place = p.placeAt(t, lt);
     if (p.place) { // put the moon (authored at L) somewhere else, at another size
       const z = p.place.R / L.R;
       extra.uCam = [-(p.place.x - 960) / z + (L.cx - 960), -(p.place.y - 540) / z + (L.cy - 540), z, 0];

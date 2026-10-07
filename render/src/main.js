@@ -9,6 +9,7 @@ import { makeFiberTile } from './paper.js';
 import { loadImage } from './util.js';
 import { buildShots, SCENES } from './shots.js';
 import { TypeKit, loadFonts } from './type.js';
+import { AssetStore, shotKeys } from './assets.js';
 
 const qs = new URLSearchParams(location.search);
 const scale = Number(qs.get('scale') || 1);
@@ -27,32 +28,31 @@ async function boot() {
   const fiberCanvas = makeFiberTile(7);
   const fiberTex = gl.texture(fiberCanvas, { wrap: 'repeat', mip: true });
   const pipe = new Pipeline(gl, fiberTex);
-  const A = 'assets/';
-  const [moon, S1, S1b, S2, S3, S4, goldline, gongbi] = await Promise.all([
-    'moon/moon_lroc_4k_gray.jpg', 'plates/S1_silk_gpt_v1.jpg', 'plates/S1_silk_nbp_v1.jpg', 'plates/S2_ink_gpt_v1.jpg',
-    'plates/S3_indigo_gpt_v1.jpg', 'plates/S4_jiehua_gpt_v1.jpg', 'plates/A_goldline.jpg', 'plates/A_gongbi.jpg',
-  ].map((p) => loadImage(A + p)));
-  const assets = { moon, S1, S1b, S2, S3, S4, goldline, gongbi };
-  // keyframes are read live from media/keyframes (so new takes drop straight in); missing ones are skipped
-  const KF = { K03: 'K_0.3.jpg', K04: 'K_0.4_plate.jpg', K04earth: 'K_0.4_earth.png', K05: 'K_0.5.jpg', K06: 'K_0.6.jpg',
-    K12: 'K_1.2.jpg', K15: 'K_1.5.jpg', K16: 'K_1.6.jpg', K7D1: 'K_7.D1.jpg' };
-  await Promise.all(Object.entries(KF).map(async ([k, f]) => { try { assets[k] = await loadImage('/media/keyframes/' + f); } catch (e) { /* not delivered yet */ } }));
-  try { assets.k06txt = await (await fetch('/media/keyframes/K_0.6.txt')).text(); } catch (e) { assets.k06txt = ''; }
-  try { // the 望月 carved seal from the identity work, if it has landed
-    const ls = await (await fetch('/__ls?dir=media/chars/identity')).json();
-    const f = ls.map((x) => x.f).filter((n) => /(望月|wangyue)/i.test(n) && /\.(png|jpe?g|webp)$/i.test(n)).sort()[0];
-    if (f) assets.sealWangyue = await loadImage('/media/chars/identity/' + encodeURIComponent(f));
-  } catch (e) { /* not yet */ }
-  window.__assets = Object.keys(assets).filter((k) => assets[k]);
+  const moon = await loadImage('assets/moon/moon_lroc_4k_gray.jpg');
+  const assets = { moon };
   const tex = { moon: gl.texture(moon, { wrap: 'repeat', mip: true }) };
-  for (const [k, v] of Object.entries(assets)) if (k !== 'moon' && v && v.width) tex[k] = gl.texture(v, { mip: true });
+  const lyr = await (await fetch('/analysis/lyrics_timing.json')).json();
   const ctx = {
     gl, pipe, beats, assets, tex, fiberCanvas, W, H, S: gl.S,
     layout: { moon: { cx: 960, cy: 540, R: 300 } },
+    lyrics: Object.fromEntries(lyr.lines.map((l) => [l.id, l])),
   };
+  const store = new AssetStore(ctx);
+  ctx.store = store;
+  await store.discover();
+  // identity assets are used at init (title seal) — load them eagerly and pin them
+  await store.need(['seal_wangyue', 'seal_guanghan', 'emblem_final']);
+  store.pinned = new Set(['seal_wangyue', 'seal_guanghan', 'emblem_final']);
+  assets.sealWangyue = assets.seal_wangyue;
+  window.__assets = Object.keys(store.urls);
   ctx.type = new TypeKit(ctx);
   for (const s of Object.values(SCENES)) if (s.init) await s.init(ctx);
-  const shots = buildShots(beats, assets);
+  let shots = buildShots(beats, store, ctx.lyrics);
+  // ?roto={"clip":"K_5.1/take_1","paper":"ink",...,"shotPaper":"xuan","t0":0}: a single test shot (render/tools/roto_test.mjs)
+  if (qs.get('roto')) {
+    const R = JSON.parse(qs.get('roto'));
+    shots = [{ id: 'roto-test', t0: R.t0 || 0, t1: R.t1 || 1e6, paper: R.shotPaper || 'silk', grain: R.grain ?? 7, section: R.section || 'test', scene: [{ type: 'roto', ...R }] }];
+  }
   Object.assign(state, { ctx, shots });
   window.__shots = shots.map((s, i) => ({ i, id: s.id, t0: s.t0, t1: s.t1 }));
 }
@@ -70,6 +70,7 @@ function renderAt(t) {
     const [shot, idx] = shotAt(t);
     const lt = t - shot.t0;
     ctx.t = t; ctx.lt = lt; ctx.shot = shot; ctx.shotIndex = idx;
+    await ctx.store.need(shotKeys(shot));
     const cam = shot.cam ? shot.cam(t, lt, ctx) : {};
     ctx.pipe.setCam(cam);
     ctx.pipe.paper(shot.paper || 'xuan', shot.paperSeed ?? (shot.grain ?? idx) * 0.37);
@@ -77,10 +78,11 @@ function renderAt(t) {
     const layers = Array.isArray(shot.scene) ? shot.scene : [shot.scene];
     for (const L of layers) {
       if (!L) continue;
-      const name = typeof L === 'string' ? L : L.name;
+      const name = typeof L === 'string' ? L : (L.name || L.type);
       const sc = SCENES[name];
       if (!sc) throw new Error('no scene ' + name);
-      const sh = typeof L === 'string' ? shot : { ...shot, params: { ...(shot.params || {}), ...(L.params || {}) } };
+      const lp = typeof L === 'string' ? null : (L.params || (L.type ? L : {}));  // {type:'roto', clip, ...} is its own params
+      const sh = lp ? { ...shot, params: { ...(shot.params || {}), ...lp } } : shot;
       await sc.draw(ctx, sh, t, lt);
     }
     if (shot.type && !qs.has('notype')) shot.type(ctx, t, lt);
