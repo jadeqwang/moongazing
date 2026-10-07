@@ -111,6 +111,10 @@ export function makeSeal(kit, o) {
     od[i + 3] = Math.round(clamp(a) * 255);
   }
   og.putImageData(im, 0, 0);
+  if (o.style === 'dot' && o.dotColor) { // the agency mark: one pale blue dot inlaid in the carved circle
+    og.fillStyle = o.dotColor; og.globalAlpha = 0.92;
+    og.beginPath(); og.arc(M + D / 2, M + D / 2, D * 0.25 - 1.5 * S, 0, Math.PI * 2); og.fill(); og.globalAlpha = 1;
+  }
   // spread version: the paste wicking into the fibres
   const spread = makeCanvas(W, WH); const pg = spread.getContext('2d');
   pg.filter = `blur(${(1.4 * S).toFixed(2)}px)`; pg.drawImage(out, 0, 0);
@@ -160,4 +164,25 @@ export function drawStamp(g, seal, { x, y, t, tLand, rot = -0.03, approach = 0.1
   res.deflect[2] = 7 * Math.exp(-dt / 0.07) * Math.cos(dt * 2 * Math.PI * 7);
   res.bump = 0.006 * Math.exp(-dt / 0.08);
   return res;
+}
+
+// a seal impression from an image (e.g. media/chars/identity's carved 望月 seal). Transparent PNGs are used as-is;
+// opaque scans are keyed: ink = how much redder/darker than the paper a pixel is.
+export function sealFromImage(kit, img, size) {
+  const S = kit.S, W = Math.ceil(size * S * (img.width / Math.max(img.width, img.height))), H = Math.ceil(size * S * (img.height / Math.max(img.width, img.height)));
+  const c = makeCanvas(W, H); const g = c.getContext('2d', { willReadFrequently: true });
+  g.drawImage(img, 0, 0, W, H);
+  const im = g.getImageData(0, 0, W, H); const d = im.data;
+  let transparent = false; for (let i = 3; i < d.length; i += 40) if (d[i] < 250) { transparent = true; break; }
+  if (!transparent) {
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], gg = d[i + 1], b = d[i + 2];
+      const red = clamp((r - (gg + b) / 2 - 30) / 110), dark = clamp((200 - (r + gg + b) / 3) / 150);
+      d[i + 3] = Math.round(Math.max(red, dark) * 255);
+    }
+    g.putImageData(im, 0, 0);
+  }
+  const spread = makeCanvas(W, H); const pg = spread.getContext('2d'); pg.filter = `blur(${(1.4 * S).toFixed(2)}px)`; pg.drawImage(c, 0, 0);
+  const ghost = makeCanvas(W, H); const gg2 = ghost.getContext('2d'); gg2.filter = `blur(${(6 * S).toFixed(2)}px)`; gg2.drawImage(c, 0, 0);
+  return { canvas: c, spread, ghost, shape: c, size, sizeD: W / S, sizeH: H / S, style: 'image' };
 }

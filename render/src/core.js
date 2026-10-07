@@ -73,14 +73,16 @@ void main(){
   // breath opening: light recedes from the centre outward (uOpen 0 -> 1)
   if (uOpen < 1.) {
     float r = length((P - c) / vec2(1100., 760.));
-    float k = smoothstep(uOpen * 1.5 - 0.35, uOpen * 1.5, r) * (1. - uOpen * uOpen);
-    col = mix(col, uOpenColor, k);
+    float k = pow(1. - uOpen, 2.2) * (0.55 + 0.45 * smoothstep(0.0, 1.3, r + (1. - uOpen) * 0.2));
+    col = 1. - (1. - col) * (1. - uOpenColor * k);
   }
   // 2-frame ink flash on a taiko cut: a splash of sumi over the frame, paper specks left in it
   if (uFlash > 0.) {
-    float n = fbm(P * 0.0032 + uFlashSeed * 7.) * 0.7 + vnoise(P * 0.045 + uFlashSeed) * 0.3;
-    float th = 1.05 - uFlash * 1.25;
-    float m = smoothstep(th - 0.04, th + 0.04, n);
+    vec2 wp = P * 0.0026 + uFlashSeed * 7.;
+    vec2 warp = vec2(fbm(wp * 1.3 + 4.1), fbm(wp * 1.3 + 9.7)) - .5;
+    float n = fbm(wp + warp * 1.6) * 0.8 + fbm(P * 0.02 + warp * 3.) * 0.2;
+    float th = 0.98 - uFlash * 0.9;
+    float m = smoothstep(th - 0.025, th + 0.025, n);
     float speck = step(0.9965, hash12(floor(P * 0.6) + uFlashSeed));
     vec3 ink = vec3(0.045, 0.045, 0.055) * (0.85 + 0.3 * vnoise(P * 0.8));
     col = mix(col, ink, m * (1. - speck * 0.8));

@@ -157,11 +157,11 @@ export const rocketPad = {
   draw(ctx, shot, t, lt) {
     const sp = (shot.params && shot.params.speed) || 1, off = (shot.params && shot.params.offset) || 0;
     lt = off + lt * sp;
-    ctx.pipe.layer((g) => this.D.draw(g, lt), { mode: 'gold', seed: 7 });
+    ctx.pipe.layer((g) => { g.translate(shot.params.shiftX || 0, 0); this.D.draw(g, lt); }, { mode: 'gold', seed: 7 });
     // the agency seal on the fairing: one fleck of vermilion with a pale blue dot
     const a = smooth(1.5, 1.9, lt);
     if (a > 0) ctx.pipe.layer((g) => {
-      g.globalAlpha = a; g.fillStyle = '#B9372C'; g.fillRect(1240 - 7, 388, 14, 14);
+      g.translate(shot.params.shiftX || 0, 0); g.globalAlpha = a; g.fillStyle = '#B9372C'; g.fillRect(1240 - 7, 388, 14, 14);
       g.fillStyle = '#9CC3DD'; g.beginPath(); g.arc(1240, 395, 2.6, 0, Math.PI * 2); g.fill();
     }, { mode: 'over' });
   },

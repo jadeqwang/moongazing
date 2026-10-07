@@ -15,9 +15,16 @@ const TYPES = {
 
 export function serve(port = 8765) {
   const server = http.createServer((req, res) => {
-    let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+    const url = new URL(req.url, 'http://x');
+    let p = decodeURIComponent(url.pathname);
+    if (p === '/__ls') { // list files of a repo media dir (for assets that may land while we work)
+      const d = path.join(REPO, url.searchParams.get('dir') || '');
+      if (!d.startsWith(path.join(REPO, 'media') + path.sep)) { res.writeHead(403); return res.end(); }
+      let list = []; try { list = fs.readdirSync(d).map((f) => ({ f, mtime: fs.statSync(path.join(d, f)).mtimeMs })); } catch (e) { /* missing */ }
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); return res.end(JSON.stringify(list));
+    }
     if (p === '/') p = '/index.html';
-    const file = /^\/(analysis|inputs|media\/keyframes)\//.test(p) ? path.join(REPO, p) : path.join(ROOT, p);
+    const file = /^\/(analysis|inputs|media\/keyframes|media\/chars)\//.test(p) ? path.join(REPO, p) : path.join(ROOT, p);
     if (!file.startsWith(REPO + path.sep)) { res.writeHead(403); return res.end(); }
     fs.readFile(file, (err, data) => {
       if (err) { res.writeHead(404); return res.end('not found'); }

@@ -10,3 +10,5 @@ render/out/
 render/node_modules/
 render/fonts/*.ttf
 render/fonts/*.otf
+*.ttf
+*.otf

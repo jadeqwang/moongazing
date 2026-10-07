@@ -138,7 +138,7 @@ export const plate = {
     this.masks = new Map();
     this.ref = {};
     for (const [k, img] of Object.entries(ctx.assets)) {
-      if (k === 'moon') continue;
+      if (k === 'moon' || !img || !img.width) continue;
       const c = makeCanvas(160, 90); const g = c.getContext('2d', { willReadFrequently: true });
       g.drawImage(img, 0, 0, 160, 90);
       const d = g.getImageData(0, 0, 160, 90).data;

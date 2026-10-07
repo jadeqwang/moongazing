@@ -36,6 +36,7 @@ uniform vec2 uC; uniform float uR;
 uniform float uTau, uTauW, uTau2, uPool, uMass, uResolve, uPhoto, uHalo, uMariaAmt;
 uniform vec4 uDrop;    // x, y, radius, defocus
 uniform vec4 uShadow;  // x, y, blur radius, alpha
+uniform float uDropA;
 uniform vec4 uSpecks[5]; // x, y, radius, grow (0..1)
 uniform float uInkK, uPale;
 uniform vec3 uPaleColor;
@@ -120,7 +121,7 @@ void main(){
     float spec = exp(-dot(hl, hl) / pow(0.16 + uDrop.w / uDrop.z * 0.25, 2.));
     float rim = smoothstep(0.55, 1.0, length(qn)) * 0.06;
     vec3 dc = vec3(0.035, 0.036, 0.045) + spec * vec3(0.62, 0.62, 0.66) * (1. - 0.5 * uDrop.w / (uDrop.w + 8.)) + rim;
-    col = mix(col, dc, cov);
+    col = mix(col, dc, cov * uDropA);
   }
   o = vec4(col, 1.);
 }`;
@@ -167,7 +168,7 @@ export const inkmoon = {
     let U;
     if (p.mode === 'photo') {
       U = { uTau: 1.0, uTauW: 1.03, uTau2: 1.1, uPool: 1, uMass: 0.17, uResolve: 3, uPhoto: 1, uHalo: p.halo ?? 1, uMariaAmt: 1,
-        uDrop: [0, 0, 0, 0], uShadow: [0, 0, 1, 0] };
+        uDrop: [0, 0, 0, 0], uShadow: [0, 0, 1, 0], uDropA: 0 };
     } else {
       const tau = s < 0 ? 0 : 1 - (1 - 0.047) * Math.exp(-s / 0.36);
       const tauW = s < 0 ? 0 : Math.min(1.045, tau * 1.03 + 0.015 * (1 - Math.exp(-s / 0.25)));
@@ -177,14 +178,19 @@ export const inkmoon = {
       const res = smooth(r0, r1, t) * 1.25;
       // falling drop (camera looks straight down; the drop falls away from the lens toward the paper)
       const h0 = 8.4, Hc = 10, dropR = 13.5;
-      const ft = clamp(t / tI);
+      const tF = p.tFall ?? 0;                       // the drop enters frame at tFall (first sound) and lands at tI
+      const ft = clamp((t - tF) / (tI - tF));
       const h = h0 * (1 - ft * ft);
       const persp = Hc / (Hc - h);
       const defocus = Math.abs(1 / (Hc - h) - 1 / Hc) * 55;
       const shadowOff = h * 30;
-      const drop = s < 0 ? [L.cx, L.cy, dropR * persp, defocus] : [0, 0, 0, 0];
-      const shadow = s < 0 ? [L.cx + shadowOff * 0.62, L.cy + shadowOff * 0.78, 10 + h * 7, 0.10 + 0.28 * (1 - h / h0)] : [0, 0, 1, 0];
-      U = { uTau: tau, uTauW: tauW, uTau2: tau2, uPool: smooth(0.35, 1.5, s), uMass: mass, uResolve: res, uPhoto: res > 0 ? 1 : 0,
+      const falling = t >= tF && s < 0;
+      const drop = falling ? [L.cx, L.cy, dropR * persp, defocus] : [0, 0, 0, 0];
+      // before the drop is in frame its shadow gathers on the paper (it is above the lens)
+      const pre = t < tF ? smooth(tF - 0.9, tF, t) : 1;
+      const shadow = s < 0 ? [L.cx + shadowOff * 0.62, L.cy + shadowOff * 0.78, 10 + h * 7, (0.10 + 0.28 * (1 - h / h0)) * pre] : [0, 0, 1, 0];
+      U = { uDropA: falling ? smooth(tF, tF + 0.1, t) : 0 };
+      U = { ...U, uTau: tau, uTauW: tauW, uTau2: tau2, uPool: smooth(0.35, 1.5, s), uMass: mass, uResolve: res, uPhoto: res > 0 ? 1 : 0,
         uHalo: 1 - smooth(1.9, 2.8, t) * 0.5, uMariaAmt: 1, uDrop: drop, uShadow: shadow };
     }
     const sp = [];

@@ -37,16 +37,22 @@ async function boot() {
   const KF = { K03: 'K_0.3.jpg', K04: 'K_0.4_plate.jpg', K04earth: 'K_0.4_earth.png', K05: 'K_0.5.jpg', K06: 'K_0.6.jpg',
     K12: 'K_1.2.jpg', K15: 'K_1.5.jpg', K16: 'K_1.6.jpg', K7D1: 'K_7.D1.jpg' };
   await Promise.all(Object.entries(KF).map(async ([k, f]) => { try { assets[k] = await loadImage('/media/keyframes/' + f); } catch (e) { /* not delivered yet */ } }));
-  window.__assets = Object.keys(assets);
+  try { assets.k06txt = await (await fetch('/media/keyframes/K_0.6.txt')).text(); } catch (e) { assets.k06txt = ''; }
+  try { // the 望月 carved seal from the identity work, if it has landed
+    const ls = await (await fetch('/__ls?dir=media/chars/identity')).json();
+    const f = ls.map((x) => x.f).filter((n) => /(望月|wangyue)/i.test(n) && /\.(png|jpe?g|webp)$/i.test(n)).sort()[0];
+    if (f) assets.sealWangyue = await loadImage('/media/chars/identity/' + encodeURIComponent(f));
+  } catch (e) { /* not yet */ }
+  window.__assets = Object.keys(assets).filter((k) => assets[k]);
   const tex = { moon: gl.texture(moon, { wrap: 'repeat', mip: true }) };
-  for (const [k, v] of Object.entries(assets)) if (k !== 'moon') tex[k] = gl.texture(v, { mip: true });
+  for (const [k, v] of Object.entries(assets)) if (k !== 'moon' && v && v.width) tex[k] = gl.texture(v, { mip: true });
   const ctx = {
     gl, pipe, beats, assets, tex, fiberCanvas, W, H, S: gl.S,
     layout: { moon: { cx: 960, cy: 540, R: 300 } },
   };
   ctx.type = new TypeKit(ctx);
   for (const s of Object.values(SCENES)) if (s.init) await s.init(ctx);
-  const shots = buildShots(beats);
+  const shots = buildShots(beats, assets);
   Object.assign(state, { ctx, shots });
   window.__shots = shots.map((s, i) => ({ i, id: s.id, t0: s.t0, t1: s.t1 }));
 }
@@ -79,7 +85,7 @@ function renderAt(t) {
     }
     if (shot.type && !qs.has('notype')) shot.type(ctx, t, lt);
     const post = { grainSeed: shot.grain ?? idx + 1, ...(shot.post ? shot.post(t, lt, ctx) : {}), ...(ctx.postExtra || {}) };
-    if (shot.flash) { const k = Math.floor(lt * 24 + 1e-6); post.flash = k === 0 ? 1 : k === 1 ? 0.5 : 0; }
+    if (shot.flash) { const k = Math.floor(lt * 24 + 1e-6); post.flash = k === 0 ? 1 : k === 1 ? 0.55 : 0; }
     ctx.pipe.post(post);
     const hud = document.getElementById('hud');
     if (hud && qs.get('debug')) { const b = ctx.beats.at(t); hud.textContent = `${t.toFixed(3)}s  ${shot.id}  bar ${b.bar}.${b.beat}`; }

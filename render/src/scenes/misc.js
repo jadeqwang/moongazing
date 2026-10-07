@@ -102,3 +102,38 @@ export const earth = {
     ctx.pipe.layer((g) => earthDisc(g, p.x + (p.dx || 0) * lt, p.y, p.r, 5), { mode: 'over' });
   },
 };
+
+// a launch streak anchored to a point in a moving plate (image uv), e.g. the tower on K_1.6's horizon
+export const streak = {
+  draw(ctx, shot, t, lt) {
+    const p = shot.params, st = p.streak;
+    const dur = shot.t1 - shot.t0;
+    const u = easeIO(lt / dur);
+    const a = p.from, b = p.to || p.from;
+    const cx = a.x + (b.x - a.x) * u, cy = a.y + (b.y - a.y) * u, z = a.zoom + (b.zoom - a.zoom) * u;
+    const X = 960 + (st.uv[0] - cx) * z * 1920, Y = 540 + (st.uv[1] - cy) * z * 1080;
+    const pr = smooth(st.t0 ?? -0.3, dur, lt);
+    const pts = []; for (let k = 0; k <= 100; k++) { const q = k / 100; pts.push([X + st.dx * z * q * q, Y - st.h * z * q + st.bend * z * q * q]); }
+    const n = Math.max(2, Math.round(100 * pr));
+    ctx.pipe.layer((g) => {
+      g.filter = 'blur(5px)';
+      for (let i = 1; i <= n; i++) {
+        const age = (n - i) / 100;
+        g.strokeStyle = `rgba(246,236,220,${(0.26 * (1 - age * 0.6)).toFixed(3)})`;
+        g.lineWidth = (4 + age * 46 + (i / 100) * 8) * z;
+        g.beginPath(); g.moveTo(...pts[i - 1]); g.lineTo(...pts[i]); g.stroke();
+      }
+    }, { mode: 'screen' });
+    ctx.pipe.layer((g) => {
+      g.lineCap = 'round';
+      for (let i = 1; i <= n; i++) {
+        const age = (n - i) / 100;
+        g.strokeStyle = `rgba(255,255,255,${(1 - age * 0.85).toFixed(3)})`;
+        g.lineWidth = (2.8 - (i / 100) * 1.4) * z;
+        g.beginPath(); g.moveTo(...pts[i - 1]); g.lineTo(...pts[i]); g.stroke();
+      }
+      g.fillStyle = '#fff'; g.beginPath(); g.arc(...pts[n], 3.2 * z, 0, Math.PI * 2); g.fill();
+    }, { mode: 'gold', seed: 34 });
+  },
+};
+const easeIO = (x) => 0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, Math.max(0, x)));
