@@ -20,6 +20,13 @@ moons and lonely wine
 
 举头望明月，低头思故乡
 
+## 望明月, Moongazing (credits)
+
+English lyrics by Jade Wang (previously published as a poem, "To Li Bai" in the Oyez Review in 2006)
+Chinese lyrics from traditional Li Bai poems.
+Chord progression and melody by Jade Wang and Charlie van Norman, pulled from a 2011 jam session.
+Translated from guitar to multiple instruments and genres by Suno.
+
 ## 望明月, Moongazing (with instrumental notes / suno prompt)
 
 \[Intro: solo guzheng and erhu, soft humming, quiet, sparse, and haunting; no electric guitars, no drums\]

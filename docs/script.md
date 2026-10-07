@@ -96,7 +96,7 @@ English lyrics: refined serif, small, horizontal, in the 留白; Chinese inscrip
 | 4.6 | 90.7–92.1 | Ad-lib → Orbit: Earth fills the frame for the first time — it IS a 青绿 painting: azurite oceans, malachite land, white clouds. | — | JS Earth (shader) |
 | 4.7 | 92.21–94.88 | After the TLI burn cuts off. In free fall, Jade lifts a drink pouch toward the Moon in the window — 举杯. The toy Earth floats beside her. | **举杯邀明月** (calligraphy floats too) | GOLD · gen-v + roto |
 | 4.8 | 94.9–98.45 | The Moon grows from a dot to a wall of ink. Paper changes GOLD → INK as it fills the frame. | moons and lonely wine | INK · JS |
-| 4.9 | 97.73–101.33 | Drums re-hit 97.73: landing — the plume blasts regolith into flat, straight radial sheets (no billow) that stop the instant the engine cuts. Touchdown. | — | INK · h3 + roto (physics) |
+| 4.9 | 97.73–101.33 | Drums re-hit 97.73: HUD `DAY 4 · DESCENT` — the separate lander (Lanyue-like) comes down; the plume blasts regolith into flat, straight radial sheets (no billow) that stop the instant the engine cuts. Touchdown. | — | INK · h3 + roto (physics) |
 
 ## 5 · INTERLUDE — 101.33–112.07 (erhu 101; riser; IMPACT 104.92; stop-start stabs; dip 109.5)
 
