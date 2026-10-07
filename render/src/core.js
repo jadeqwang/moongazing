@@ -40,7 +40,8 @@ void main(){
 }`;
 
 const POST_FS = `
-uniform sampler2D uPrev;
+uniform sampler2D uPrev, uFiberP;
+uniform float uPaperGrain;
 uniform float uGrain, uGrainSeed, uVignette, uFade, uBump, uWarm, uFlash, uFlashSeed, uOpen;
 uniform vec3 uOpenColor;
 uniform vec3 uFadeColor;
@@ -62,6 +63,10 @@ void main(){
   col *= 1. - shade;
   vec2 q = (P - uFocus) / vec2(1920., 1080.);
   col *= 1. - uVignette * smoothstep(0.12, 0.85, dot(q, q) * 1.6);
+  // one shared paper grain over every paper, plate and roto: the scroll's own fibres, static within a shot
+  { vec3 fb = texture(uFiberP, (P + vec2(uGrainSeed * 137., uGrainSeed * 71.)) / 2048.).rgb;
+    float fv = fb.r * 0.7 + fb.b * 0.6 - fb.g * 0.9 - 0.18;
+    col = col * (1. + uPaperGrain * 0.07 * fv) + uPaperGrain * 0.018 * fv; }
   // static grain (seeded per shot): fine luminance + slight chroma, plus a soft mottle
   vec2 dp = floor(gl_FragCoord.xy);
   float g = hash12(dp + uGrainSeed * 37.) - .5;
@@ -131,11 +136,31 @@ export class Pipeline {
     const M = { ink: 0, over: 1, gold: 2, screen: 3 }[mode];
     this.apply(this.pComp, { uLayer: this.layerTex, uMode: { i: M }, uOpacity: opacity, uAbsorb: absorb, uSeed: seed });
   }
+  // luminance mean/std of the frame accumulated so far, inside a design-px box (for adaptive scrims behind type)
+  sampleStats(box) {
+    const gl = this.gl.gl, S = this.gl.S, W = this.gl.W, H = this.gl.H;
+    const x0 = Math.max(0, Math.floor(box.x * S)), x1 = Math.min(W, Math.ceil((box.x + box.w) * S));
+    const y0 = Math.max(0, Math.floor(box.y * S)), y1 = Math.min(H, Math.ceil((box.y + box.h) * S));
+    if (x1 - x0 < 2 || y1 - y0 < 2) return { mean: 0.5, std: 0 };
+    const step = Math.max(1, Math.round(2 * S));            // every other design px is plenty
+    const w = x1 - x0, h = y1 - y0;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.cur.fb);
+    const half = this.gl.halfFloat, buf = half ? new Float32Array(w * h * 4) : new Uint8Array(w * h * 4);
+    gl.readPixels(x0, H - y1, w, h, gl.RGBA, half ? gl.FLOAT : gl.UNSIGNED_BYTE, buf);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    const k = half ? 1 : 1 / 255; let n = 0, s1 = 0, s2 = 0;
+    for (let y = 0; y < h; y += step) for (let x = 0; x < w; x += step) {
+      const i = (y * w + x) * 4, l = (0.299 * buf[i] + 0.587 * buf[i + 1] + 0.114 * buf[i + 2]) * k;
+      n++; s1 += l; s2 += l * l;
+    }
+    const mean = s1 / n; return { mean, std: Math.sqrt(Math.max(0, s2 / n - mean * mean)) };
+  }
   post(p = {}) {
     this.gl.pass(this.pPost, {
       uPrev: this.cur, uGrain: p.grain ?? 0.035, uGrainSeed: p.grainSeed ?? 0, uVignette: p.vignette ?? 0.08,
       uFade: p.fade ?? 0, uFadeColor: p.fadeColor ?? [0, 0, 0], uBump: p.bump ?? 0, uWarm: p.warm ?? 0,
       uDeflect: p.deflect ?? [0, 0, 0, 1], uFlash: p.flash ?? 0, uFlashSeed: p.grainSeed ?? 0,
+      uFiberP: this.fiberTex, uPaperGrain: p.paperGrain ?? 1,
       uFocus: p.focus ?? [960, 540], uOpen: p.open ?? 1, uOpenColor: p.openColor ?? [0.96, 0.92, 0.82],
     }, null);
   }

@@ -451,6 +451,18 @@ SHOTS["LS1"]["prompt"] = SHOTS["LS1"]["prompt"].replace(
 
 # ----------------------------------------------------------------------------- helpers
 SHOTS["LS1_34"] = dict(SHOTS["LS1"], prompt=_p(f"{LS1_34} {LIKENESS}"), camera_fixed=True)
+# round 7: K_7.B1 v3 (TRIDENT-style drill on the Yutu rover)
+SHOTS["K_7.B1"] = dict(model="minimax/h3", image=kf("K_7.B1.jpg"), duration=5,
+                       prompt=_p("In the permanently dark crater, lit only by the lamp pool: the rover's drill auger rotates "
+                                 "steadily and creeps slowly down into the frozen ground; icy cuttings spill out onto the "
+                                 "cone around the hole and glitter in the lamp light; the astronaut's gloved hand moves the "
+                                 "small scoop through the cuttings. Grains fall in clean short arcs, no dust cloud, no air. "
+                                 f"Everything outside the lamp pool stays black. {RIGID} Camera locked, perfectly still."))
+SHOTS["K_7.B1_close"] = dict(model="minimax/h3", image=kf("K_7.B1_close.jpg"), duration=5,
+                             prompt=_p("Close on the turning auger: its spiral flights rotate steadily and lift glittering "
+                                       "icy cuttings up out of the hole; the grains spill over and fall back in clean short "
+                                       "arcs, each sparkling in the lamp light; no dust cloud, no haze, no air. "
+                                       f"{RIGID} Camera locked, perfectly still."))
 def shot_dir(shot):
     d = os.path.join(GEN, shot)
     os.makedirs(d, exist_ok=True)

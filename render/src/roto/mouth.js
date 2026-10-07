@@ -43,7 +43,10 @@ export function restMouth(face) {
 export function drawMouth(g, face, rest, fd, toScreen, k, r, o = {}) {
   const H = headFrame(face.pts[fd]);
   const S = (u) => toScreen(H.from(u));
-  const cL = S(rest.cL), cR = S(rest.cR), up = S(rest.up);
+  drawMouthPts(g, S(rest.cL), S(rest.cR), S(rest.up), k, r, o);
+}
+// the same lips from three screen points (mouth corners + upper inner lip centre) — used on painted stills (singer.js)
+export function drawMouthPts(g, cL, cR, up, k, r, o = {}) {
   const mx = (cL[0] + cR[0]) / 2, my = (cL[1] + cR[1]) / 2;
   const ang = Math.atan2(cR[1] - cL[1], cR[0] - cL[0]);
   const W0 = Math.hypot(cR[0] - cL[0], cR[1] - cL[1]);
@@ -65,9 +68,10 @@ export function drawMouth(g, face, rest, fd, toScreen, k, r, o = {}) {
   const a = o.alpha ?? 1;
   // lips: rose glaze (multiplied onto the skin; the paper shows through)
   g.filter = `blur(${(o.soft ?? 0.9).toFixed(2)}px)`;   // a glaze has a soft wet edge, not a vector edge
-  g.fillStyle = `rgba(${o.lip || '222,160,160'},${0.85 * a})`;
+  const fa = a * (o.fillA ?? 1);
+  g.fillStyle = `rgba(${o.lip || '222,160,160'},${0.85 * fa})`;
   path(outerU, innerU); g.fill();
-  g.fillStyle = `rgba(${o.lipLo || '230,174,170'},${0.8 * a})`;
+  g.fillStyle = `rgba(${o.lipLo || '230,174,170'},${0.8 * fa})`;
   path(innerL, outerL); g.fill();
   // interior
   if (gap > 0.6) {
@@ -75,6 +79,11 @@ export function drawMouth(g, face, rest, fd, toScreen, k, r, o = {}) {
     path(innerU, innerL); g.fill();
   }
   g.filter = 'none';
+  // line-drawn lips (gold-line styles): a fine outer contour instead of a filled glaze
+  if (o.outline) {
+    g.strokeStyle = `rgba(${o.outline},${0.8 * a})`; g.lineWidth = Math.max(0.8, W0 * 0.018); g.lineCap = 'round'; g.lineJoin = 'round';
+    for (const C of [outerU, outerL]) { g.beginPath(); C.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); g.stroke(); }
+  }
   // 口缝: the darkest mark on the face — a fine line along the upper inner lip, tapering into the corners
   const lw = Math.max(0.9, W0 * 0.032) * (o.lineW ?? 1);
   g.fillStyle = `rgba(${o.line || '84,56,48'},${0.85 * a})`;

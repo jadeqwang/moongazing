@@ -278,17 +278,15 @@ export default function shots(B, X, L) {
         lyricZH(ctx, L.L10, { from: 2, to: 4, size: 250, x: 1880, y: 40, color: PALEC, seed: 102, until: S43 + 0.05, key: 'b', halo: 12 }, t, 'over');
         gl(ctx, 'g42', 'the wine is cold —', t, 79.0, S43 + 0.05);
       } },
-    // 4.3 — in the capsule under g-load: 我思念 (LS3 take_4 redrawn in gold; the mouth drawn from the vocal)
-    { id: '4.3', t0: S43, t1: S43b, paper: 'indigo', grain: 43, post: (t, lt) => punch(t, lt),
-      scene: [X.has('J_LS3') ? { type: 'roto', clip: 'LS3/take_4', paper: 'silk', ref_t0: 76.86, lag: 0.335, lock: 0.3, maskGain: 0.7, style: { lineA: 0.6, lineW: 0.12 }, mouthStyle: { lip: '255,252,244', lipLo: '255,250,240', inside: '70,52,44', line: '96,74,52', lineW: 1.0 }, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.52, y: 0.48, zoom: 1.12 } }
+    // 4.3 — in the capsule under g-load: 我思念. The painted J_LS3 holds (parallax + a fine g-load tremor); only the
+    //       mouth is drawn, from the vocal stem, in sparse gold line — no redrawn face.
+    { id: '4.3', t0: S43, t1: S43b, paper: 'indigo', grain: 43, post: (t, lt) => punch(t, lt), focus: [1300, 480],
+      scene: [X.has('J_LS3') ? { name: 'singer', params: { img: 'J_LS3', grade: 'native', from: { x: 0.52, y: 0.5, zoom: 1.04 }, to: { x: 0.56, y: 0.47, zoom: 1.12 }, par: [-0.01, 0], dolly: 0.05,
+          masks: { base: [0.2, 0.4], polys: [{ pts: [[0.5, 0.0], [0.92, 0.0], [0.95, 1], [0.48, 1]], depth: 0.85, blur: 14 }] }, shake: 2.2,
+          mouth: { cL: [0.643, 0.600], cR: [0.724, 0.600], up: [0.683, 0.594] }, erase: [0.058, 0.04], eraseAt: [0.683, 0.668], lead: 0.03,
+          style: { lip: '212,168,75', lipLo: '212,168,75', fillA: 0.14, inside: '10,14,30', outline: '228,188,112', line: '236,196,120', lineW: 0.8, alpha: 0.85, soft: 0.6 } } }
         : ph('LS3 — Jade under g-load', 'J_LS3')],
       type(ctx, t) {
-        // 开脸: a pale gold wash lifts the face out of the indigo (the face track's bbox, carried by the roto camera)
-        { const u = smooth(0, S43b - S43, t - S43), z = 1.04 + 0.08 * u, cx = 0.5 + 0.02 * u, cy = 0.5 - 0.02 * u;
-          const X0 = ((0.678 - cx) * z + 0.5) * 1920, Y0 = ((0.445 - cy) * z + 0.5) * 1080, rx = 0.104 * z * 1920, ry = 0.235 * z * 1080;
-          ctx.pipe.layer((g) => { g.save(); g.translate(X0, Y0); g.scale(rx, ry); const gr = g.createRadialGradient(0, 0, 0, 0, 0, 1);
-            gr.addColorStop(0, 'rgba(196,158,104,0.42)'); gr.addColorStop(0.62, 'rgba(192,152,100,0.38)'); gr.addColorStop(0.86, 'rgba(190,150,98,0.16)'); gr.addColorStop(1, 'rgba(190,150,98,0)');
-            g.fillStyle = gr; g.beginPath(); g.arc(0, 0, 1, 0, Math.PI * 2); g.fill(); g.restore(); }, { mode: 'screen', seed: 431 }); }
         lyricZH(ctx, L.L10, { from: 5, to: 8, size: 200, x: 330, y: 150, color: WHITE, seed: 103, until: S43b + 0.05, key: 'c', halo: 12 }, t, 'gold');
         hud(ctx, 'MAX-Q  ·  3.2 G', 64, 1030, { size: 15, rgb: '255,255,255' }, 1);
       } },

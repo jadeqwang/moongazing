@@ -10,6 +10,8 @@ const ALIASES = { // legacy short keys used by the cold-open section
   K03: 'K_0.3', K04: 'K_0.4_plate', K04earth: 'K_0.4_earth', K05: 'K_0.5', K06: 'K_0.6', K12: 'K_1.2', K15: 'K_1.5',
   K16: 'K_1.6', K7D1: 'K_7.D1',
 };
+const PICK_KF = { LS1: 'J_LS1', LS2: 'J_LS2', LS3: 'J_LS3' }; // picks key -> keyframe key
+export { PICK_KF };
 const STATIC = {
   S1: 'assets/plates/S1_silk_gpt_v1.jpg', S1b: 'assets/plates/S1_silk_nbp_v1.jpg', S2: 'assets/plates/S2_ink_gpt_v1.jpg',
   S3: 'assets/plates/S3_indigo_gpt_v1.jpg', S4: 'assets/plates/S4_jiehua_gpt_v1.jpg', goldline: 'assets/plates/A_goldline.jpg',
@@ -30,6 +32,20 @@ export class AssetStore {
       }
     }
     for (const [a, k] of Object.entries(ALIASES)) if (this.urls[k]) this.urls[a] = this.urls[k];
+    // generated takes chosen in media/gen/picks.json — valid only once roto-prepped (media/gen/<key>/roto/<take>/)
+    // AFTER the current keyframe was delivered (a redesigned keyframe invalidates its old take)
+    this.picks = {};
+    try {
+      const picks = await (await fetch('/media/gen/picks.json')).json();
+      for (const [k, v] of Object.entries(picks)) {
+        if (!v || !v.take || k.startsWith('_')) continue;
+        const takes = await ls(`media/gen/${k}/roto`);
+        const tk = takes.find((x) => x.f === v.take); if (!tk) continue;
+        const kf = this.mtime[PICK_KF[k] || k];
+        if (kf && tk.mtime + 60000 < kf) continue;
+        this.picks[k] = { take: v.take, lag: v.lag_s ?? 0, clip: `${k}/${v.take}` };
+      }
+    } catch (e) { /* no picks */ }
     this.texts = {};
     try { this.texts['K_0.6'] = await (await fetch('/media/keyframes/K_0.6.txt')).text(); } catch (e) { this.texts['K_0.6'] = ''; }
   }

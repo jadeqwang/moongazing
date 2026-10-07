@@ -23,6 +23,7 @@ uniform int uGrade; uniform float uOpacity; uniform vec3 uRef; uniform vec4 uSky
 uniform float uT, uMaskOn, uFlutterAmp, uFlutterFreq, uShimmer, uFlicker, uGlow, uOverOn;
 uniform vec2 uOverOff;
 uniform vec4 uMist; uniform vec4 uMistBand; // rgb, amount | y0, y1, speed, scale
+uniform int uPK; uniform float uPSeed;   // the shot's paper (so a plate laid over other layers still takes the paper, not them)
 uniform vec4 uTear;   // y (design px), fall (px), rotation (rad), side (+1 keep upper part, -1 lower part falling)
 uniform vec4 uReveal; // progress (0..1+), softness, centre x, centre y (0..1) — radial draw-on
 out vec4 o;
@@ -81,7 +82,8 @@ void main(){
   vec3 col;
   if (uGrade == 4) {               // native: a finished painting; our paper contributes its weave/fibre only
     vec3 pm = uSky.w > 0. ? vec3(0.09, 0.13, 0.245) : vec3(0.886, 0.816, 0.675);
-    col = c * mix(vec3(1.), prev / pm, 0.55);
+    vec3 pap = paperColor(uPK, Pw, uPSeed);
+    col = c * mix(vec3(1.), pap / pm, 0.55);
     col = mix(col, vec3(luma(col)), uDesat);
   } else if (uGrade == 5) {        // 拓 rubbing: the picture as a stele rubbing — dark, monochrome, light where it is carved
     float lm = luma(c);
@@ -100,7 +102,7 @@ void main(){
     float sat = length(t - vec3(l));
     col = mix(ink, prev * t, smoothstep(0.08, 0.25, sat));
   } else {
-    col = c * (prev / vec3(0.09, 0.13, 0.245));
+    col = c * (paperColor(uPK, Pw, uPSeed) / vec3(0.09, 0.13, 0.245));
     col = mix(col, c, 0.55);
   }
   // drifting mist / ink wash
@@ -199,6 +201,7 @@ export const plate = {
       uOverOn: ov ? 1 : 0, uOver: ov ? ctx.tex[ov.img] : ctx.tex[p.img], uOverOff: ovOff,
       uMist: mist ? [...mist.color, mist.amount] : [0, 0, 0, 0],
       uMistBand: mist ? [mist.y0, mist.y1, mist.speed ?? 8, mist.scale ?? 1] : [0, 0, 0, 1],
+      uPK: { i: { xuan: 0, silk: 1, indigo: 2, silknight: 3, rubbing: 4 }[shot.paper] ?? 1 }, uPSeed: shot.paperSeed ?? (shot.grain ?? 0) * 0.37,
       uTear: p.tear ? (typeof p.tear === 'function' ? p.tear(t, lt) : p.tear) : [0, 0, 0, 0],
       uReveal: p.reveal ? [p.reveal(t, lt), 0.18, 0.5, 0.55] : [0, 0, 0.5, 0.5],
     });

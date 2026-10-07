@@ -114,3 +114,35 @@ In a section file: `{ type: 'roto', clip: 'K_5.1/take_1', paper: 'ink', lag: 0 }
 | silk | palette-snapped flat fills, 分染 edge shading, mineral granulation, iron-wire ink line |
 | ink | luminance-matched washes in the keyframe's own sumi, wet rims, clumped granulation, 留白, 飞白 dry-brush contour; Earth keeps its colour |
 | gold | source light re-laid as matte 泥金 on indigo (luminance-matched), emboss; glow only in `07_drop` |
+
+## State at end of day Oct 7
+
+**Wired, lint clean.** The film runs 115 shots over 0–221.04 s on the master audio (`data/audio.json`), with no placeholders.
+- These picks are roto-prepped (`tools/roto_prep.py`) and used through `X.pick()`:
+  - LS1 take_24: 2.3 now runs the whole line with no cutaway, and the take's own mouth is kept (prepped with `remouth=False`; faces were tracked in only 13 of 193 frames).
+  - J_3.1 take_2 and J_3.2 take_1.
+  - J_3.7 take_9 and J_3.7_close take_6.
+  - K_7.B1 take_3 and K_7.B1_close take_2 (ink).
+- A pick is used only if its `media/gen/<key>/roto/<take>/` exists and is newer than the keyframe. Otherwise the shot falls back to the painted still with parallax.
+- `out/fullcut_v3_540p.mp4` and `out/fullcut_v3_sheet.jpg` were rendered from this state before the stop.
+
+**Pending.** For any new pick: prep it, then `node tools/lint_shots.mjs`.
+```
+MPY=/home/jade/Documents/orbital-sunrise-video/video/out/.venv/bin/python
+$MPY tools/roto_prep.py <KEY>/<take>
+```
+- Run these from the repo root.
+- For a 3/4-profile lip-sync take, prep with `remouth=False` (call `roto_prep.prep(..., remouth=False)`).
+
+**Render commands.** Run from `render/`. Use at most 6 workers; the renderer caps it at 6.
+```
+node tools/audio_info.mjs && node tools/lint_shots.mjs
+# 540p review
+node tools/render.mjs --frames 0-221.04 --workers 6 --scale 0.5 --framedir out/frames_fullcut_540
+node tools/render.mjs --encode 0-221.04 --scale 0.5 --framedir out/frames_fullcut_540 --out out/fullcut_v3_540p.mp4
+node tools/render.mjs --sheet --from 0 --to 221.04 --step 2 --cols 10 --thumb 320 --out out/fullcut_v3_sheet.jpg
+# 1080p final (about 4× the time; PNG frames are lossless)
+node tools/render.mjs --frames 0-221.04 --workers 6 --scale 1 --format png --framedir out/frames_final_1080
+node tools/render.mjs --encode 0-221.04 --scale 1 --format png --framedir out/frames_final_1080 --crf 14 --out out/moongazing_final_1080p.mp4
+```
+If any frames fail, rerun the `--frames` step with `--resume`.

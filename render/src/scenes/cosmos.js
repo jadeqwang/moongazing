@@ -130,11 +130,11 @@ export const cosmos = {
       g.beginPath(); g.moveTo(64, 1030); g.lineTo(64 + px, 1030); g.moveTo(64, 1022); g.lineTo(64, 1038); g.moveTo(64 + px, 1022); g.lineTo(64 + px, 1038); g.stroke();
       g.font = '14px PlexMonoMedium'; g.letterSpacing = '2px'; g.fillStyle = '#fff'; g.fillText(fmt(km), 64, 1010);
     }, { mode: 'gold', seed: 70 });
-    const q = smooth(187.7, 188.4, t);
+    const q = smooth(187.95, 188.35, t) * (1 - smooth(189.15, 189.55, t));   // quiet, and gone before the cut
     if (q > 0) {
-      const card = ctx.type.card('sagan', { lines: [[{ t: 'That’s here. That’s home. That’s us.', font: 'CormorantItalic' }]], size: 42, x: 960, y: 830, align: 'center', color: '#efe7d6' });
-      ctx.pipe.layer((g) => card.draw(g, 1, q * 0.92), { mode: 'over', seed: 71 });
-      ctx.pipe.layer((g) => ctx.type.hud(g, 'CARL SAGAN, PALE BLUE DOT (1994)', 960, 872, { size: 12, color: `rgba(212,168,75,${(0.8 * q).toFixed(3)})`, tracking: 0.14, align: 'center' }), { mode: 'over', seed: 72 });
+      const card = ctx.type.card('sagan', { lines: [[{ t: 'That’s here. That’s home. That’s us.', font: 'CormorantItalic' }]], size: 30, x: 960, y: 850, align: 'center', color: '#efe7d6' });
+      ctx.pipe.layer((g) => card.draw(g, 1, q * 0.62), { mode: 'over', seed: 71 });
+      ctx.pipe.layer((g) => ctx.type.hud(g, 'CARL SAGAN, PALE BLUE DOT (1994)', 960, 884, { size: 11, color: `rgba(212,168,75,${(0.5 * q).toFixed(3)})`, tracking: 0.14, align: 'center' }), { mode: 'over', seed: 72 });
     }
   },
 };

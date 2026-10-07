@@ -35,6 +35,55 @@
   - The sample tube may **frost over** for a moment once it is back in the sunlit, *humid* hab (not outside).
   - **Temperature HUD:** −230 °C in the shadow, about +50 °C on the sunlit ridge.
 
+### 2a. PRIME-1 / TRIDENT: the real ice drill (the basis for K_7.B1)
+
+**What it is.** PRIME-1 (Polar Resources Ice Mining Experiment-1) was NASA's first in-situ resource demo on the Moon. It
+had two instruments:
+- **TRIDENT** (The Regolith and Ice Drill for Exploring New Terrain), built by Honeybee Robotics: a roughly **1 m**,
+  low-power **rotary-percussive** drill with a spiral (flighted) auger.
+- **MSOLO** (Mass Spectrometer Observing Lunar Operations), a modified commercial mass spectrometer that "sniffs" the
+  gases released by the drill cuttings.
+
+The same TRIDENT design is built into **VIPER**.
+
+**How it drills.**
+- **Mechanism:** a rotary motor and a percussive hammer drive a **wedge bit**. It pulverises the regolith and ice, and
+  the cuttings ride up the **auger flutes**.
+- **"Bite" sampling:** it drills a **10 cm bite**, then retracts the auger, and a **brush** at the foot sweeps those 10 cm
+  of cuttings onto the surface, where they form a small **cuttings cone** beside the hole. Then it repeats, bite by bite,
+  to about 1 m. The point is that each little pile is a depth-tagged sample that MSOLO (and, on VIPER, a near-IR
+  spectrometer) can examine.
+- **Hardware:** the auger rides on a **vertical deployment rail** (the drill-head carriage slides down it). The bit has
+  an embedded **heater and temperature sensors**, because ice-bearing ground reveals itself by how the bit warms and
+  how much power it takes to cut. The drill can stop at any commanded depth.
+
+**What happened on the Moon (IM-2, March 2025).**
+- Intuitive Machines' Nova-C lander **Athena** launched on 26 Feb 2025. It landed on **6 March 2025**, about 400 m
+  (1,300 ft) from its target on Mons Mouton, the farthest south any lander had reached.
+- It came to rest **on its side** inside a small crater. Its solar panels could not recharge, so the mission ended
+  after about **10 hours** instead of the planned ~10 days.
+- In that window the PRIME-1 team ran TRIDENT through its **full range of motion**: auger rotation, full extension,
+  percussion "hammering", and the heater with temperature readout. Lying on its side, it could not bite into the ground.
+- **MSOLO** ran several scans. The gases it saw appear to be **anthropogenic** (spacecraft propellant venting, traces
+  of Earth water), not lunar volatiles.
+- **Takeaway for the film:** the drill works in the lunar environment, and nobody has yet pulled ice cuttings out of a
+  lunar shadowed crater. K_7.B1 shows the thing PRIME-1 was built to do.
+
+**On camera** (K_7.B1, K_7.B1_close):
+- the auger on its rail, entering the ground;
+- **neat small cuttings cones**, one per bite, beside the hole;
+- grey, sandy cuttings with a fine glitter of ice, not chunks;
+- grains that fall in clean short arcs, with no dust cloud.
+
+Hardware structure refs (NASA photos) are in `media/style_refs/prime1/`.
+
+**Sources:**
+- [NASA PRIME-1 mission page](https://www.nasa.gov/mission/polar-resources-ice-mining-experiment-1-prime-1/)
+- [NASA, "NASA's Lunar Drill Technology Passes Tests on the Moon"](https://www.nasa.gov/missions/artemis/nasas-lunar-drill-technology-passes-tests-on-the-moon/)
+- [Zacny et al. 2025, "TRIDENT Ice Mining Drill for Lunar Volatile Prospecting for PRIME-1 and VIPER"](https://icedrill.org/sites/default/files/Zacny_2025_TRIDENT%20Ice%20Mining%20Drill%20for%20Lunar%20Volatile%20Prospecting%20for%20PRIME-1%20and%20VIPER%20Missions.pdf) (bite sampling and cuttings cone)
+- [LPSC 2024 TRIDENT abstract (NTRS)](https://ntrs.nasa.gov/citations/20240000585)
+- [The Driller, "NASA's lunar drill survives a crash landing…"](https://www.thedriller.com/articles/93689-nasas-lunar-drill-survives-a-crash-landing-and-still-gets-the-job-done)
+
 ## 3. Far-side radio astronomy: listening to the cosmic "Dark Ages"
 
 - **Why the Moon:** below about **30 MHz** the sky is almost unobservable from Earth. The ionosphere reflects or absorbs it, and human radio noise plus Earth's own auroral radio emission drown it. The **lunar far side at night** is shielded from Earth by about 3,474 km of rock, making it the **most radio-quiet place in the inner solar system**. The prize is the redshifted **21-cm hydrogen signal from the cosmic Dark Ages**, before the first stars, which arrives at about 1–50 MHz.

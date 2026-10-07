@@ -189,7 +189,8 @@ export const inkmoon = {
       // before the drop is in frame its shadow gathers on the paper (it is above the lens)
       const pre = t < tF ? smooth(tF - 0.9, tF, t) : 1;
       const shadow = s < 0 ? [L.cx + shadowOff * 0.62, L.cy + shadowOff * 0.78, 10 + h * 7, (0.10 + 0.28 * (1 - h / h0)) * pre] : [0, 0, 1, 0];
-      U = { uDropA: falling ? smooth(tF, tF + 0.1, t) : 0 };
+      U = { uDropA: falling && !p.hang ? smooth(tF, tF + 0.1, t) : 0 };
+      if (p.hang) { drop[2] = 0; shadow[3] = 0; }
       U = { ...U, uTau: tau, uTauW: tauW, uTau2: tau2, uPool: smooth(0.35, 1.5, s), uMass: mass, uResolve: res, uPhoto: res > 0 ? 1 : 0,
         uHalo: 1 - smooth(1.9, 2.8, t) * 0.5, uMariaAmt: 1, uDrop: drop, uShadow: shadow };
     }
@@ -211,5 +212,80 @@ export const inkmoon = {
       uF0: [this.B.x0, this.B.y0], uG: this.B.G, uC: [L.cx, L.cy], uR: L.R,
       uAlbR: this.B.albedoRange,
     });
+    if (p.hang && p.mode !== 'photo' && s < 0) hangingDrop(ctx, L, t, p.tFall ?? 0, tI);
   },
 };
+
+// The opening bead: visible from frame 0. A calligraphy brush — bamboo shaft from the top edge, horn ferrule, a
+// wolf-hair head whose lower half is loaded with wet black ink — comes in at a slant from the upper right; a glossy
+// bead swells at its tip and trembles. On the first sound it lets go and falls straight down, accelerating, to land
+// at tImpact; its shadow on the paper gathers and sharpens as it comes. Paper space. Deterministic in t.
+function hangingDrop(ctx, L, t, tF, tI) {
+  const X = L.cx, TIP = 268, ANG = 0.5, R = 19;
+  const fall = t >= tF ? Math.min(1, (t - tF) / (tI - tF)) : 0, u2 = fall * fall;
+  const tremble = t < tF ? (Math.sin(t * 29.0) * 0.6 + Math.sin(t * 45.3 + 1.2) * 0.35) * (0.4 + 0.6 * Math.min(1, t / 1.6)) : 0;
+  const swell = t < tF ? 0.72 + 0.28 * Math.min(1, t / tF) ** 1.5 : 1;          // the bead grows as ink gathers
+  const stretch = t < tF ? 1.12 + 0.06 * Math.sin(t * 17) : 1 + 0.9 * fall;
+  const r = R * swell, y0 = TIP + r * stretch * 0.92;
+  const y = y0 + (L.cy - y0) * u2, x = X + tremble;
+  const lift = t >= tF ? 420 * smooth(tF, tF + 0.7, t) : 0;                     // the brush withdraws along its axis
+  ctx.pipe.layer((g) => {
+    const k = t < tF ? 0.15 * Math.min(1, t / tF) : 0.15 + 0.85 * u2;
+    g.save(); g.filter = `blur(${(26 - 22 * k).toFixed(1)}px)`; g.fillStyle = `rgba(20,18,16,${(0.06 + 0.3 * k).toFixed(3)})`;
+    g.beginPath(); g.ellipse(X + 18 * (1 - k), L.cy + 22 * (1 - k), 46 - 30 * k, 30 - 18 * k, 0, 0, Math.PI * 2); g.fill(); g.restore();
+    // the brush's own soft shadow, close beside it on the paper (light from upper left; the brush is near the paper)
+    g.save(); g.filter = 'blur(10px)'; g.globalAlpha = 0.07 * (1 - smooth(tF, tF + 0.4, t));
+    g.translate(X + 38, TIP + 30); g.rotate(ANG); g.fillStyle = '#1a1714';
+    g.beginPath(); g.moveTo(0, 0); g.lineTo(-24, -150); g.lineTo(-18, -1400); g.lineTo(18, -1400); g.lineTo(24, -150); g.closePath(); g.fill(); g.restore();
+  }, { mode: 'ink', absorb: 0.4, seed: 11, cam: true });
+  ctx.pipe.layer((g) => {
+    g.save();
+    g.translate(X + tremble * 0.5 + Math.sin(ANG) * lift, TIP - Math.cos(ANG) * lift);
+    g.rotate(ANG);                       // local: tip at the origin, the shaft runs up (−y)
+    g.scale(1.3, 1.3);                   // a big, legible brush on a phone
+    const HL = 170, HW = 25, FER = 34, SH = 1200, SW = 17;
+    // bamboo shaft with nodes
+    const sg = g.createLinearGradient(-SW, 0, SW, 0);
+    sg.addColorStop(0, '#8a6a3c'); sg.addColorStop(0.35, '#c9a46a'); sg.addColorStop(0.6, '#b18850'); sg.addColorStop(1, '#6e5230');
+    g.fillStyle = sg; g.fillRect(-SW, -HL - FER - SH, SW * 2, SH);
+    g.fillStyle = 'rgba(70,48,24,0.55)';
+    for (const ny of [-HL - FER - 210, -HL - FER - 560]) { g.fillRect(-SW - 1, ny, SW * 2 + 2, 5); g.fillStyle = 'rgba(70,48,24,0.55)'; }
+    g.strokeStyle = 'rgba(90,64,34,0.35)'; g.lineWidth = 1;
+    for (const xx of [-9, -2, 6, 12]) { g.beginPath(); g.moveTo(xx, -HL - FER - 4); g.lineTo(xx, -HL - FER - SH); g.stroke(); }
+    // horn ferrule
+    const fg = g.createLinearGradient(-SW - 4, 0, SW + 4, 0);
+    fg.addColorStop(0, '#120f0d'); fg.addColorStop(0.4, '#3a302a'); fg.addColorStop(1, '#0c0a09');
+    g.fillStyle = fg; g.beginPath(); g.moveTo(-SW - 4, -HL - FER); g.lineTo(SW + 4, -HL - FER); g.lineTo(HW - 1, -HL + 2); g.lineTo(-HW + 1, -HL + 2); g.closePath(); g.fill();
+    // hair head: bulb from the ferrule, tapering to a fine point
+    const head = () => { g.beginPath(); g.moveTo(-HW + 1, -HL); g.bezierCurveTo(-HW - 7, -HL * 0.62, -HW * 0.55, -HL * 0.22, 0, 0); g.bezierCurveTo(HW * 0.55, -HL * 0.22, HW + 7, -HL * 0.62, HW - 1, -HL); g.closePath(); };
+    const hg = g.createLinearGradient(0, -HL, 0, 0);
+    hg.addColorStop(0, '#b89a74'); hg.addColorStop(0.32, '#8d7356'); hg.addColorStop(0.5, '#1d1a17'); hg.addColorStop(0.62, '#070707'); hg.addColorStop(1, '#030303');
+    g.fillStyle = hg; head(); g.fill();
+    g.save(); head(); g.clip();
+    // bristles: fine hairs, dry and separate above the ink line, gathered and wet below it
+    for (let i = -11; i <= 11; i++) {
+      const xx = i * 2.2;
+      g.strokeStyle = i % 3 ? 'rgba(240,226,200,0.28)' : 'rgba(60,44,30,0.4)'; g.lineWidth = 0.9;
+      g.beginPath(); g.moveTo(xx, -HL); g.quadraticCurveTo(xx * 1.15, -HL * 0.55, xx * 0.15, -HL * 0.28); g.stroke();
+    }
+    // ink sheen on the wet belly: one soft highlight running down the curve of the hair
+    g.save(); g.filter = 'blur(2.5px)'; g.strokeStyle = 'rgba(214,218,228,0.5)'; g.lineWidth = 3.2; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(-HW * 0.62, -HL * 0.5); g.bezierCurveTo(-HW * 0.6, -HL * 0.32, -HW * 0.35, -HL * 0.14, -HW * 0.06, -HL * 0.03); g.stroke(); g.restore();
+    g.restore();
+    g.restore();
+    // the bead: glossy black, hanging by a neck of ink from the tip, then falling free
+    if (t < tI) {
+      if (t < tF + 0.05) {
+        const nk = 1 - smooth(tF, tF + 0.05, t);
+        g.fillStyle = `rgba(4,4,5,${nk})`; g.beginPath(); g.moveTo(X - 4, TIP - 4); g.quadraticCurveTo(x - r * 0.5, y - r * 0.3, x, y - r * 0.6); g.quadraticCurveTo(x + r * 0.5, y - r * 0.3, X + 4, TIP - 4); g.closePath(); g.fill();
+      }
+      g.save(); g.translate(x, y); g.scale(1 / Math.sqrt(stretch), stretch);
+      const b = g.createRadialGradient(-r * 0.35, -r * 0.45, r * 0.05, 0, 0, r * 1.05);
+      b.addColorStop(0, '#3c3a38'); b.addColorStop(0.25, '#0c0c0d'); b.addColorStop(1, '#020203');
+      g.fillStyle = b; g.beginPath(); g.arc(0, 0, r, 0, Math.PI * 2); g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.82)'; g.beginPath(); g.ellipse(-r * 0.38, -r * 0.42, r * 0.2, r * 0.13, -0.6, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = 'rgba(160,160,170,0.25)'; g.lineWidth = 1.2; g.beginPath(); g.arc(0, 0, r * 0.92, 0.6, 2.2); g.stroke();
+      g.restore();
+    }
+  }, { mode: 'over', seed: 12, cam: true });
+}

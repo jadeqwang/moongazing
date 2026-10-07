@@ -36,6 +36,7 @@ CLIPS["3.7"] = ["J_3.7", "J_3.7_close"]
 CLIPS["7.C1"] = ["K_7.C1_earth", "K_7.C1_moon"]
 CLIPS["7.D2"] = ["J_7.D2", "K_7.D2_room"]
 CLIPS["1.5"] = []
+CLIPS["7.B1"] = ["K_7.B1", "K_7.B1_close"]
 CLIPS["3.1"] = ["J_3.1", "K_3.0_bridge", "K_3.1"]
 CLIPS["3.2"] = ["J_3.2", "K_3.2"]
 CLIPS["8.2"] = ["K_8.2a", "K_8.2b", "K_8.2"]
@@ -81,12 +82,13 @@ def shots():
 def keyframes(sid):
     hits = sorted(glob.glob(os.path.join(KF, f"K_{sid}.jpg")) + glob.glob(os.path.join(KF, f"K_{sid}[a-z_]*.jpg"))
                   + glob.glob(os.path.join(KF, f"K_{sid}i*.jpg")))
-    hits = [h for h in hits if not h.endswith("_v1.jpg") and "plate" not in h and "earth" not in h]
+    hits = [h for h in hits if not re.search(r"_v\d", h) and "plate" not in h and "earth" not in h and "SHEET" not in h]
     j = glob.glob(os.path.join(KF, "jade", f"J_{sid}*.png"))
     if sid in LS:
         j = glob.glob(os.path.join(KF, "jade", f"J_{LS[sid]}.png")) + j
     if sid.startswith("7.") and not hits:
         hits = glob.glob(os.path.join(KF, f"K_{sid[:3]}.jpg"))
+    j = [x for x in j if not re.search(r"_v\d", x)]
     return [os.path.relpath(p, ROOT) for p in sorted(set(j)) + hits]
 
 
