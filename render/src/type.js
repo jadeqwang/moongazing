@@ -153,38 +153,53 @@ function blur(src, W, H, r) {
 
 // ---------------------------------------------------------------------------------------------------------------
 // (c) English display card
+// lines: each a string, or an array of runs [{ t, size?, font?, weight? }] so key words can be set larger.
 export class Card {
   // o: lines[], font ('Cormorant'), weight, size, tracking (em), leading (x size), x, y (baseline of first line),
-  //    align ('left'|'center'|'right'), color css, italic
+  //    align ('left'|'center'|'right'), color css, lineSizes (per-line default size), lineFonts
   constructor(kit, o) {
     this.kit = kit;
-    this.o = o = { font: 'Cormorant', weight: 500, size: 58, tracking: 0.035, leading: 1.28, align: 'left', color: '#18181c', seed: 3, ...o };
+    this.o = o = { font: 'Cormorant', weight: 500, size: 58, tracking: 0.035, leading: 1.18, align: 'left', color: '#18181c', seed: 3, ...o };
     const S = kit.S;
     const meas = makeCanvas(4, 4).getContext('2d');
-    meas.font = `${o.weight} ${o.size}px ${o.font}`;
-    meas.letterSpacing = `${o.tracking * o.size}px`;
-    const widths = o.lines.map((l) => meas.measureText(l).width - o.tracking * o.size);
-    const w = Math.max(...widths);
-    const pad = o.size * 0.6;
-    const h = o.size * (o.leading * (o.lines.length - 1) + 1.0) + pad * 2;
-    const left = o.align === 'center' ? o.x - w / 2 : o.align === 'right' ? o.x - w : o.x;
-    this.box = { x: left - pad, y: o.y - o.size * 0.92 - pad, w: w + pad * 2, h };
+    const runFont = (r) => `${r.weight ?? o.weight} ${r.size}px ${r.font ?? o.font}`;
+    // normalise lines -> runs with sizes, measure
+    this.L = o.lines.map((ln, li) => {
+      const base = (o.lineSizes && o.lineSizes[li]) || o.size;
+      const font = (o.lineFonts && o.lineFonts[li]) || o.font;
+      const runs = (typeof ln === 'string' ? [{ t: ln }] : ln).map((r) => ({ font, ...r, size: r.size ?? base }));
+      let w = 0;
+      for (const r of runs) {
+        meas.font = runFont(r); meas.letterSpacing = `${o.tracking * r.size}px`;
+        r.w = meas.measureText(r.t).width; r.x = w; w += r.w;
+      }
+      w -= o.tracking * runs[runs.length - 1].size;
+      const mx = Math.max(...runs.map((r) => r.size));
+      return { runs, w, size: mx };
+    });
+    // baselines
+    let y = o.y;
+    this.L.forEach((l, i) => { if (i) y += l.size * o.leading; l.y = y; });
+    const wmax = Math.max(...this.L.map((l) => l.w));
+    const pad = this.L[0].size * 0.6;
+    const left = o.align === 'center' ? o.x - wmax / 2 : o.align === 'right' ? o.x - wmax : o.x;
+    const top = o.y - this.L[0].size * 0.95;
+    const bottom = this.L[this.L.length - 1].y + this.L[this.L.length - 1].size * 0.35;
+    this.box = { x: left - pad, y: top - pad, w: wmax + pad * 2, h: bottom - top + pad * 2 };
     const c = makeCanvas(this.box.w * S, this.box.h * S);
     const g = c.getContext('2d');
     g.scale(S, S); g.translate(-this.box.x, -this.box.y);
-    g.font = meas.font; g.letterSpacing = meas.letterSpacing; g.fillStyle = o.color; g.textBaseline = 'alphabetic';
-    o.lines.forEach((l, i) => {
-      const lw = widths[i];
-      const x = o.align === 'center' ? o.x - lw / 2 : o.align === 'right' ? o.x - lw : o.x;
-      g.fillText(l, x, o.y + i * o.size * o.leading);
-    });
+    g.fillStyle = o.color; g.textBaseline = 'alphabetic';
+    for (const l of this.L) {
+      const x0 = o.align === 'center' ? o.x - l.w / 2 : o.align === 'right' ? o.x - l.w : o.x;
+      l.x0 = x0;
+      for (const r of l.runs) { g.font = runFont(r); g.letterSpacing = `${o.tracking * r.size}px`; g.fillText(r.t, x0 + r.x, l.y); }
+    }
     this.text = c;
-    // ink-bleed halo version (blurred, faint)
     const hb = makeCanvas(c.width, c.height); const hg = hb.getContext('2d');
-    hg.filter = `blur(${(0.9 * S).toFixed(2)}px)`; hg.drawImage(c, 0, 0);
+    hg.filter = `blur(${(1.1 * S).toFixed(2)}px)`; hg.drawImage(c, 0, 0);
     this.halo = hb;
     this.tmp = makeCanvas(c.width, c.height);
-    this.lineBoxes = widths.map((lw, i) => ({ y: o.y + i * o.size * o.leading, w: lw }));
   }
   // wipe: 0..1 brush-wipe progress (left→right, line by line), alpha: overall opacity
   draw(g, wipe = 1, alpha = 1) {
@@ -196,19 +211,18 @@ export class Card {
     tg.globalAlpha = 0.22; tg.drawImage(this.halo, 0, 0);
     tg.globalAlpha = 1; tg.drawImage(this.text, 0, 0);
     if (wipe < 1) {
-      // dry-brush wipe mask (built separately, applied once): every 2 design px row has its own ragged edge
       const m = this.mask || (this.mask = makeCanvas(t.width, t.height)); const mg = m.getContext('2d');
       mg.setTransform(1, 0, 0, 1, 0, 0); mg.clearRect(0, 0, m.width, m.height);
       mg.scale(S, S); mg.translate(-b.x, -b.y);
-      const nl = o.lines.length, feather = o.size * 1.6;
+      const nl = this.L.length;
       for (let li = 0; li < nl; li++) {
+        const l = this.L[li], fs = l.size, feather = fs * 1.4;
         const lp = clamp(wipe * (nl + 0.6) - li * 0.85, 0, 1.0001);
         if (lp <= 0) continue;
-        const yb = this.lineBoxes[li].y;
-        const x0 = b.x + o.size * 0.6 - feather, x1 = b.x + o.size * 0.6 + this.lineBoxes[li].w + feather;
+        const x0 = l.x0 - feather, x1 = l.x0 + l.w + feather;
         const xe = x0 + (x1 - x0) * lp;
-        for (let y = yb - o.size * 1.05; y < yb + o.size * 0.4; y += 2) {
-          const j = (vnoise(y * 0.09, li * 7.3, o.seed) - 0.5) * o.size * 0.9 + (hash2(Math.round(y), li, o.seed) - 0.5) * o.size * 0.25;
+        for (let y = l.y - fs * 1.05; y < l.y + fs * 0.4; y += 2) {
+          const j = (vnoise(y * 0.09, li * 7.3, o.seed) - 0.5) * fs * 0.9 + (hash2(Math.round(y), li, o.seed) - 0.5) * fs * 0.25;
           const gr = mg.createLinearGradient(xe + j - feather, 0, xe + j, 0);
           gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
           mg.fillStyle = gr; mg.fillRect(b.x - 10, y, xe + j - b.x + 10, 2.05);

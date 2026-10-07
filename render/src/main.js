@@ -33,6 +33,11 @@ async function boot() {
     'plates/S3_indigo_gpt_v1.jpg', 'plates/S4_jiehua_gpt_v1.jpg', 'plates/A_goldline.jpg', 'plates/A_gongbi.jpg',
   ].map((p) => loadImage(A + p)));
   const assets = { moon, S1, S1b, S2, S3, S4, goldline, gongbi };
+  // keyframes are read live from media/keyframes (so new takes drop straight in); missing ones are skipped
+  const KF = { K03: 'K_0.3.jpg', K04: 'K_0.4_plate.jpg', K04earth: 'K_0.4_earth.png', K05: 'K_0.5.jpg', K06: 'K_0.6.jpg',
+    K12: 'K_1.2.jpg', K15: 'K_1.5.jpg', K16: 'K_1.6.jpg', K7D1: 'K_7.D1.jpg' };
+  await Promise.all(Object.entries(KF).map(async ([k, f]) => { try { assets[k] = await loadImage('/media/keyframes/' + f); } catch (e) { /* not delivered yet */ } }));
+  window.__assets = Object.keys(assets);
   const tex = { moon: gl.texture(moon, { wrap: 'repeat', mip: true }) };
   for (const [k, v] of Object.entries(assets)) if (k !== 'moon') tex[k] = gl.texture(v, { mip: true });
   const ctx = {
@@ -74,6 +79,7 @@ function renderAt(t) {
     }
     if (shot.type && !qs.has('notype')) shot.type(ctx, t, lt);
     const post = { grainSeed: shot.grain ?? idx + 1, ...(shot.post ? shot.post(t, lt, ctx) : {}), ...(ctx.postExtra || {}) };
+    if (shot.flash) { const k = Math.floor(lt * 24 + 1e-6); post.flash = k === 0 ? 1 : k === 1 ? 0.5 : 0; }
     ctx.pipe.post(post);
     const hud = document.getElementById('hud');
     if (hud && qs.get('debug')) { const b = ctx.beats.at(t); hud.textContent = `${t.toFixed(3)}s  ${shot.id}  bar ${b.bar}.${b.beat}`; }

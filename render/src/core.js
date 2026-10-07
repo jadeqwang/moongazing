@@ -41,7 +41,8 @@ void main(){
 
 const POST_FS = `
 uniform sampler2D uPrev;
-uniform float uGrain, uGrainSeed, uVignette, uFade, uBump, uWarm;
+uniform float uGrain, uGrainSeed, uVignette, uFade, uBump, uWarm, uFlash, uFlashSeed, uOpen;
+uniform vec3 uOpenColor;
 uniform vec3 uFadeColor;
 uniform vec4 uDeflect; // x,y (design px), amplitude (px), radius (px)
 out vec4 o;
@@ -69,6 +70,21 @@ void main(){
   float amt = uGrain * (0.55 + 0.9 * lum * (1. - lum) * 2.);
   col += amt * (g * vec3(1.) + g2 * vec3(0.18, 0.0, -0.18)) + mott * uGrain * 0.35;
   col = mix(col, uFadeColor, uFade);
+  // breath opening: light recedes from the centre outward (uOpen 0 -> 1)
+  if (uOpen < 1.) {
+    float r = length((P - c) / vec2(1100., 760.));
+    float k = smoothstep(uOpen * 1.5 - 0.35, uOpen * 1.5, r) * (1. - uOpen * uOpen);
+    col = mix(col, uOpenColor, k);
+  }
+  // 2-frame ink flash on a taiko cut: a splash of sumi over the frame, paper specks left in it
+  if (uFlash > 0.) {
+    float n = fbm(P * 0.0032 + uFlashSeed * 7.) * 0.7 + vnoise(P * 0.045 + uFlashSeed) * 0.3;
+    float th = 1.05 - uFlash * 1.25;
+    float m = smoothstep(th - 0.04, th + 0.04, n);
+    float speck = step(0.9965, hash12(floor(P * 0.6) + uFlashSeed));
+    vec3 ink = vec3(0.045, 0.045, 0.055) * (0.85 + 0.3 * vnoise(P * 0.8));
+    col = mix(col, ink, m * (1. - speck * 0.8));
+  }
   col = mix(col, col * vec3(1.02, 1., 0.97), uWarm);
   o = vec4(clamp(col, 0., 1.), 1.);
 }`;
@@ -116,7 +132,8 @@ export class Pipeline {
     this.gl.pass(this.pPost, {
       uPrev: this.cur, uGrain: p.grain ?? 0.035, uGrainSeed: p.grainSeed ?? 0, uVignette: p.vignette ?? 0.08,
       uFade: p.fade ?? 0, uFadeColor: p.fadeColor ?? [0, 0, 0], uBump: p.bump ?? 0, uWarm: p.warm ?? 0,
-      uDeflect: p.deflect ?? [0, 0, 0, 1],
+      uDeflect: p.deflect ?? [0, 0, 0, 1], uFlash: p.flash ?? 0, uFlashSeed: p.grainSeed ?? 0,
+      uOpen: p.open ?? 1, uOpenColor: p.openColor ?? [0.96, 0.92, 0.82],
     }, null);
   }
 }

@@ -17,7 +17,7 @@ export function serve(port = 8765) {
   const server = http.createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     if (p === '/') p = '/index.html';
-    const file = /^\/(analysis|inputs)\//.test(p) ? path.join(REPO, p) : path.join(ROOT, p);
+    const file = /^\/(analysis|inputs|media\/keyframes)\//.test(p) ? path.join(REPO, p) : path.join(ROOT, p);
     if (!file.startsWith(REPO + path.sep)) { res.writeHead(403); return res.end(); }
     fs.readFile(file, (err, data) => {
       if (err) { res.writeHead(404); return res.end('not found'); }
