@@ -108,7 +108,7 @@ export class Pipeline {
   setCam(cam = {}) { this.cam = [cam.x || 0, cam.y || 0, cam.zoom || 1, cam.rot || 0]; }
   // fill with paper
   paper(kind, seed = 0) {
-    const K = { xuan: 0, silk: 1, indigo: 2, silknight: 3 }[kind] ?? 0;
+    const K = { xuan: 0, silk: 1, indigo: 2, silknight: 3, rubbing: 4 }[kind] ?? 0;
     this.gl.pass(this.pPaper, { uKind: { i: K }, uSeed: seed, uFiber: this.fiberTex, uCam: this.cam }, this.cur);
   }
   // run a custom full-frame shader; it receives uPrev (the frame so far) and writes the new frame

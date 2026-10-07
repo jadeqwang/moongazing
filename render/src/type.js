@@ -204,30 +204,40 @@ export class Card {
   // wipe: 0..1 brush-wipe progress (left→right, line by line), alpha: overall opacity
   draw(g, wipe = 1, alpha = 1) {
     if (alpha <= 0.001 || wipe <= 0) return;
+    if (wipe >= 1) return this.drawReveal(g, null, alpha);
+    const nl = this.L.length;
+    const edges = this.L.map((l, li) => {
+      const lp = clamp(wipe * (nl + 0.6) - li * 0.85, 0, 1.0001);
+      const feather = l.size * 1.4;
+      return lp <= 0 ? -1e9 : (l.x0 - feather) + (l.w + 2 * feather) * lp;
+    });
+    this.drawReveal(g, edges, alpha);
+  }
+  // per-word timing: x of the runs (absolute design px) — for lyric lines
+  runEdges() { return this.L.map((l) => l.runs.map((r) => ({ x0: l.x0 + r.x, x1: l.x0 + r.x + r.w }))); }
+  // edges: per line, absolute design-px x of the dry-brush reveal edge (null = everything revealed)
+  drawReveal(g, edges, alpha = 1) {
+    if (alpha <= 0.001) return;
     const S = this.kit.S, o = this.o, b = this.box;
     const t = this.tmp, tg = t.getContext('2d');
     tg.setTransform(1, 0, 0, 1, 0, 0); tg.globalCompositeOperation = 'source-over'; tg.globalAlpha = 1;
     tg.clearRect(0, 0, t.width, t.height);
     tg.globalAlpha = 0.22; tg.drawImage(this.halo, 0, 0);
     tg.globalAlpha = 1; tg.drawImage(this.text, 0, 0);
-    if (wipe < 1) {
+    if (edges) {
       const m = this.mask || (this.mask = makeCanvas(t.width, t.height)); const mg = m.getContext('2d');
       mg.setTransform(1, 0, 0, 1, 0, 0); mg.clearRect(0, 0, m.width, m.height);
       mg.scale(S, S); mg.translate(-b.x, -b.y);
-      const nl = this.L.length;
-      for (let li = 0; li < nl; li++) {
-        const l = this.L[li], fs = l.size, feather = fs * 1.4;
-        const lp = clamp(wipe * (nl + 0.6) - li * 0.85, 0, 1.0001);
-        if (lp <= 0) continue;
-        const x0 = l.x0 - feather, x1 = l.x0 + l.w + feather;
-        const xe = x0 + (x1 - x0) * lp;
+      this.L.forEach((l, li) => {
+        const xe = edges[li]; if (xe === undefined || xe < -1e8) return;
+        const fs = l.size, feather = fs * 0.9;
         for (let y = l.y - fs * 1.05; y < l.y + fs * 0.4; y += 2) {
-          const j = (vnoise(y * 0.09, li * 7.3, o.seed) - 0.5) * fs * 0.9 + (hash2(Math.round(y), li, o.seed) - 0.5) * fs * 0.25;
+          const j = (vnoise(y * 0.09, li * 7.3, o.seed) - 0.5) * fs * 0.5 + (hash2(Math.round(y), li, o.seed) - 0.5) * fs * 0.18;
           const gr = mg.createLinearGradient(xe + j - feather, 0, xe + j, 0);
           gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
           mg.fillStyle = gr; mg.fillRect(b.x - 10, y, xe + j - b.x + 10, 2.05);
         }
-      }
+      });
       tg.globalCompositeOperation = 'destination-in';
       tg.drawImage(m, 0, 0);
       tg.globalCompositeOperation = 'source-over';
@@ -237,10 +247,12 @@ export class Card {
 }
 
 // ---------------------------------------------------------------------------------------------------------------
+const sig = (o, keys) => JSON.stringify(keys.map((k) => o[k]));
 export class TypeKit {
   constructor(ctx) { this.ctx = ctx; this.S = ctx.S; this.cache = new Map(); }
-  inkText(key, o) { if (!this.cache.has(key)) this.cache.set(key, new InkText(this, o)); return this.cache.get(key); }
-  card(key, o) { if (!this.cache.has(key)) this.cache.set(key, new Card(this, o)); return this.cache.get(key); }
+  // cached by key + the options that shape the bitmap (so one key used with two colours never collides)
+  inkText(key, o) { const k = 'i|' + key + '|' + sig(o, ['text', 'font', 'size', 'x', 'y', 'vertical', 'lead', 'colGap', 'perCol', 'color', 'seed', 'weight', 'jitter']); if (!this.cache.has(k)) this.cache.set(k, new InkText(this, o)); return this.cache.get(k); }
+  card(key, o) { const k = 'c|' + key + '|' + sig(o, ['lines', 'font', 'weight', 'size', 'tracking', 'leading', 'x', 'y', 'align', 'color', 'lineSizes', 'lineFonts', 'seed']); if (!this.cache.has(k)) this.cache.set(k, new Card(this, o)); return this.cache.get(k); }
   // (d) HUD mono label
   hud(g, text, x, y, { size = 13, color = 'rgba(30,30,34,0.75)', tracking = 0.14, align = 'left', weight = 'PlexMonoMedium' } = {}) {
     g.save();

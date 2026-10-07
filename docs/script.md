@@ -16,17 +16,30 @@ one half kept in Hangzhou, one in Taipei — was shown together again for one su
 - **GOLD** 磁青泥金 — night, launch, space, the drop. Gold-ink line on indigo; glows on the drop.
 - **RUBBING** 拓 — the breakdown only. White-on-black stele rubbing (an inversion of INK).
 
+## Revision notes v1.2 (user check-in 1, 2026-10-07)
+- Kids are **M** (4, 109 cm) and **T** (7, 132 cm, head 20–25% larger) — true heights vs Jade 165 cm, Kenton 185 cm. Home is Austin
+  (Scandinavian-minimal, lanparty.house); the kids know Shanghai, not Hangzhou. Kenton: curly dark-blond hair, black cargo pants,
+  hiking boots, grey tee, navy fleece.
+- Crew of 8: Jade Wang (USA), Chen Yu (China, commander), Anastasia Volkova (Russia), Adaeze Okafor (Nigeria), Arjun Raman (India),
+  Lúcia Ferreira (Portugal/ESA), Kenji Mori (Japan), Layla Al-Mansoori (UAE). Each has a specific person at home (7.C4).
+- Agency emblem: a pale-blue dot in a Voyager-style sunbeam (no red). Red seals are character chops only (廣寒, 望月).
+- Moonbase layout is canonical per docs/guanghan_layout.md + 3D blockout guides; every moonbase shot must match.
+- 1.6/4.2: cheering crowd behind a safety fence, M on Kenton's shoulders. 6.1 + 8.4: Austin roof deck. 7.C2 + 8.2: Austin
+  living room (homecoming: M runs and bowls Jade over). 3.4: the lesson shows a total solar eclipse (Halys Easter egg).
+- 6.2: Jade need not lower her head; Earth must be unmistakable (blue-white crescent, moonlit continents).
+- Yutu rovers: wheel-legs; ears = vertical solar panels + antennas.
+
 ## Cast
-- **Jade** — mother, astronaut, mission specialist (ISRU / habitat). Green jade pendant. Glasses on Earth; contacts in suit.
+- **Jade** — mother, astronaut, mission specialist (ISRU / habitat). Green jade pendant. Glasses always, including inside the helmet (real astronauts wear them).
 - **Kenton** — father. Appears in ≤6 shots, mostly back/hands/wide.
-- **Mei** (girl, 4) — loose light-brown waves, long bob; white dress with red strawberries; plays Chang'e in the school play.
-- **Bao** (boy, 7) — very dark hair, large round head, full cheeks, big eyes, strong brows; holds the toy Earth.
-- **Crew of Guanghan Station** (one Earth-wide agency; seal logo = vermilion square with one pale blue dot):
-  Adaeze Okafor (Nigerian, reactor engineer) · Arjun Raman (Indian, geologist / ice) · Lúcia Ferreira (Brazilian, botanist)
-  · Kenji Mori (Japanese, robotics) · Sven Lindqvist (Swedish, commander) · Layla Al-Mansoori (Emirati, pilot).
+- **M** (girl, 4) — loose light-brown waves, long bob; white dress with red strawberries; plays Chang'e in the school play.
+- **T** (boy, 7) — very dark hair, large round head, full cheeks, big eyes, strong brows; holds the toy Earth.
+- **Crew of Guanghan Station** (one Earth-wide agency; emblem = a pale-blue dot in a Voyager-style sunbeam, no red — see docs/identity.md):
+  Jade Wang (USA, ISRU) · Chen Yu (China, commander) · Anastasia Volkova (Russia, flight engineer) · Adaeze Okafor (Nigeria, reactor)
+  · Arjun Raman (India, geology/ice) · Lúcia Ferreira (Portugal/ESA, botany) · Kenji Mori (Japan, robotics) · Layla Al-Mansoori (UAE, pilot).
 - **Robots** — quadruped "rabbit" rovers named Yutu-A/B (jade-rabbit nod), a regolith printer, a small humanoid.
-- **Props that travel**: the **toy Earth** (Bao's, from the Copernican lesson → goes to the Moon with Jade);
-  the **toy Moon** (Mei's, stays home); the **tea cup** (reflects the Moon in V2, Earth in the drop).
+- **Props that travel**: the **toy Earth** (T's, from the Copernican lesson → goes to the Moon with Jade);
+  the **toy Moon** (M's, stays home); the **tea cup** (reflects the Moon in V2, Earth in the drop).
 
 ## Lip-sync clips (3 only — Seedance 2.5, audio-referenced, then redrawn)
 - **LS1** 39.53–45.98 "the West Lake wind sings over water, / like smoothing silk, and late" — boat, SILK, 3/4 profile.
@@ -43,17 +56,17 @@ Goal: every second beautiful or a question. Story text carries the hook (no lyri
 | 0.1 | 0.00–1.78 | Blank xuan paper. A single drop of ink falls and blooms — the bloom becomes a perfect full Moon. | — | INK · JS (fluid ink bloom) |
 | 0.2 | 1.78–2.84 | The ink Moon resolves into the *real* Moon (photographic grey = ink granulation). Erhu sighs. | small, top-right vertical: 嫦娥奔月 | INK · JS (shader Moon) |
 | 0.3 | 2.84–5.86 | BOOM → Chang'e in flowing silk rises past the Moon, painted in gongbi; ribbons trail like a rocket's exhaust. | **"Long ago, the legend says, Chang'e flew to the Moon."** | SILK · still→h3 + roto |
-| 0.4 | 5.86–9.14 | Chang'e on the Moon in a pale palace (广寒宫), the jade rabbit at her feet, looking back down at a small blue-green Earth. | **"She could never come home."** | INK w/ Earth color · still→h3 |
-| 0.5 | 9.14–13.10 | 1,000 rooftops of Hangzhou on Mid-Autumn night; tiny families lift their heads to the full Moon (Zhang Yimou crowd symmetry). Lanterns. | **"Every autumn since, a billion people look up and miss someone."** | SILK night · still+parallax |
-| 0.6 | 13.10–15.67 | Push in on one rooftop: a small girl (Mei) lifts a toy Moon against the real one; her mother kneels beside her (back to us). | — (breathing room) | SILK · still→Seedance + roto |
+| 0.4 | 5.86–9.14 | Chang'e on the Moon in a pale palace (广寒宫), the jade rabbit at her feet, looking back down at a small blue-green Earth. | **"Unable to return home."** | INK w/ Earth color · still→h3 |
+| 0.5 | 9.14–13.10 | 1,000 rooftops of Hangzhou on Mid-Autumn night; tiny families lift their heads to the full Moon (Zhang Yimou crowd symmetry). Lanterns. | **"In 726, Li Bai looked up at the Moon and wrote about missing home."** (李白 · 静夜思) | SILK night · still+parallax |
+| 0.6 | 13.10–15.67 | A Puxi (Shanghai) roof deck at Mid-Autumn, the Pudong skyline painted as a Song scroll: M lifts a toy Moon against the real one; her mother kneels beside her (back to us). | — (breathing room) | SILK · still→Seedance + roto |
 
 ## 1 · INTRO B — 15.67–32.42 (bass 17.1; taiko 17.54/21.30/25.01/28.75; vocalise 18.6–29.3)
 
 | ID | Time | Picture | Type layer | Paper / Method |
 |---|---|---|---|---|
 | 1.1 | 15.67–17.54 | The Moon over the rooftop; a gold line begins tracing a trajectory from Earth to Moon across the night (ink → gold). | — | GOLD · JS |
-| 1.2 | 17.54–21.30 | **TAIKO** — hard cut: a rocket on its pad at night, drawn in gold jiehua line on indigo, floodlights as gold rays. | **"This time, she's coming back."** | GOLD · still+JS line-draw |
-| 1.3 | 21.30–22.75 | Teaser flash (taiko): Mei on stage wires as Chang'e, rising. | — | SILK · gen-v roto |
+| 1.2 | 17.54–21.30 | **TAIKO** — hard cut: a rocket on its pad at night, drawn in gold jiehua line on indigo, floodlights as gold rays. | **"This time, every space agency on Earth is going together."** 这一次，全世界一起去 · HUD: GUANGHAN STATION · LUNAR SOUTH POLE | GOLD · still+JS line-draw |
+| 1.3 | 21.30–22.75 | Teaser flash (taiko): M on stage wires as Chang'e, rising. | — | SILK · gen-v roto |
 | 1.4 | 22.75–25.01 | Voice blooms → Jade's face in helmet, visor up, Earth reflected small in the visor rim; she looks up (peak G#5 at 24.7). | — | GOLD · still→Seedance (no lips) + roto |
 | 1.5 | 25.01–26.87 | Taiko → Guanghan Station in shadow, warm lit portals between regolith berms, a tiny Earth on the horizon. | — | INK · still+parallax |
 | 1.6 | 26.87–28.75 | The family on Wenchang beach in pre-dawn blue hour, a thin waning crescent low in the east, looking up at a gold streak. | — | SILK · still+parallax |
@@ -66,8 +79,8 @@ English lyrics: refined serif, small, horizontal, in the 留白; Chinese inscrip
 | ID | Time | Picture | Lyric | Method |
 |---|---|---|---|---|
 | 2.1 | 32.14–35.85 | West Lake in winter. Broken Bridge under thin snow; the camera pans right→left along the scroll. Slender willows. | The willow in winter is slender, | SILK · still→h3 (slow pan) + roto |
-| 2.2 | 35.85–39.53 | Close: willow switches hanging plain and straight → match cut: Mei's silk dance ribbons hanging straight in a rehearsal room; Jade's hands correcting the girl's arm (Chang'e pose). | her switches plain and straight; | SILK · gen-v + roto |
-| 2.3 | 39.53–45.98 | **LS1** — A canopied West Lake rowboat (西湖手划船) on the lake, Leifeng Pagoda behind. Jade sings in 3/4 profile; Bao trails a hand in the water; Kenton rows (back). | the West Lake wind sings over water, / like smoothing silk, and late | SILK · **Seedance LS1** + roto |
+| 2.2 | 35.85–39.53 | Close: willow switches hanging plain and straight → match cut: M's silk dance ribbons hanging straight in a rehearsal room; Jade's hands correcting the girl's arm (Chang'e pose). | her switches plain and straight; | SILK · gen-v + roto |
+| 2.3 | 39.53–45.98 | **LS1** — A canopied West Lake rowboat (西湖手划船) on the lake, Leifeng Pagoda behind. Jade sings in 3/4 profile; T trails a hand in the water; Kenton rows (back). | the West Lake wind sings over water, / like smoothing silk, and late | SILK · **Seedance LS1** + roto |
 | 2.4 | 43.2–45.3 (insert) | Jade's hand smoothing the silk of the Chang'e costume on an ironing board → silk ripple dissolves into lake ripple. | (continues) | SILK · gen-v |
 | 2.5 | 45.3–47.12 | Fill → teahouse lattice doors (隔扇) swing open. | — | SILK |
 
@@ -76,12 +89,12 @@ English lyrics: refined serif, small, horizontal, in the 留白; Chinese inscrip
 | ID | Time | Picture | Lyric | Method |
 |---|---|---|---|---|
 | 3.1 | 46.82–50.49 | Kit hits 47.14 → Afternoon teahouse above the lake (Longjing tea, lattice windows). Family at a square 八仙桌 table; snow outside. | in afternoon teahouses watching | SILK · still→h3 |
-| 3.2 | 50.49–52.4 | Snow melting in an iron kettle; tea poured; in the cup, the reflection of a pale afternoon Moon. | snow-brewed tea. | SILK · gen-v macro |
-| 3.3 | 52.4–54.09 | Jade's finger traces a calligraphy inscription on the teahouse wall: 举杯邀明月… Bao reads along. | That line— | SILK · still + JS brush-reveal |
-| 3.4 | 54.09–57.83 | **LS2** — Night, home. Copernican lesson: Jade holds a flashlight (the Sun); Bao holds a toy Earth, Mei a toy Moon. On the paper wall their three shadows perform an eclipse — shadow-puppet (皮影) style. | **举杯邀明月，对影成三人** (big calligraphy across the wall) | SILK · **Seedance LS2** + roto; shadows JS |
+| 3.2 | 50.49–52.4 | Snow melting in an iron kettle for tea; a bowl of tangyuan — one bitten into a crescent: a waning moon (月缺) on the spoon. | snow-brewed tea. | SILK · gen-v macro |
+| 3.3 | 52.4–54.09 | Jade's finger traces a calligraphy inscription on the teahouse wall: 举杯邀明月… T reads along. | That line— | SILK · still + JS brush-reveal |
+| 3.4 | 54.09–57.83 | **LS2** — Night, home. Copernican lesson: Jade holds a flashlight (the Sun); T holds a toy Earth, M a toy Moon. On the paper wall their three shadows perform an eclipse — shadow-puppet (皮影) style. | **举杯邀明月，对影成三人** (big calligraphy across the wall) | SILK · **Seedance LS2** + roto; shadows JS |
 | 3.5 | 57.85–61.65 | The letter: a vermilion seal stamps her assignment: 广寒 GUANGHAN STATION · LUNAR SOUTH POLE. Jade at the window, toy Earth in hand. | I think of you — | SILK + GOLD HUD · JS |
 | 3.6 | 61.65–64.7 | **BAND LIFT** → TRAINING MONTAGE (cuts every beat/2 beats): centrifuge spin · NBL pool in suit · parabolic flight float → she wobbles off, doubled over a bag, heave → CUT · wushu stance ≈ EVA posture · geology hammer in Iceland lava · math/orbital mechanics at a desk at 3 a.m. | homesick with waning | SILK→GOLD · stills+gen-v, roto; NASA-worm-era HUD labels |
-| 3.7 | 65.75–71.19 | Last night home before pre-flight quarantine (L–14 days). Jade tucks Mei in; Bao, solemn, presses his toy Earth into her hands. She keeps it. Mei keeps the toy Moon. | moons and lonely wine. | SILK · gen-v + roto |
+| 3.7 | 65.75–71.19 | Last night home before pre-flight quarantine (L–14 days). Jade tucks M in; T, solemn, presses his toy Earth into her hands. She keeps it. M keeps the toy Moon. | moons and lonely wine. | SILK · gen-v + roto |
 | 3.8 | 71.19–76.11 | Turnaround (rising hats): suit-up; the walkout; she clips into the seat — buckle CLICK on 74.4; visor reflection of the tower. Final glance at a photo of the kids taped to the panel. | — | GOLD · gen-v + roto |
 
 ## 4 · HOOK — 76.11–101.33 — LAUNCH (GOLD paper; lyrics HUGE, brushed by the exhaust)
@@ -89,10 +102,10 @@ English lyrics: refined serif, small, horizontal, in the 留白; Chinese inscrip
 | ID | Time | Picture | Lyric | Method |
 |---|---|---|---|---|
 | 4.1 | 76.11–79.9 | Impact 76.17 = IGNITION. Splashed-ink (泼墨) exhaust in gold and ember on indigo; the tower falls away. A waning crescent Moon sits in the sky above. | **月缺酒寒** — written by the exhaust plume itself | GOLD · JS (ink-plume sim) over still |
-| 4.2 | 79.9–82.8 | The family on a Wenchang beach ~4 km away, blue hour; the light arrives first, the roar ~12 s later — Mei covers her ears late, birds lift off the palms. Mei holds the toy Moon up next to the real crescent. | **我思念你** | SILK night · still→Seedance + roto |
+| 4.2 | 79.9–82.8 | The family on a Wenchang beach ~4 km away, blue hour; the light arrives first, the roar ~12 s later — M covers her ears late, birds lift off the palms. M holds the toy Moon up next to the real crescent. | **我思念你** | SILK night · still→Seedance + roto |
 | 4.3 | 82.8–86.16 | **LS3** — Inside the capsule: Jade under g-load sings the held 你. Window covered by the escape-tower shroud, then — shroud gone — black space over a thin blue band of atmosphere. Visor clear and closed. | 你 (held, expanding) | GOLD · **Seedance LS3** + roto |
 | 4.4 | 86.62–88.6 | HUD `MET 00:02:41` — first-stage separation = THE SCROLL TEARS: the frame rips along a jagged paper edge; the lower half (Earth, family) falls away with the booster. | **I think of you,** | GOLD+SILK · JS paper tear |
-| 4.5 | 88.6–90.55 | Kids in the mission family viewing room at Wenchang, faces lit by the big screen; Bao's hand on the glass. | **I think of you** | SILK · still+parallax |
+| 4.5 | 88.6–90.55 | Kids in the mission family viewing room at Wenchang, faces lit by the big screen; T's hand on the glass. | **I think of you** | SILK · still+parallax |
 | 4.6 | 90.7–92.1 | Ad-lib → Orbit: Earth fills the frame for the first time — it IS a 青绿 painting: azurite oceans, malachite land, white clouds. | — | JS Earth (shader) |
 | 4.7 | 92.21–94.88 | After the TLI burn cuts off. In free fall, Jade lifts a drink pouch toward the Moon in the window — 举杯. The toy Earth floats beside her. | **举杯邀明月** (calligraphy floats too) | GOLD · gen-v + roto |
 | 4.8 | 94.9–98.45 | The Moon grows from a dot to a wall of ink. Paper changes GOLD → INK as it fills the frame. | moons and lonely wine | INK · JS |
@@ -111,7 +124,7 @@ English lyrics: refined serif, small, horizontal, in the 留白; Chinese inscrip
 
 | ID | Time | Picture | Lyric | Method |
 |---|---|---|---|---|
-| 6.1 | 111.95–115.55 | EARTH, Mid-Autumn night: rooftop in Hangzhou. Kenton, Bao and Mei RAISE their heads to the full Moon; camera tilts UP with them. Mei holds the toy Moon up to cover the real one. | **举头望明月** — characters rise upward, white rubbing on black | RUBBING / SILK · gen-v + roto |
+| 6.1 | 111.95–115.55 | EARTH, Mid-Autumn night: rooftop in Hangzhou. Kenton, T and M RAISE their heads to the full Moon; camera tilts UP with them. M holds the toy Moon up to cover the real one. | **举头望明月** — characters rise upward, white rubbing on black | RUBBING / SILK · gen-v + roto |
 | 6.2 | 115.57–118.8 | MOON: on the high rim of Shackleton, Jade LOWERS her head: just below her eye line, Earth — a dark disk with a hairline crescent along its lower edge, its night side faintly silvered by the very full Moon her family is watching; the Sun hidden behind a nearby crest, its corona glowing above the rock. Camera tilts DOWN. Mirror of 6.1. | **低头思故乡** — characters sink downward | RUBBING / INK · still→h3 + roto |
 | 6.3 | 118.8–121.0 | 乡 held. She raises her thumb at arm's length; it blots out the whole Earth (attributed to Armstrong: "I put up my thumb and shut one eye, and my thumb blotted out the planet Earth"). The toy Earth floats in her other hand's memory. | 乡 (one huge character, held, trembling) | INK · JS composite |
 | 6.4 | 121.0–122.77 | Build gap → helmet-camera long exposure: the night side's city lights emerge — Yangtze delta → Hangzhou → West Lake → one lit window. Falsetto flip → | — | JS zoom (map lights) |
@@ -134,17 +147,17 @@ Cut on kicks/bars; K-pop rhythm (every 2 beats in A/E, every bar in B/C). No lyr
 - 7.B6 143.43 kick: the habitat lights come on, window by window.
 
 **C · 147.64–161.77 THE CALLS** (split-screen Earth SILK color ↔ Moon GOLD; bass out 158.5–161.8)
-- 7.C1 Video call: Mei says something; Jade waits — HUD `RTT 3.1 s (light 2.6)` ticks — then laughs on the delay.
-- 7.C2 Earth side, in full color: Kenton teaches Bao DDR; Mei dances with a robot dog. (Cut on kicks.)
-- 7.C3 Mei on the sofa with the cat, watching a music video on a tablet (Rare Earth cameo, 1 s).
-- 7.C4 Crew in the galley showing each other family clips on tablets; Sven's twins; Layla's father's falcon.
+- 7.C1 Video call: M says something; Jade waits — HUD `RTT 3.1 s (light 2.6)` ticks — then laughs on the delay.
+- 7.C2 Earth side, in full color: Kenton teaches T DDR; M dances with a robot dog. (Cut on kicks.)
+- 7.C3 M on the sofa with the cat, watching a music video on a tablet (Rare Earth cameo, 1 s).
+- 7.C4 Each crew member alone, face lit by a tablet showing who they miss (see docs/character_bible.md families; K_7.C4_grid), then the galley: they show each other their clips (K_7.C4).
 - 7.C5 Chat UI, typed live: (counter `DAY 3xx`) `jade: just 3 more months 🌏` → `bao: ok` → `mei: 🐰🌕`.
 - 7.C6 Bass out 158.5: Jade alone at the small window; the tea cup (from the teahouse) on the sill — this time it reflects Earth.
 
 **D · 161.77–175.85 TWO CHANG'ES** (re-drop; vocalise 163.5–169.8 — the emotional peak)
-- 7.D1 School play: Mei as Chang'e in white silk on wires, lifted toward a big paper moon; parents' phones held up.
+- 7.D1 School play: M as Chang'e in white silk on wires, lifted toward a big paper moon; parents' phones held up.
 - 7.D2 Intercut: Jade in the station watching the livestream on a screen (`LIVE −7 s`), hand raised to the glass.
-- 7.D3 On the held C#5 (164.5–167.0): Mei reaches the paper moon ⇄ Jade touches the screen — match cut, same pose,
+- 7.D3 On the held C#5 (164.5–167.0): M reaches the paper moon ⇄ Jade touches the screen — match cut, same pose,
   same hand, two moons. Paper changes: the frame splits SILK left / GOLD right, mirrored.
 - 7.D4 Bass out 173.0: everyone in the theater claps silently; on the Moon the crew around Jade applauds too.
 
@@ -159,7 +172,7 @@ Cut on kicks/bars; K-pop rhythm (every 2 beats in A/E, every bar in B/C). No lyr
 | ID | Time | Picture | Type | Method |
 |---|---|---|---|---|
 | 8.1 | 189.86–193.4 | Silence of black → a capsule under parachutes over a silk-painted sea (SILK returns). | — | SILK · still+JS |
-| 8.2 | 193.4–200.5 | Mid-Autumn again, a year later. A front door. Mei and Bao run; Jade kneels; the hug — seen wide, from behind Kenton. The two torn halves of the scroll slide together and join. | — | SILK · gen-v + roto; JS scroll |
+| 8.2 | 193.4–200.5 | Mid-Autumn again, a year later. A front door. M and T run; Jade kneels; the hug — seen wide, from behind Kenton. The two torn halves of the scroll slide together and join. | — | SILK · gen-v + roto; JS scroll |
 | 8.3 | 200.5–204.5 | The family on the rooftop; toy Earth and toy Moon side by side on the parapet; the real full Moon above. | — | SILK still+parallax |
 | 8.4 | 201.6–210.04 | Solo hum → the tea cup on the table; the Moon in the tea. The closing inscription brushes in vertically: | **海上生明月，天涯共此时** / *The bright moon rises over the sea; however far apart, we share this moment.* | SILK · JS |
 | 8.5 | 210.04–212.0 | Last pluck: the vermilion seal (pale blue dot) stamps. Fade. | seal | JS |

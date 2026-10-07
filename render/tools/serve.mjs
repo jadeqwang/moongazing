@@ -24,7 +24,7 @@ export function serve(port = 8765) {
       res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); return res.end(JSON.stringify(list));
     }
     if (p === '/') p = '/index.html';
-    const file = /^\/(analysis|inputs|media\/keyframes|media\/chars)\//.test(p) ? path.join(REPO, p) : path.join(ROOT, p);
+    const file = /^\/(analysis|inputs|media\/keyframes|media\/chars|media\/gen)\//.test(p) ? path.join(REPO, p) : path.join(ROOT, p);
     if (!file.startsWith(REPO + path.sep)) { res.writeHead(403); return res.end(); }
     fs.readFile(file, (err, data) => {
       if (err) { res.writeHead(404); return res.end('not found'); }
