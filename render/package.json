@@ -1,0 +1,14 @@
+{
+  "name": "moongazing-render",
+  "private": true,
+  "type": "module",
+  "description": "Deterministic JS renderer for the 望明月 Moongazing music video",
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "render": "node tools/render.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.63.0",
+    "three": "^0.186.1"
+  }
+}
