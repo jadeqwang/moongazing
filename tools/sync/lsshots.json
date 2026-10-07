@@ -32,8 +32,8 @@
  "LS3": {
   "keyframe": "media/keyframes/jade/J_LS3.png",
   "window": [
-   80.0,
-   86.2
+   81.5,
+   82.8
   ],
   "first_word": 79.643,
   "ref_t0": 79.34,
@@ -42,7 +42,7 @@
   "lines": [
    "L10"
   ],
-  "note": "window opens inside the held 寒 (79.64-81.46); the lead-in is cut 0.3 s before 寒's onset; lag is measured on the articulated part (measure_window, clipped to the take's reference audio) - a held note carries no timing; the held 你 is checked as 'held_open' = fraction of frames in 'held' with the mouth open (> 35 % of the take's 5..95 % openness range)",
+  "note": "window opens inside the held 寒 (79.64-81.46); the lead-in is cut 0.3 s before 寒's onset; lag is measured on the articulated part (measure_window, clipped to the take's reference audio) - a held note carries no timing; the held 你 is checked as 'held_open' = fraction of frames in 'held' with the mouth open (> 35 % of the take's 5..95 % openness range); script v1.3: LS3 is only 81.5-82.8 (我思念); the held 你 cuts to K_4.3b",
   "measure_window": [
    77.16,
    83.3

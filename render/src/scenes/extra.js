@@ -89,19 +89,21 @@ export const letter = {
 // 7.B5 — boot-kicked dust in 1/6 g, no air: every grain flies a clean parabola and falls at once (no cloud)
 export const dust = {
   draw(ctx, shot, t, lt) {
-    const r = mulberry32(905), g0 = 300; // px/s² (1/6 g, slow-mo scaled)
+    const r = mulberry32(905), g0 = 380; // px/s² (1/6 g, slow-mo, close)
     ctx.pipe.layer((g) => {
-      g.fillStyle = '#141416';
-      g.fillRect(0, 860, 1920, 3); // horizon of the ground line
-      for (let i = 0; i < 220; i++) {
-        const ang = 0.35 + r() * 0.9, v = 200 + r() * 280, t0 = r() * 0.25, sz = 1.2 + r() * 2.4;
+      // the ground: a wet ink wash band, the boot's scuff mark
+      const gr = g.createLinearGradient(0, 860, 0, 1080); gr.addColorStop(0, 'rgba(30,30,32,0.75)'); gr.addColorStop(1, 'rgba(30,30,32,0.95)');
+      g.fillStyle = gr; g.fillRect(0, 870, 1920, 210);
+      g.fillStyle = 'rgba(20,20,22,0.9)'; g.beginPath(); g.ellipse(250, 880, 130, 22, 0, 0, Math.PI * 2); g.fill();
+      for (let i = 0; i < 160; i++) {
+        const ang = 0.35 + r() * 0.95, v = 260 + r() * 520, t0 = r() * 0.5, sz = 1.6 + Math.pow(r(), 2) * 5;
         const s = lt - t0; if (s < 0) continue;
-        const vx = Math.cos(ang) * v * (r() < 0.5 ? 1 : 1), vy = Math.sin(ang) * v;
-        const tl = 2 * vy / g0; const ss = Math.min(s, tl);
-        const x = 520 + vx * ss, y = 860 - (vy * ss - 0.5 * g0 * ss * ss);
-        g.globalAlpha = 0.85; g.beginPath(); g.arc(x, y, sz, 0, Math.PI * 2); g.fill();
-        // the arc it traced: a hairline of ink
-        if (i % 9 === 0) { g.globalAlpha = 0.18; g.lineWidth = 0.8; g.strokeStyle = '#141416'; g.beginPath(); for (let k = 0; k <= 30; k++) { const q = ss * k / 30; const xx = 520 + vx * q, yy = 860 - (vy * q - 0.5 * g0 * q * q); k ? g.lineTo(xx, yy) : g.moveTo(xx, yy); } g.stroke(); }
+        const vx = Math.cos(ang) * v, vy = Math.sin(ang) * v;
+        const tl = 2 * vy / g0, ss = Math.min(s, tl);
+        const x = 260 + (r() - 0.5) * 60 + vx * ss, y = 875 - (vy * ss - 0.5 * g0 * ss * ss);
+        g.globalAlpha = s > tl ? 0.55 : 0.9; g.fillStyle = '#121214';
+        g.beginPath(); g.arc(x, s > tl ? 878 + r() * 6 : y, sz, 0, Math.PI * 2); g.fill();
+        if (i % 4 === 0) { g.globalAlpha = 0.13; g.lineWidth = 0.9; g.strokeStyle = '#121214'; g.beginPath(); for (let k = 0; k <= 40; k++) { const q = ss * k / 40; const xx = 260 + vx * q, yy = 875 - (vy * q - 0.5 * g0 * q * q); k ? g.lineTo(xx, yy) : g.moveTo(xx, yy); } g.stroke(); }
       }
       g.globalAlpha = 1;
     }, { mode: 'ink', absorb: 0.5, seed: 67 });

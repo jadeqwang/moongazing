@@ -26,7 +26,9 @@ for (let i = 0; i < argv.length; i++) {
 const FPS = Number(args.fps || 24);
 const CHROME = process.env.CHROME || args.chrome || '/opt/google/chrome/chrome';
 const FFMPEG = process.env.FFMPEG || path.join(REPO, '.venv/bin/ffmpeg');
-const AUDIO = path.join(REPO, 'inputs/moongazing.mp3');
+// the film's audio: data/audio.json (tools/audio_info.mjs) names the master if it exists, else the original mp3
+const AUDIO_INFO = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'data/audio.json'))); } catch (e) { return { file: 'inputs/moongazing.mp3', duration: 212.0 }; } })();
+const AUDIO = path.join(REPO, AUDIO_INFO.file);
 const rel = (p) => path.resolve(ROOT, p);
 const range = (s) => { const [a, b] = String(s).split('-').map(Number); return [a, b]; };
 const frameRange = (a, b) => [Math.ceil(a * FPS - 1e-6), Math.ceil(b * FPS - 1e-6)]; // [i0, i1)
@@ -116,22 +118,27 @@ if (args.frames) {
     if (args.resume && fs.existsSync(f) && fs.statSync(f).size > 0) continue;
     todo.push([i, f]);
   }
-  const workers = Math.max(1, Math.min(Number(args.workers || 4), todo.length || 1));
+  // ≥10 SwiftShader pages on this 24-core/30 GB box run out of headroom: image decodes fail and 2D layers can silently
+  // drop out of a frame (seen in fullcut v1). 5–6 is stable; pass --force-workers to go higher anyway.
+  const asked = Number(args.workers || 4);
+  if (asked > 6 && !args['force-workers']) console.log(`workers capped at 6 (asked ${asked}); --force-workers to override`);
+  const workers = Math.max(1, Math.min(args['force-workers'] ? asked : Math.min(asked, 6), todo.length || 1));
   console.log(`frames ${i0}..${i1 - 1} (${i1 - i0}), ${todo.length} to render, ${workers} workers, ${dir}`);
   if (todo.length) await withBrowsers(workers, scale, async (pages) => {
-    let next = 0, done = 0; const t1 = Date.now();
+    let next = 0, done = 0; const t1 = Date.now(); const failed = [];
     await Promise.all(pages.map(async (page) => {
       while (next < todo.length) {
         const [i, f] = todo[next++];
         const tmp = f + '.part';
-        await grab(page, i / FPS, tmp, fmt);
-        fs.renameSync(tmp, f);
+        try { await grab(page, i / FPS, tmp, fmt); fs.renameSync(tmp, f); }
+        catch (e) { failed.push(i); console.error(`frame ${i} failed: ${String(e.message || e).split('\n')[0]}`); if (/closed|crash|Target/i.test(String(e))) return; continue; }
         if (++done % 24 === 0 || done === todo.length) {
           const el = (Date.now() - t1) / 1000;
           console.log(`${done}/${todo.length}  ${(el / done).toFixed(2)} s/frame  eta ${((todo.length - done) * el / done / 60).toFixed(1)} min`);
         }
       }
     }));
+    if (failed.length || next < todo.length) { console.error(`${failed.length} frame(s) failed, ${Math.max(0, todo.length - next)} not started — rerun with --resume`); process.exitCode = 1; }
   });
 }
 

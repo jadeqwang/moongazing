@@ -201,6 +201,140 @@ job("R2_7.B2", ["media/keyframes/K_7.B2.jpg"],
     "DOWN behind the pipework and the tanks to the floor, one continuous room in one perspective, with an even indigo paper tone "
     "across the whole picture. Keep the gloves, valve wheel, vessel, ember port and tanks exactly. " + NOTEXT)
 
+# ---------------- round 2 fixes
+job("R3_7.A", ["media/keyframes/K_7.A.jpg", G + "7.A_line.png"],
+    "Edit image 1, a gold-line 界画 drawing of a lunar base; image 2 is the exact engineering layout from the same camera. (1) The tall "
+    "round tower with arched windows and the ribbed dome must stand EXACTLY at the centre where the ribbed tunnels cross, as in image 2 — "
+    "move it there, replacing the small round junction; where the tower stood before, continue the heaped regolith mound and tunnels. "
+    "(2) Add one slender triangular lattice comms tower with a small round dish, drawn in the same gold line, at the lower left of the "
+    "picture exactly where image 2 has it. " + KEEP + NOTEXT)
+job("R3_7.A2", ["media/keyframes/K_7.A2.jpg", G + "7.A2_line.png"],
+    "Edit image 1, a gold-line drawing of a lunar base under construction. Two of the six solar masts are still being raised: the mast "
+    "nearest the bottom edge of the picture and the mast at the right edge. Redraw each of those two as a telescoping pole only about "
+    "half as tall as the other masts, its two panels still half folded (short, accordion-folded, just above the tripod). The other four "
+    "masts stay fully raised. " + KEEP + NOTEXT)
+job("R3_7.B2", [G + "7.B2_line.png", "media/keyframes/K_7.B2.jpg", "media/style_refs/ref_indigo_ming_nijin.jpg"],
+    GUIDE + "Image 2 is our painting of this shot: repaint image 2's subject and style (gold line on indigo, two suit gloves on the "
+    "spoked valve wheel, the ember inspection port, the insulated vessel, pipes and O₂ tanks, the printed regolith barrel vault with "
+    "horizontal layer courses, a strip light along the crown, a hopper and conveyor) as ONE continuous room in one perspective: the "
+    "curved vault ribs and layer courses come down behind the pipes and tanks to the floor — no horizontal band, no seam, no flat "
+    "indigo strip. Jade's POV, close and low as in image 1. " + STYLE_REF + GOLD + RESTRAINT + " " + NOTEXT)
+job("R3_1.5", ["media/keyframes/K_1.5.jpg"],
+    "Edit this ink painting: the base must sit in deep terrain shadow. Darken the regolith mounds, tunnels, the tower's walls and the "
+    "ground around them to deep black and dark-grey ink wash (lit only by faint reflected light). Keep bright white ONLY: the upper halves "
+    "of the tall solar panels, the very top of the ribbed glass dome, and the far horizon crest. Keep the warm amber windows glowing "
+    "exactly as they are, keep Earth exactly as it is, keep every structure's shape and position. " + NOTEXT)
+
+# ---------------- round 2: K_7.A tower, B2 seam, new Moon-side keyframes
+job("R4_7.A", ["media/guanghan/gen/R3_7.A_v1.jpg", G + "7.A_line.png"],
+    "Edit image 1. In the middle, the ribbed tunnels meet at a small round junction, and the tall round tower with arched windows and a "
+    "ribbed dome stands a little behind it, partly on a mound. Move the tower forward so its base sits ON that junction, exactly where "
+    "the tunnels cross (image 2 shows the correct place); erase the tower from its old place and redraw the heaped regolith mound there. "
+    "The tower keeps its exact design and size. " + KEEP + NOTEXT)
+job("R4_7.Acomplete", ["media/keyframes/K_7.A4.jpg", "media/guanghan/gen/R3_7.A_v1.jpg"],
+    "Edit image 1, a gold-line 界画 drawing of a lunar base under construction, to show it COMPLETE: the landing pad at the upper left is "
+    "fully glazed (concentric ruled rings all round) with a crew lander standing on it and its road leading in; the laser rover is gone; "
+    "two small six-wheeled rovers on the graded roads near the base; a few tiny figures at work; fine ground cable lines from the masts "
+    "to the base. Use image 2 only as a guide to that level of detail. Keep the layout of image 1 exactly: the tower at the tunnel "
+    "crossing, the six mounds, the six masts, the reactor with open fins, the comms tower. " + NOTEXT)
+JADE_BACK = ("Jade (Chinese-American woman, 165 cm) is seen ONLY from behind — never her face: very long straight black hair in a low "
+             "ponytail. ")
+for v in ["a", "b"]:
+    job(f"R4_7.B2{v}", [G + "7.B2_line.png", "media/chars/jade_suit/eva_gpt_v2.jpg", "media/style_refs/ref_indigo_ming_nijin.jpg"],
+        GUIDE + "Image 2 is our EVA suit design: the gloves must match it. " + STYLE_REF + GOLD +
+        "Point of view of a suited astronaut inside a large unpressurised hall printed from lunar regolith: a low barrel vault whose curved "
+        "surface is made of many fine horizontal printed courses, drawn in gold line, coming down continuously on both sides to the floor; a "
+        "work-light strip along the crown. Close in front: two white-and-blue EVA gloves grip the spoked valve wheel on a squat insulated "
+        "reactor vessel; beside them a round thick-glassed inspection port shows molten regolith glowing deep ember-orange, the one hot "
+        "colour; behind, pipes run to tall oxygen tanks along the wall, and at the far end a regolith hopper on a conveyor. One continuous "
+        "room in one perspective — the vault is visible behind the tanks and pipes, never a flat band or a seam. " + RESTRAINT + " " + NOTEXT)
+
+job("K_4.7", [G + "4.7_line.png", "media/chars/jade_suit/iva_gpt_v2.jpg", "media/style_refs/ref_indigo_ming_nijin.jpg"],
+    GUIDE + "Image 2 is our launch-and-entry suit design (helmet off here). " + STYLE_REF + GOLD +
+    "Inside a small conical Orion-class crew capsule in free fall, just after the engine burn that sends it to the Moon. " + JADE_BACK +
+    "She floats left of centre with her back to us, her ponytail drifting upward in weightlessness, raising a foil drink pouch with a "
+    "straw in her right hand toward the small square side window, as if toasting: in the black window, small and far, the Moon — a "
+    "pale disc painted in matte gold. Beside her shoulder floats a small toy Earth globe, the only blue-green colour in the picture "
+    "(chalky azurite and malachite). The cabin: sloping walls drawn in fine ruled gold line, crew couches below, a console, soft "
+    "light from the hatch tunnel above. " + RESTRAINT + " " + NOTEXT)
+job("K_5.4", [G + "5.4_line.png", "media/keyframes/K_1.5.jpg", "media/style_refs/ref_ink_xiagui.jpg"],
+    GUIDE + "Image 2 is our ink painting of the same base: draw the base exactly in that design, only much smaller and further away. "
+    + STYLE_REF + INK + "Jade alone in a white EVA suit with backpack, seen from behind, small, standing still at the lip of the "
+    "lunar ridge plateau, looking out. Far away at the left, small on the horizon, the base: low regolith mounds, the little tower and "
+    "dome, six tall slender solar masts with white panels. To the right the horizon is low and empty — leave the black sky just above "
+    "it at the right completely empty (Earth will be added later). Grazing light from behind: her long thin shadow points away from "
+    "us across grey ink ground. Flat dense black sky, no stars. " + RESTRAINT + " No Earth, no planet. " + NOTEXT)
+job("K_7.B3", [G + "7.B3_line.png", "media/keyframes/K_7.C4.jpg", "media/chars/crew/SHEET_polo.jpg"],
+    GUIDE + "Image 2 is our gold-line galley painting: match its technique exactly (gold line on indigo, faces painted with sparse "
+    "warm washes). Image 3 is the crew design sheet: paint LÚCIA FERREIRA from it — Portuguese woman about 34, light olive skin, "
+    "dark-brown wavy hair tied back, warm smile, white polo with a pale cinnabar-pink collar stripe. " + GOLD +
+    "Inside the greenhouse module: a long cylindrical room lined on both sides with tiered growing trays of small plants drawn in gold "
+    "line, grow-light bars above each tier as thin gold lines. In front, on a bench, a sealed transparent growth chamber with two glove "
+    "ports; inside it, in a small pot of grey lunar soil, a single small rosette plant with purple-tinged green leaves — the ONLY green "
+    "in the whole picture, painted in soft malachite with a touch of violet. Lúcia leans in behind the chamber, looking at it with "
+    "wonder. " + RESTRAINT + " " + NOTEXT)
+job("K_7.B4", [G + "7.B4_line.png", "media/keyframes/K_7.B1.jpg", "media/style_refs/ref_ink_xiagui.jpg"],
+    GUIDE + "Image 2 is our ink painting of a permanently shadowed crater: match its technique and darkness. " + STYLE_REF + INK +
+    "The floor of Shackleton crater, a place that never sees the Sun or Earth: deep black ink everywhere. A small six-wheeled rover "
+    "with a spool at its back, and an astronaut in a white EVA suit (Kenji) kneeling beside it, lit only by the rover's lamp — the light "
+    "makes a pool on the ground with no visible beam. From the rover, four long thin ribbons of silvery film unroll across the flat "
+    "crater floor away from us, catching the lamp light as fine pale lines. Far above, the crater's rim wall rises 4 km: only its very "
+    "top edge is lit by the Sun, a thin ragged line of bare white paper high in the frame. Black sky, no stars, no Earth, no sun disk. "
+    + RESTRAINT + " " + NOTEXT)
+job("K_7.B6", [G + "7.B6_line.png", "media/keyframes/K_1.5.jpg", "media/style_refs/ref_ink_xiagui.jpg"],
+    GUIDE + "Image 2 is our ink painting of the same base at night: same design, technique and darkness; this is a closer, higher view. "
+    + STYLE_REF + INK + "Guanghan Station in deep terrain shadow, seen from a little above: regolith mounds, ribbed tunnels and the "
+    "tower in black and dark-grey ink. The habitat lights are coming on window by window: some small round windows on the tunnels and "
+    "end-nodes and some arched windows on the tower glow warm amber (the only colour), the rest still dark. The upper halves of the "
+    "tall vertical solar panels and the top of the glass dome still catch the grazing sun as bare white paper. Black sky. "
+    + RESTRAINT + " No Earth. " + NOTEXT)
+job("K_7.C1_moon", [G + "7.C1m_line.png", "media/keyframes/K_7.C4.jpg", "media/keyframes/K_7.C1_earth.jpg"],
+    GUIDE + "Image 2 is our gold-line painting of the same galley: same technique and room. " + GOLD +
+    "The Moon side of a video call. " + JADE_BACK + "She sits at the round galley table with her back to us in a white polo with a pale "
+    "celadon collar stripe, leaning toward an open laptop. On the laptop screen, small, the two children from image 3 seen face-on "
+    "through their laptop camera — the girl in the strawberry dress mid-sentence and the boy in the star sweater laughing — painted in "
+    "full soft colour like a little silk painting, the only colour in the frame. The curved ribbed walls of the module, shelves and the "
+    "dark wall screen at the far end in fine gold line. " + RESTRAINT + " " + NOTEXT)
+job("K_7.C6", [G + "7.C6_line.png", "media/keyframes/K_7.E1.jpg", "media/style_refs/ref_indigo_ming_nijin.jpg"],
+    GUIDE + "Image 2 is our painting combining two techniques: match it — the interior is gold line on indigo with figures as dark "
+    "indigo silhouettes outlined in gold; the view outside is monochrome 水墨 ink. " +
+    "Inside the tower's quiet deck at night: one small arched window. Jade stands at the left as a dark indigo silhouette outlined in "
+    "fine gold line, seen from behind, long ponytail, looking out. On the window sill, a small celadon-glazed tea cup (pale green-grey "
+    "glaze). Through the window, in ink: the ribbed tunnel running straight away below to its small round end-node, a regolith mound "
+    "edge at one side, a flat plain to a low distant mountain range; black sky. Leave the black sky just above the distant mountains in "
+    "the middle of the window empty (Earth is added later). " + RESTRAINT + " " + NOTEXT)
+job("K_7.D2_room", [G + "7.D2_line.png", "media/keyframes/K_7.C4.jpg", "media/keyframes/jade/J_7.D2.png"],
+    GUIDE + "Image 2 is our gold-line painting of the same galley: same technique and room. Image 3 is the close-up of this moment: the "
+    "screen content and Jade's hair and clothes must match it. " + GOLD + "The outer end of the galley module: a large wall screen on "
+    "the end wall, glowing warm gold, shows the school-play livestream — a little girl as Chang'e in white silk on wires reaching toward "
+    "a big paper moon, an audience in silhouette below. " + JADE_BACK + "She stands at the screen with her back to us, in a white polo "
+    "with a celadon collar stripe, reaching up to touch the screen with her right hand. The round table in the foreground; the curved "
+    "ribbed walls and lockers in fine gold line. " + RESTRAINT + " " + NOTEXT)
+
+job("R5_4.7", ["media/guanghan/gen/K_4.7_v1.jpg"],
+    "Edit this painting: the astronaut is in weightless free fall, so her very long black ponytail must FLOAT — lifting and curving up "
+    "and sideways in a loose S-shape away from her back, never hanging down; a few loose strands drifting. Keep her pose, the raised "
+    "drink pouch, the floating toy Earth, the window with the small Moon, the cabin and the paper exactly. " + NOTEXT)
+job("R5_5.4", ["media/guanghan/gen/K_5.4_v1.jpg"],
+    "Edit this ink painting: the low Sun is BEHIND the viewer, so the astronaut's long thin hard-edged black shadow must stretch "
+    "straight AWAY from us, from her boots forward across the ground toward the horizon; remove the shadow that falls toward the left "
+    "and the viewer. Darken the foreground ground a little to mid-grey ink wash. Keep the astronaut, the small distant base at the left "
+    "and the empty black sky exactly. " + NOTEXT)
+for v in ["a", "b"]:
+    job(f"K_7.C6{v}", [G + "7.C6_line.png", "media/keyframes/K_7.C4.jpg", "media/style_refs/ref_ink_xiagui.jpg"],
+        GUIDE + "Image 2 is our gold-line interior painting: match its technique (gold line on indigo). " + STYLE_REF +
+        "Inside the tower's quiet deck at night. Most of the frame is the dark curved indigo wall, drawn in fine gold line. In it, ONE "
+        "SMALL arched window, only about as wide as a person's shoulders, set deep in the thick wall, with a narrow sill. Jade stands at "
+        "the left as a dark indigo silhouette outlined in fine gold line, seen from behind, long ponytail, looking out of the window. On "
+        "the sill, a small celadon-glazed tea cup (pale green-grey glaze), the only colour inside. Through the small window, painted as "
+        "monochrome 水墨 ink: the ribbed tunnel running straight away below to its small round end-node, a regolith mound edge, a flat "
+        "plain to a low distant mountain range, black sky. Leave the black sky just above the distant mountains in the middle of the "
+        "window empty (Earth is added later). " + RESTRAINT + " No Earth, no planet, no moon. " + NOTEXT)
+
+job("R5_7.C6", ["media/guanghan/gen/K_7.C6a_v1.jpg"],
+    "Edit this painting: remove the dark round disc above the distant mountains in the window completely — continue the flat black sky "
+    "and the pale ink mountain ridge seamlessly there. Keep everything else exactly as it is. No planet, no moon. " + NOTEXT)
+
 
 def run(name, variant, dry):
     j = JOBS[name]

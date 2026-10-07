@@ -14,6 +14,7 @@ const STATIC = {
   S1: 'assets/plates/S1_silk_gpt_v1.jpg', S1b: 'assets/plates/S1_silk_nbp_v1.jpg', S2: 'assets/plates/S2_ink_gpt_v1.jpg',
   S3: 'assets/plates/S3_indigo_gpt_v1.jpg', S4: 'assets/plates/S4_jiehua_gpt_v1.jpg', goldline: 'assets/plates/A_goldline.jpg',
   gongbi: 'assets/plates/A_gongbi.jpg',
+  pole: 'assets/moon/lroc_south_pole_wac_400m.jpg', bm4k: 'assets/earth/black_marble_2016_4k.jpg', bmChina: 'assets/earth/black_marble_2016_east_china_3km.jpg',
 };
 
 export class AssetStore {
@@ -46,7 +47,7 @@ export class AssetStore {
     const { ctx } = this;
     let img = await loadImage(this.urls[k]);
     const maxW = Math.max(1024, Math.round(ctx.W * 2.0));
-    if (img.width > maxW && !/^(seal|emblem)/.test(k)) {
+    if (img.width > maxW && !/^(seal|emblem|pole|bm)/.test(k)) {
       const c = makeCanvas(maxW, Math.round(img.height * maxW / img.width));
       c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
       img = c;

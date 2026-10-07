@@ -35,6 +35,7 @@ const edgeMat = new THREE.ShaderMaterial({
 const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), edgeMat); quad.frustumCulled = false;
 const quadScene = new THREE.Scene(); quadScene.add(quad); const quadCam = new THREE.Camera();
 
+const FRAMES = { galley: 'galleyInt', isru: 'isruInt', greenhouse: 'greenInt' };
 const cache = new Map();
 function sceneFor(shot) {
   const key = JSON.stringify(shot.state) + (shot.sun?.bearing ?? '');
@@ -73,8 +74,12 @@ function camera(shot, scene) {
   } else if (c.psr) {
     const ps = P(L.psr.bearing, L.psr.r); const y = height(ps[0], ps[2]);
     cam.position.set(ps[0] - 1.8, y + 1.25, ps[2] + 2.6); cam.lookAt(ps[0] + 3.0, y + 0.9, ps[2] - 0.5);
+  } else if (c.array) {
+    const g = findTag(scene, 'radioArray'); const F = g.userData.base; const [bx, , bz] = P(75, 8.5);
+    cam.position.set(F.x + bx, height(F.x + bx, F.z + bz) + 1.5, F.z + bz);
+    const d = dirFrom(260, c.pitch || 7); cam.lookAt(cam.position.x + d[0] * 100, cam.position.y + d[1] * 100, cam.position.z + d[2] * 100);
   } else if (c.frame) {
-    const grp = findTag(scene, c.frame === 'galley' ? 'galleyInt' : 'isruInt'); grp.updateMatrixWorld(true);
+    const grp = findTag(scene, FRAMES[c.frame]); grp.updateMatrixWorld(true);
     const f = grp.userData.frame;
     cam.position.copy(f.localToWorld(new THREE.Vector3(...c.pos)).sub(new THREE.Vector3(0, f.position.y, 0)).add(new THREE.Vector3(0, f.position.y, 0)));
     cam.lookAt(f.localToWorld(new THREE.Vector3(...c.target)));
@@ -99,20 +104,23 @@ function setup(shot) {
   U.uAmb.value = shot.amb ?? (shot.sunOff ? 0.25 : 0.3);
   let sy = shot.shadowY ?? -1e9;
   if (sy === 'psr') { const ps = P(L.psr.bearing, L.psr.r); sy = height(ps[0], ps[2]) + L.psr.depth * 0.75; }
+  if (sy === 'shack') { const sh = P(L.shackleton.bearing, L.shackleton.r); sy = height(sh[0], sh[2]) + 3500; }
   U.uShadowY.value = sy;
   setLights(!!shot.lights);
   // point lights
   const pts = shot.pts || [];
   const toW = (p) => {
     if (p.world) return new THREE.Vector3(...p.world);
-    const grp = findTag(scene, shot.cam.frame === 'galley' ? 'galleyInt' : 'isruInt'); grp.updateMatrixWorld(true); return grp.userData.frame.localToWorld(new THREE.Vector3(...p.local));
+    const grp = findTag(scene, FRAMES[shot.cam.frame]); grp.updateMatrixWorld(true); return grp.userData.frame.localToWorld(new THREE.Vector3(...p.local));
   };
   const p0 = pts[0], p1 = pts[1];
   U.uPtPos.value.copy(p0 ? toW(p0) : new THREE.Vector3(0, -1e6, 0)); U.uPtCol.value.set(...(p0 ? p0.col : [0, 0, 0])); U.uPtRange.value = p0 ? p0.range : 1;
   U.uPt2Pos.value.copy(p1 ? toW(p1) : new THREE.Vector3(0, -1e6, 0)); U.uPt2Col.value.set(...(p1 ? p1.col : [0, 0, 0])); U.uPt2Range.value = p1 ? p1.range : 1;
   // helmet lamp (PSR)
   U.uSpOn.value = shot.spot ? 1 : 0;
-  if (shot.spot) { const ps = P(L.psr.bearing, L.psr.r); const y = height(ps[0], ps[2]);
+  if (shot.spot === 'array') { const F = findTag(scene, 'radioArray').userData.base; const pos = new THREE.Vector3(F.x, F.y + 2.6, F.z); U.uSpPos.value.copy(pos);
+    const [tx, , tz] = P(260, 30); U.uSpDir.value.copy(new THREE.Vector3(F.x + tx, F.y, F.z + tz).sub(pos).normalize()); U.uSpCos.value = Math.cos(22 * Math.PI / 180); }
+  else if (shot.spot) { const ps = P(L.psr.bearing, L.psr.r); const y = height(ps[0], ps[2]);
     const pos = new THREE.Vector3(ps[0] + 1.75, y + 1.0, ps[2] + 0.3); U.uSpPos.value.copy(pos);
     U.uSpDir.value.copy(new THREE.Vector3(ps[0] + 3.2, y, ps[2]).sub(pos).normalize()); U.uSpCos.value = Math.cos(28 * Math.PI / 180); }
   // Earth: 1.9° disc at bearing 000, elevation e, placed relative to the camera (it is effectively at infinity)
@@ -120,7 +128,11 @@ function setup(shot) {
   const D = 2.5e5, dir = dirFrom(L.earth.bearing, e);
   earth.position.set(cam.position.x + dir[0] * D, cam.position.y + dir[1] * D, cam.position.z + dir[2] * D);
   earth.scale.setScalar(D * Math.tan((L.earth.diamDeg / 2) * Math.PI / 180));
-  earth.visible = !shot.cam.top && !shot.cam.orthoTop && !shot.cam.ortho;
+  earth.visible = !shot.cam.top && !shot.cam.orthoTop && !shot.cam.ortho && !shot.noEarth;
+  const moon = scene.userData.parts.moon;
+  if (moon) { const cap = scene.userData.parts.capsule; const wp = cap.userData.windowPos.clone().addScaledVector(cap.userData.windowDir, 0.0);
+    const dirM = wp.clone().sub(cam.position).normalize().add(new THREE.Vector3(0.02, 0.03, 0)).normalize(); const Dm = wp.distanceTo(cam.position) - 0.04; // drawn just inside the black pane
+    moon.position.copy(cam.position).addScaledVector(dirM, Dm); moon.scale.setScalar(Dm * Math.tan(0.26 * Math.PI / 180) * (shot.moonScale || 1)); }
   U.uLogNear.value = shot.depthNear ?? near; U.uLogFar.value = far;
   return { scene, cam };
 }

@@ -8,6 +8,8 @@
 //           twos      drawings on twos (default true: 12 drawings/s; the paper and keyframe plate stay on ones)
 //           lock      seconds over which the painted keyframe dissolves into the redraw (default 0.5)
 //           from/to   {x, y, zoom} reframing within the clip (eased over the shot), like the plate scene
+//           subject   false = redraw the whole motion region (default: only where the drawing differs from the
+//                     painting, so reproduced water/walls keep the keyframe's brushwork)
 //           redrawAll 1 = ignore the motion mask (draw everything from video), maskGain, style overrides below
 //           glow      gold only, and only honoured in the drop section (07_drop)
 //           mouth     lip-sync shots: draw the mouth from the vocal stem (default: on when prep re-mouthed the take);
@@ -22,8 +24,8 @@ const FROM_SHOT = { silk: 'silk', silknight: 'silk', xuan: 'ink', indigo: 'gold'
 const GROUND = { silk: [0.886, 0.816, 0.675], silknight: [0.337, 0.326, 0.351], xuan: [0.949, 0.937, 0.910], indigo: [0.09, 0.13, 0.245], rubbing: [0.075, 0.072, 0.07] };
 const STYLE = {
   silk: { snap: 9, shade: 0.35, lineTh: 0.5, lineW: 0.16, lineA: 0.92, boldA: 0, gran: 0.10, wet: 0, wash: 0, faceFlat: 0.25, ink: [0.17, 0.14, 0.11] },
-  ink: { snap: 9, shade: 0, lineTh: 0.5, lineW: 0.14, lineA: 0.55, boldA: 0.95, gran: 0.35, wet: 0.6, wash: 0, faceFlat: 0.3, ink: [0.08, 0.08, 0.08] },
-  gold: { snap: 9, shade: 0, lineTh: 0.42, lineW: 0.16, lineA: 1.0, boldA: 0, gran: 0, wet: 0, wash: 0.22, faceFlat: 0.3, ink: [0.8, 0.65, 0.35] },
+  ink: { subLo: 9, subHi: 18, snap: 9, shade: 0, lineTh: 0.5, lineW: 0.14, lineA: 0.55, boldA: 0.95, gran: 0.35, wet: 0.6, wash: 0, faceFlat: 0.3, ink: [0.08, 0.08, 0.08] },
+  gold: { snap: 9, shade: 0, lineTh: 0.42, lineW: 0.16, lineA: 1.0, boldA: 0, gran: 0, wet: 0, wash: 0.85, faceFlat: 0.3, ink: [0.8, 0.65, 0.35] },
 };
 
 const clips = new Map();     // clip -> Promise<{meta, key, mask}>
@@ -38,7 +40,8 @@ async function loadClip(gl, clip) {
     const b = base(clip);
     const meta = await (await fetch(b + 'meta.json')).json();
     const [ki, mi] = await Promise.all([loadImage(b + 'key.jpg'), loadImage(b + (meta.mask || 'mask.png'))]);
-    return { meta, key: gl.texture(ki, { mip: true }), mask: gl.texture(mi), rest: meta.face ? restMouth(meta.face) : null };
+    const eyes = meta.face && meta.face.eyes ? gl.texture(await loadImage(b + meta.face.eyes)) : null;
+    return { meta, key: gl.texture(ki, { mip: true }), mask: gl.texture(mi), eyes, rest: meta.face ? restMouth(meta.face) : null };
   })());
   return clips.get(clip);
 }
@@ -48,14 +51,14 @@ async function loadFrame(gl, clip, f) {
   if (!frameTex.has(k)) {
     frameTex.set(k, (async () => {
       const b = base(clip), n = String(f).padStart(4, '0');
-      const [c, g] = await Promise.all([loadImage(`${b}c_${n}.jpg`), loadImage(`${b}g_${n}.png`)]);
-      return { c: gl.texture(c), g: gl.texture(g) };
+      const [c, g, sm] = await Promise.all([loadImage(`${b}c_${n}.jpg`), loadImage(`${b}g_${n}.png`), loadImage(`${b}s_${n}.png`).catch(() => null)]);
+      return { c: gl.texture(c, { mip: true }), g: gl.texture(g), s: sm ? gl.texture(sm) : null };
     })());
     lru.push(k);
     while (lru.length > MAX_FRAMES) {
       const old = lru.shift();
       const p = frameTex.get(old); frameTex.delete(old);
-      p.then((t) => { gl.gl.deleteTexture(t.c.tex); gl.gl.deleteTexture(t.g.tex); });
+      p.then((t) => { gl.gl.deleteTexture(t.c.tex); gl.gl.deleteTexture(t.g.tex); if (t.s) gl.gl.deleteTexture(t.s.tex); });
     }
   } else { const i = lru.indexOf(k); lru.splice(i, 1); lru.push(k); }
   return frameTex.get(k);
@@ -95,17 +98,23 @@ export const roto = {
     const T = M.T[fi], Ti = M.Ti[fd];
     const pal = M.palette.slice(0, 16);
     const lev = M.inkLevels.slice(0, 6);
+    const lum = (c) => 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2];
+    const inkDark = pal.reduce((a, c) => (lum(c) < lum(a) ? c : a), pal[0]);
     const glowOK = shot.section === '07_drop' || p.forceGlow;
     ctx.pipe.apply(this.prog, {
       uKey: C.key, uCol: F.c, uGuide: F.g, uMask: C.mask,
+      uSub: F.s || F.g, uSubTex: F.s ? 1 : 0,
+      uEyes: C.eyes || C.mask, uEyeOn: C.eyes && p.eyelock !== false ? 1 : 0,
+      uEa: C.eyes ? M.face.eyeE[fd].slice(0, 3) : [1, 0, 0], uEb: C.eyes ? M.face.eyeE[fd].slice(3, 6) : [0, 1, 0],
       uVid: [M.w, M.h], uView: view,
       uTa: T.slice(0, 3), uTb: T.slice(3, 6), uFa: Ti.slice(0, 3), uFb: Ti.slice(3, 6),
       uPaper: { i: PAPER[paperName] }, uPm: GROUND[shot.paper] || GROUND.silk,
-      uLock: lock, uMaskGain: p.maskGain ?? 1, uRedrawAll: p.redrawAll ? 1 : 0,
+      uLock: lock, uMaskGain: p.maskGain ?? 2.5, uQuant: S.quant ?? 0.5, uInkDark: inkDark, uRedrawAll: p.redrawAll ? 1 : 0,
       uPal: pal.flat().concat(new Array((16 - pal.length) * 3).fill(0)), uNPal: { i: pal.length },
       uLev: lev.concat(new Array(6 - lev.length).fill(0)), uNLev: { i: lev.length },
       uSnap: S.snap, uShade: S.shade, uLineTh: S.lineTh, uLineW: S.lineW, uLineA: S.lineA, uBoldA: S.boldA,
-      uGran: S.gran, uWet: S.wet, uWash: S.wash, uFaceFlat: S.faceFlat, uInk: S.ink,
+      uGran: S.gran, uFaceKeep: S.faceKeep ?? 0.75, uSnapAmt: S.snapAmt ?? 0.45,
+      uSubOn: p.subject === false ? 0 : 1, uSubLo: S.subLo ?? 6, uSubHi: S.subHi ?? 12, uWet: S.wet, uWash: S.wash, uFaceFlat: S.faceFlat, uInk: S.ink,
       uGlow: glowOK ? (p.glow || 0) : 0, uSeed: (shot.grain ?? 7) * 1.37, uDark: M.darkGround ? 1 : 0,
     });
     // re-mouthing: lips drawn from the vocal stem at SONG time t (on ones), placed on the held drawing's head

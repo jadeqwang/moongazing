@@ -67,7 +67,7 @@ void main(){
   if (uOverOn > 0.) { vec4 ov = texture(uOver, uv - uOverOff); c = mix(c, ov.rgb, ov.a); }
   // light that lives: lanterns breathe, phone screens flicker
   if (uFlicker > 0.) {
-    float warm = smoothstep(0.14, 0.32, c.r - c.b) * smoothstep(0.45, 0.75, c.r) * (1. - smoothstep(0.55, 0.8, depth));
+    float warm = smoothstep(0.32, 0.52, c.r - c.b) * smoothstep(0.55, 0.8, c.r) * (1. - smoothstep(0.55, 0.8, depth));
     c *= 1. + uFlicker * warm * (vnoise(uv * vec2(260., 150.) + vec2(uT * 3.1, uT * 1.3)) - 0.45) * 0.9;
   }
   if (uGlow > 0.) {
@@ -204,3 +204,20 @@ export const plate = {
     });
   },
 };
+
+// the plate's uv → screen (design px) mapping at local time lt, as an affine map P = a·uv + b (depth parallax ignored),
+// so overlays can be pinned to a point of the painting (a fingertip, a sheet of paper) while the camera pushes
+export function plateMap(params, lt, dur, img) {
+  const u = params.ease === 'linear' ? lt / dur : easeInOutSine(lt / dur);
+  const a = params.from, b = params.to || params.from;
+  const view = [a.x + (b.x - a.x) * u, a.y + (b.y - a.y) * u, a.zoom + (b.zoom - a.zoom) * u];
+  const rect = params.rect || [0, 0, 1920, 1080];
+  const ar = img.width / img.height, rar = rect[2] / rect[3];
+  const span = ar > rar ? [rar / ar, 1] : [1, ar / rar];
+  const par = params.par ? [params.par[0] * (u - 0.5), params.par[1] * (u - 0.5)] : [0, 0];
+  const half = [span[0] / view[2] * 0.5 + Math.abs(par[0]) + 0.004, span[1] / view[2] * 0.5 + Math.abs(par[1]) + 0.004];
+  const ctr = [Math.min(Math.max(view[0], half[0]), 1 - half[0]), Math.min(Math.max(view[1], half[1]), 1 - half[1])];
+  const ax = rect[2] * view[2] / span[0], ay = rect[3] * view[2] / span[1];
+  return { a: [ax, ay], b: [rect[0] + rect[2] * 0.5 - ctr[0] * ax, rect[1] + rect[3] * 0.5 - ctr[1] * ay],
+    at(uv) { return [this.a[0] * uv[0] + this.b[0], this.a[1] * uv[1] + this.b[1]]; } };
+}

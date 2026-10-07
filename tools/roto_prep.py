@@ -10,6 +10,7 @@ Inputs   media/gen/<shot>/<take>.mp4 and <take>.json (its first_frame = the pain
 Outputs  media/gen/<shot>/frames/<take>/f_%04d.jpg      raw 24 fps frames (ffmpeg)
          media/gen/<shot>/roto/<take>/
            key.jpg        the keyframe registered onto frame 0 (frame-0 coords, 2x the work res: painted detail kept)
+           s_%04d.png     subject matte per drawing (what differs from the painted key, region-filled; frame-i)
            c_%04d.jpg     colour guide: flow-stabilised over time, edge-preserving smoothed (frame-i coords)
            g_%04d.png     R thin line (blurred even-width skeleton x edge strength), G bold line (same, coarse scale),
                           B face/skin mask (faces get only sparse lines and flat fills)            (frame-i coords)
@@ -256,6 +257,16 @@ class Faces:
 
 
 # ------------------------------------------------------------------------------------------------------------ main
+def fill_holes(b):
+    """binary uint8 0/1 -> same with enclosed holes filled"""
+    h, w = b.shape
+    ff = cv2.copyMakeBorder((b * 255).astype(np.uint8), 1, 1, 1, 1, cv2.BORDER_CONSTANT, value=0)
+    inv = ff.copy()
+    cv2.floodFill(inv, np.zeros((h + 4, w + 4), np.uint8), (0, 0), 255)
+    holes = cv2.bitwise_not(inv)
+    return ((ff | holes) > 0).astype(np.uint8)[1:-1, 1:-1]
+
+
 def lab_kmeans(bgr, k, mask=None):
     lab = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB).reshape(-1, 3).astype(np.float32)
     if mask is not None:
@@ -277,7 +288,7 @@ def flow_warp(img, flow):
     return cv2.remap(img, gx + flow[..., 0], gy + flow[..., 1], cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
 
 
-def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyelock=None):
+def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyelock=None, sub_thr=10.0):
     shot, take = clip.split("/")
     if remouth is None:
         remouth = shot.startswith("LS")
@@ -314,6 +325,16 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
     key_w = cv2.resize(key_reg, (W, H), interpolation=cv2.INTER_AREA)
     reg_err = float(np.abs(cv2.GaussianBlur(key_w, (0, 0), 3).astype(np.float32) -
                            cv2.GaussianBlur(frames[0], (0, 0), 3).astype(np.float32)).mean())
+    key_source = kpath
+    if reg_err > 12:
+        # the keyframe on disk is not the image this take started from (it was redone after generation):
+        # the clip's own first frame IS the painting it started from, so it becomes the key plate
+        print(f"  key registration FAILED (err {reg_err:.1f}): {kpath} changed since this take; using frame 0 as the key")
+        f0 = cv2.imread(files[0])
+        key_reg = cv2.resize(f0, (W * KS, H * KS), interpolation=cv2.INTER_CUBIC)
+        cv2.imwrite(os.path.join(odir, "key.jpg"), key_reg, [cv2.IMWRITE_JPEG_QUALITY, 94])
+        key_w = cv2.resize(key_reg, (W, H), interpolation=cv2.INTER_AREA)
+        key_source = "frame0"
     print(f"  key registered (mean abs diff vs frame 0 after blur: {reg_err:.1f})")
 
     # camera
@@ -351,10 +372,42 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
     print(f"  motion mask: coverage {cover:.3f}")
     masks = None
 
-    # colour + line guides, recursively filtered along flow
+    # per-drawing SUBJECT matte (frame-0 coords): inside the motion region, where the frame differs from the PAINTED
+    # key (drift-compensated), closed and hole-filled so a subject is redrawn whole — never half key, half video
+    # (a per-pixel test ghosts slow subjects into two poses). Saved as s_%04d.png in frame-i coords.
     dark_ground = bool(cv2.cvtColor(key_w, cv2.COLOR_BGR2GRAY).mean() < 75)
+    if dark_ground:
+        sub_thr = max(sub_thr, 26.0)   # line art on indigo: the painted key's fine gold beats any redraw unless it moved
+    key_lab = cv2.cvtColor(cv2.GaussianBlur(key_w, (0, 0), 2.0), cv2.COLOR_BGR2LAB).astype(np.float32)
+    zone = (union > 0.05).astype(np.float32)
+    raw_sub = []
+    for i in range(n):
+        st = frames[i] if locked else cv2.warpAffine(frames[i], T[i][:2], (W, H), flags=cv2.INTER_LINEAR,
+                                                     borderMode=cv2.BORDER_REPLICATE)
+        sl = cv2.cvtColor(cv2.GaussianBlur(st, (0, 0), 2.0), cv2.COLOR_BGR2LAB).astype(np.float32)
+        d0 = np.linalg.norm(sl - key_lab, axis=2)
+        calm = d0 <= np.percentile(d0, 50)
+        for c in range(3):
+            a_, b_ = sl[..., c][calm], key_lab[..., c][calm]
+            sl[..., c] = (sl[..., c] - a_.mean()) * (b_.std() + 1e-3) / (a_.std() + 1e-3) + b_.mean()
+        d = np.linalg.norm(sl - key_lab, axis=2)
+        b = ((d > sub_thr) & (zone > 0)).astype(np.uint8)
+        b = cv2.morphologyEx(b, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+        b = cv2.morphologyEx(b, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (35, 35)))
+        b = fill_holes(b)
+        b = cv2.dilate(b, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (19, 19)))
+        raw_sub.append(b.astype(np.float32))
+    subs = []
+    for i in range(n):
+        m = np.max(raw_sub[max(0, i - 2):i + 3], axis=0)
+        m = np.clip(cv2.GaussianBlur(m, (0, 0), 5) * 1.6, 0, 1) * np.clip(union * 3, 0, 1)
+        subs.append(m)
+    print(f"  subject matte: mean coverage {np.mean([m.mean() for m in subs]):.3f}")
+
+    # colour + line guides, recursively filtered along flow
     faces = Faces()
-    face_lm, ref_face = [], None
+    face_lm, ref_face, ref_idx = [], None, -1
+    eyeE = [None] * n
     acc = None
     accX = None
     prev_g = None
@@ -379,8 +432,11 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
         prev_g = grays[i]
         base = np.clip(acc, 0, 255).astype(np.uint8)
         # edge-preserving smoothing toward flat fills (mean shift flattens, bilateral cleans the seams)
-        sm = cv2.pyrMeanShiftFiltering(base, 7, 16, maxLevel=1)
-        sm = cv2.bilateralFilter(sm, 7, 22, 5)
+        if dark_ground:   # gold line art: keep every strand (the flow filter already stabilised it); no flattening
+            sm = cv2.bilateralFilter(base, 5, 18, 3)
+        else:
+            sm = cv2.pyrMeanShiftFiltering(base, 7, 16, maxLevel=1)
+            sm = cv2.bilateralFilter(sm, 7, 22, 5)
 
         g = cv2.cvtColor(cv2.bilateralFilter(base, 7, 30, 5), cv2.COLOR_BGR2GRAY)
         if dark_ground:  # bright lines on a dark ground (gold on indigo): find the lines, not their two flanks
@@ -406,6 +462,9 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
         face_lm.append(None if Pm is None else Pm[LM_KEEP].copy())
         if Pm is not None and ref_face is None:
             ref_face = (Pm.copy(), sm.copy(), thin.copy(), bold.copy())
+            ref_idx = i
+            if i == 0 and eyelock:
+                eyeE[0] = np.eye(3)[:2]
         elif Pm is not None and eyelock:
             fw = np.ptp(Pm[FACE_OVAL][:, 0])
             if True:
@@ -413,6 +472,8 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
                 # the first drawing's eye region is carried rigidly by the face's similarity motion
                 P0, sm0, th0, bo0 = ref_face
                 E, _ = cv2.estimateAffinePartial2D(P0[EYE_ANCH], Pm[EYE_ANCH])
+                if E is not None and ref_idx == 0:
+                    eyeE[i] = np.linalg.inv(h3(E))[:2]        # frame-i px -> frame-0 px (the painted key's eyes)
                 if E is not None:
                     r = np.zeros((H, W), np.uint8)
                     for ids in (L_EYE + L_BROW, R_EYE + R_BROW, NOSE_TIP + [168, 6]):
@@ -449,6 +510,9 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
         G = np.dstack([fmask, bold, thin])  # BGR -> R thin, G bold, B face
         cv2.imwrite(os.path.join(odir, f"g_{i:04d}.png"), (np.clip(G, 0, 1) * 255).astype(np.uint8),
                     [cv2.IMWRITE_PNG_COMPRESSION, 4])
+        sub_i = subs[i] if locked else cv2.warpAffine(subs[i], np.linalg.inv(T[i])[:2], (W, H), flags=cv2.INTER_LINEAR)
+        cv2.imwrite(os.path.join(odir, f"s_{i:04d}.png"), (np.clip(sub_i, 0, 1) * 255).astype(np.uint8),
+                    [cv2.IMWRITE_PNG_COMPRESSION, 6])
         if i % 24 == 0:
             print(f"  guides {i}/{n}  {time.time() - t0:.0f}s")
 
@@ -467,6 +531,31 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
         A = np.stack([sum(kk[q] * Ap[j + q] for q in range(7)) for j in range(n)])
         face_track = {"ids": LM_KEEP, "pts": [np.round(a.ravel(), 1).tolist() for a in A],
                       "hit": [f is not None for f in face_lm]}
+        if eyelock and ref_idx == 0 and any(e is not None for e in eyeE):
+            # painted keyframe eyes/brows/nose persist, carried by the face's similarity motion (likeness lock)
+            last = eyeE[0]
+            for j in range(n):
+                if eyeE[j] is None:
+                    eyeE[j] = last
+                last = eyeE[j]
+            Ep = np.array([e.ravel() for e in eyeE])
+            kk2 = cv2.getGaussianKernel(5, 1.0).ravel()
+            Epp = np.pad(Ep, ((2, 2), (0, 0)), mode="edge")
+            Ep = np.stack([sum(kk2[q] * Epp[j + q] for q in range(5)) for j in range(n)])
+            P0 = ref_face[0]
+            fw0 = np.ptp(P0[FACE_OVAL][:, 0])
+            em = np.zeros((H, W), np.uint8)
+            for ids in (L_EYE + L_BROW, R_EYE + R_BROW):
+                cv2.fillPoly(em, [cv2.convexHull(P0[ids].astype(np.int32))], 255)
+            em = cv2.dilate(em, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(fw0 * 0.10) | 1,) * 2))
+            nm = np.zeros((H, W), np.uint8)
+            cv2.fillPoly(nm, [cv2.convexHull(P0[NOSE_TIP].astype(np.int32))], 255)
+            nm = cv2.dilate(nm, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(fw0 * 0.05) | 1,) * 2))
+            em = np.maximum(em, nm).astype(np.float32) / 255
+            em = cv2.GaussianBlur(em, (0, 0), fw0 * 0.03)
+            cv2.imwrite(os.path.join(odir, "eyes.png"), (np.clip(em * 1.3, 0, 1) * 255).astype(np.uint8))
+            face_track["eyeE"] = [np.round(e, 6).tolist() for e in Ep]
+            face_track["eyes"] = "eyes.png"
     # palette: the whole keyframe, PLUS the moving region (the characters get their own pigments), PLUS skin from
     # the face (a small face never wins a cluster of its own, and snapping skin to the wall colour flattens her away)
     pal, share = lab_kmeans(key_w, k)
@@ -500,7 +589,7 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
     levels = sorted(round(float(c) / 255, 4) for c in C.ravel())
     meta = {
         "clip": clip, "fps": 24, "frames": n, "w": W, "h": H, "src": [vw, vh], "keyScale": KS,
-        "first_frame": kpath, "locked": locked, "cam_travel_px": round(disp, 2), "key_reg_err": round(reg_err, 2),
+        "first_frame": kpath, "keySource": key_source, "locked": locked, "cam_travel_px": round(disp, 2), "key_reg_err": round(reg_err, 2),
         # T: frame-i px -> frame-0 px (row-major 2x3);  Ti: inverse
         "T": [np.round(t[:2].ravel(), 6).tolist() for t in T],
         "Ti": [np.round(np.linalg.inv(t)[:2].ravel(), 6).tolist() for t in T],

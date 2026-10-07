@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 SILK = np.array([233, 220, 192], np.float32)
 PICKS = [  # (canonical out, source take, board label)
-    ("M/SHEET.jpg", "M/M_gpt_v2.jpg", "M · 4 · 109 cm · side Dutch braid, pink strawberry dress, flats"),
+    ("M/SHEET.jpg", "M/M_nbp_r4.jpg", "M · 4 · 109 cm · braid, pink strawberry dress · boots outdoors, socks indoors"),
     ("M/SHEET_change.jpg", "M/M_change_nbp_m3.jpg", "M · Chang'e costume (braid + pink elastics)"),
     ("T/SHEET.jpg", "T/T_gpt_v2.jpg", "T · 7 · 132 cm · big head, hiking boots"),
     ("kids/SHEET.jpg", "kids/kids_nbp_m3.jpg", "M + T · Copernican lesson (old T heights/shoes)"),

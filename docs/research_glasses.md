@@ -1,0 +1,13 @@
+# Astronauts and glasses
+
+**Yes, glasses are allowed.** NASA requires distant and near vision correctable to 20/20 in each eye, and glasses are acceptable ([AllAboutVision](https://AllAboutVision.com/conditions/refractive-errors/myopia-nasa/)). PRK and LASIK are permitted but not required. NASA first accepted them for the 2009 candidate class ([collectSPACE](https://www.collectspace.com/ubb/Forum38/HTML/000608.html)). Current policy asks for at least one year after surgery with no adverse effects ([PubMed](https://www.pubmed.ncbi.nlm.nih.gov/38715272/)).
+
+**On the ISS:** Astronauts bring their own glasses plus backup pairs at other strengths. Contacts are possible but may worsen dry eye ([2020 Mag](https://www.2020mag.com/article/eyes-on-the-stars-part-1-nasas-eye-clinic-and-glasses-in-outer-space)).
+
+**Adjustable "space anticipation" glasses:** Since 1998 NASA has flown glasses with adjustable refraction, a fluid-filled lens driven by a bridge slider. They address presbyopia and in-flight vision shifts ([PCWorld](https://www.pcworld.com/article/495404/nasa_certifies_first_adjustable_glasses.html), [Space.com](https://www.space.com/10993-shuttle-astronauts-test-eyeglasses.html)). SANS is the underlying concern. I did not confirm that "space anticipation" is an official product name.
+
+**Suits:** Glasses cannot be adjusted during Soyuz launch and landing or during an EVA. The lightweight, hingeless Silhouette Titan Minimal Art frame is used for spacewalks, because even a slight frame slip degrades vision ([2020 Mag](https://www.2020mag.com/article/eyes-on-the-stars-part-1-nasas-eye-clinic-and-glasses-in-outer-space)). Helmet fogging is the main EVA issue. Anti-fog solution irritated eyes on at least seven EMU EVAs, and on STS-100 it temporarily blinded Chris Hadfield ([NASA NTRS](https://ntrs.nasa.gov/citations/20230006071)). I found no specific launch-entry-suit slipping reports.
+
+**Other agencies:** ESA requires 20/20 natural or corrected vision ([The Star](https://www.thestar.co.uk/read-this/the-european-space-agency-is-looking-for-new-astronauts-what-skills-you-need-and-how-to-apply-3127990)). CMSA flew Gui Haichao, a Shenzhou-16 payload specialist who wears glasses. This is a departure from the pilot-astronaut standard, and CMSA said the glasses must be kept securely attached ([Sixth Tone](https://www.sixthtone.com/news/1013007)).
+
+**Lunar EVA:** Plausible. Light, hingeless frames already work inside EMU helmets. A visor-fogging risk and no way to adjust a slipped frame favor secure frames, prescription inserts, or LASIK/PRK. I found no Artemis-specific policy.

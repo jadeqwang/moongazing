@@ -130,13 +130,18 @@ band of empty paper. This is the palace-scroll convention. Every perspective sho
 
 | Room | Where | Shots |
 |---|---|---|
-| Galley / wardroom | NE module. Hub hatch at the SW end; wall screen at the NE end | 7.C4 (looking toward the hatch), 7.D2 / 7.D4 (looking toward the screen) |
+| Galley / wardroom | NE module. Hub hatch at the SW end; wall screen at the NE end | 7.C4 (looking toward the hatch), 7.D2 / K_7.D2_room / 7.D4 (looking toward the screen; J_7.D2 is the close-up at that screen) |
 | Commons / quiet deck, north window | hub L2, window at 000 | 7.C6 (tea cup on the sill, Earth through the window above the N tunnel and N node) |
 | Cupola | hub roof | 7.E1 (looking north: N tunnel → N node, NE and NW mounds, masts M6 and M1, comms tower, Earth over Malapert) |
 | ISRU hall | W mound vault (unpressurised) | 7.B2 |
 | Greenhouse | SW module | 7.B3 |
 | Crew quarters | NW module | 7.C4_grid bunk cells, 3.7-style night shots |
 | Airlock / suitports / garage | E mound | 5.1 egress follow-ups, rover departures |
+| Greenhouse (sealed glove-port growth chamber on a bench in the aisle) | SW module | 7.B3 (Lúcia, first rosette) |
+| Galley table, laptop call | NE module, hub side of the table | 7.C1_moon |
+| Radio array | Shackleton floor, ~13 km ENE then 4.2 km down (rover expedition) | 7.B4 |
+| Plateau south lip | 460 m at bearing 120 | 5.4 (base small to the NNW, Earth over the north horizon) |
+| Crew capsule (Orion-class, not part of the base) | trans-lunar coast | 4.7 |
 
 ## 5. Construction stages (mid-construction shots pick exactly one; HUD days in brackets)
 
@@ -168,6 +173,12 @@ World axes: x = grid east, y = up, z = grid **south** (metres; origin = hub cent
 | 7.C6 | GOLD | hub L2 (0.15, 4.85, −2.05) | 000° / −0.1° | HFOV 50° | 200° / 1° | 0.50, 0.45 (through the window) |
 | 7.D2 | GOLD | galley (12.3, 2.3, −11.5) | 040° / +1° | HFOV 70° | interior | — |
 | 7.E1 | GOLD + INK view | cupola (0, 8.25, 2.7) | 000° / −0.6° | HFOV 80° | 200° / 1° (near-full Earth) | 0.50, 0.46 |
+| 4.7 | GOLD | capsule set (not the base): Orion-class cabin, (0.30, 1.65, 1.0) in cabin coords | toward the side window / −6° | HFOV 70° | — | — (Moon 0.52° in the window) |
+| 5.4 | INK | (401, 5.4, 235) = Jade at 460 m bearing 120 (S lip of the plateau), camera 5.5 m behind | 330° / −1° | HFOV 80° | 150° / 1° (behind camera) | 0.84, 0.45; base small at x≈0.1 |
+| 7.B3 | GOLD + one green | SW module (greenhouse) (−16.4, 2.5, 17.2) | 028° / −14° | HFOV 64° | interior: magenta grow bars + bench lamp | — |
+| 7.B4 | INK | Shackleton floor, 1 km W of the crater centre, ~4.3 km below the rim | 260° / +13° | HFOV 72° | 080° / 1.5°: only the top ~500 m of the far wall is lit | — (never Sun or Earth) |
+| 7.C1m | GOLD | galley (12.0, 2.3, −11.4), behind Jade at the table | 034° / −10° | HFOV 62° | interior | — |
+| 7.D2 (K_7.D2_room) | GOLD | as 7.D2 | | | | |
 | 7.E2a | GOLD→INK | (−6.5, 60, 74.7) | 005° / −35.5° | HFOV 60° | 200° / 1° | — |
 | 7.E2b | INK | 3.5 km straight up over (800, 300) | north up | HFOV 60° | 200° / 1° | — |
 | 7.E2c | INK | 60 km straight up over (3000, 0) | north up | HFOV 60° | 200° / 1° | — |
@@ -197,16 +208,21 @@ actual horizon. The diameter is 1.9° of the horizontal field of view (≈ 75 px
     nano-banana-pro overlays the two and doubles the masts and mounds.
   - Image 3 = the museum style ref.
 
-## 8. Consistency status (2026-10-07)
+## 8. Consistency status (round 2, 2026-10-07)
 
-- **Sheet:** `media/guanghan/CONSISTENCY_SHEET.jpg` puts each frame beside its guide with a verdict.
-  Rebuild it with `.venv/bin/python render/scenes/guanghan3d/consistency_sheet.py`.
-- **Independent review (codex):** `media/guanghan/codex_review.md`. Its FAILs on K_1.5, K_5.2 and K_7.A2–A3 were
-  fixed by edits.
-- **Open items:**
-  - **K_6.2i/ii (not touched):** Earth is drawn ~1.6–1.8× too large. It should be ≈92 px across at 2752 px.
-  - **K_7.A v2:** the front mast panel is still long; the tower stands beside the tunnel crossing; no comms tower is drawn.
-  - **K_7.A2:** the masts are all at full height.
-  - **K_7.B2:** there is a soft horizontal break between the vault and the pipe wall.
-  - **K_1.5:** the mounds are lighter than "in shadow".
-  - **Stage plates:** grade the paper of all of them to K_7.A's indigo.
+- **Sheet:** `media/guanghan/CONSISTENCY_SHEET.jpg` (v2, 21 frames; v1 is kept as `CONSISTENCY_SHEET_v1.jpg`).
+- **Round-1 review:** codex, `media/guanghan/codex_review.md`.
+- **Fixed in round 2:**
+  - **K_6.2i/ii:** Earth recomposited at 1.9°, using `media/keyframes/work/erase_earth.py` and then `earthcomp_space.py`.
+  - **K_7.A:** the tower is now at the crossing and the comms tower is added.
+  - **K_7.A2:** two masts are shown telescoping.
+  - **K_7.B2:** regenerated with no seam.
+  - **K_1.5:** now in shadow.
+  - **Stage plates (K_7.A and A1–A4):** all graded to K_7.A_v1's indigo with `media/keyframes/work/grade_indigo.py`.
+- **New Moon-side frames:** K_4.7, K_5.4, K_7.B3, K_7.B4, K_7.B6, K_7.C1_moon, K_7.C6, K_7.D2_room.
+- **Open minors:**
+  - **K_7.B4:** the film strips curve.
+  - **K_7.B6:** the mounds read as smooth domes.
+  - **K_7.A:** one mast panel is still long.
+  - **K_4.7:** the Moon is slightly larger than 0.5°.
+  - **K_5.4:** the base is at its stage-3 look (Day 001), which is correct for 5.4.

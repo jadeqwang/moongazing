@@ -13,3 +13,5 @@ render/fonts/*.otf
 *.ttf
 *.otf
 inputs/*.png
+inputs/*.MOV
+inputs/*.mov

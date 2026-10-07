@@ -156,19 +156,38 @@ boots; outer layer a dark navy zip-up fleece (Patagonia-style, no logos) or a wa
 - **Old look (retired):** short dark-brown hair, charcoal overcoat / navy hoodie (`kenton/SHEET_v1.jpg`).
 
 ### SHANGHAI TRIP CAST (K_3.0_bridge, K_3.1, K_3.2: 湖心亭 Huxinting teahouse, Yu Garden, winter) — NOT Kenton
-Jade, T, M, plus (no face sheets; always from behind, at a distance or partial):
-- **Grandmother** (Jade's mother, Chinese, ~70, ~155 cm): short permed grey-black hair, deep plum padded jacket.
+Jade, T, M, plus (always from behind, at a distance or partial; appearance sheet `media/chars/grandma_V/SHEET.jpg`):
+- **Grandmother** (Jade's mother, Chinese, ~70, ~155 cm): short straight dark grey-black bob, thin glasses. Summer: white
+  sun visor, loose white T-shirt, amber bead bracelet. Winter: grey knit beanie, deep plum padded jacket. She is also in
+  Jade's West Lake memory (K_2.1, J_LS1).
 - **Grandfather** (Jade's father, Chinese, ~70, ~168 cm): grey hair, dark flat cap, grey wool coat, slightly stooped;
   the grandparents walk arm in arm.
-- **Nanny** (Brazilian, thirties, ~162 cm): olive-tan skin, dark curly hair tied back, mustard-ochre wool coat.
+- **V, the nanny** (Brazilian, ~30, ~162 cm): light olive-tan skin, a round face with a big warm smile, sleek dark-brown
+  hair in a low bun. Summer: mauve-grey T-shirt and jeans. Winter: mustard-ochre wool coat with a dark scarf.
 - Winter: Jade in the camel coat + malachite scarf; T in an open navy padded jacket over the star sweater.
-- Verse 1 West Lake (K_2.1) is Jade's own memory: boatman + Jade only (the kids have never been to Hangzhou).
+- Verse 1 West Lake (K_2.1) is Jade's memory of Hangzhou with her MOTHER: boatman + Jade + grandma (the kids have never
+  been to Hangzhou).
+- **Homecoming is two beats** (K_8.2a squat-and-sprint, K_8.2b impact), staged after `inputs/before_getting_bowled_over.png`:
+  Jade squats low on her heels, side-on, arms opening, while M sprints at full tilt.
 
 ### M's NEW LOOK: propagation status (round 3)
 All Earth keyframes now show M's braid + pink elastics and pink strawberry dress (targeted nano-banana-pro edits; earlier
 picks kept as `<ID>_vN.jpg`). `M/SHEET_change.jpg` (braid kept under the white flower) and `kids/SHEET.jpg` (M only; T
 there still has old sneakers/height) are updated. New placeholders: K_2.4, K_4.5, K_7.C1_earth, K_7.C3, K_7.D4, K_8.1,
 K_8.3 (`media/keyframes/SHEET_EARTH_v4.jpg`).
+
+### FOOTWEAR AND PLACES (round 4, user notes)
+- **No shoes indoors at home:** everyone wears socks or goes barefoot (K_7.C1_earth, K_7.C2, K_3.4_lesson, K_8.2; Jade's
+  shoes and duffel sit near the kitchen in K_8.2). Shoes are fine in public interiors (Shanghai teahouse, school stage,
+  Wenchang viewing room).
+- **Outdoors both kids wear brown Keen-style hiking boots**, like Kenton's (M sheet updated: `M/M_nbp_r4.jpg`; T
+  already has them). The red embroidered flats are for dress-up only.
+- **DDR is in the DOWNSTAIRS PLAY ROOM** (basement LAN/game room): `media/sets/austin_playroom.jpg`. Maple wood-panel
+  game-station walls, beige carpet, a big TV, leather recliners, and a built-in metal DDR pad under a flush floor hatch.
+- **Launch viewing (K_1.6/K_4.2):** Kenton is seen from behind, large in the frame, carrying M on his HIP (not his
+  shoulders) while she points at the pad or rocket. T holds his hand. The camera is low with a telephoto lens, and in K_4.2
+  the rocket glow rim-lights them. (Composition was described in words after a reference painting; the painting was
+  never passed to a model.)
 
 ### FAMILY HEIGHTS (keep in every frame) — `media/chars/family_heights.jpg`
 | | cm | relative to Kenton | landmarks when standing side by side |
@@ -295,12 +314,18 @@ colour = home), so on the GOLD-paper station the little screens are the only col
   - Order: Chen, Anastasia, Adaeze, Arjun / Lúcia, Kenji, Layla, Jade.
   - Jade comes last, from behind. Hers is the only screen we see.
   - Individual cells are in `media/keyframes/work/K_7.C4_cells/`.
-- **`K_7.C4.jpg`: the group frame.** All eight crowd the galley table and turn their tablets to one another. The little
-  full-colour silk screens are the only colour in the gold-and-indigo frame.
-  - They pass the tablets around: Chen holds Layla's falcon, Layla holds Kenji's dog.
-  - Jade is in the foreground from behind, with M and T on her screen.
-- **Edit idea.** Play the eight solitary cells first, one per beat, then cut to the group frame on the bar: from alone to
-  together.
+- **`K_7.C4a–d` (v5): four scenes in four rooms.** In each, the person being shown the clip is in the middle of
+  something else and stops to react. Each shot has one focal point: the readable screen, with the real HC still keyed
+  in by `tools/screen_comp.py`, and the reaction.
+  - **a, airlock suit bench:** Anastasia, in her lower suit and re-taping a glove, laughs at Adaeze's twins.
+  - **b, crew quarters:** Chen Yu, toothbrush in hand, and Layla stop at Arjun's bunk to see his newborn.
+  - **c, greenhouse:** Lúcia, her arm still in the glove-port with a watering syringe, puts her hand on her heart at
+    Kenji's husband and dog on Yuigahama beach.
+  - **d, science lab:** Chen Yu, logging sample bags, turns to Layla's falcon.
+
+  Files: `K_7.C4.jpg` (= a) and the sheet `K_7.C4_v5_SHEET.jpg`. The galley-table pairs are kept as `*_v4`, and the
+  rejected eight-person group frame as `K_7.C4_v3.jpg`. Jade is not in these shots; her beat is the call home.
+- **Edit idea.** Solitary grid cells first, then the pairs: from alone to together, one focal point at a time.
 
 ### ROBOTS
 

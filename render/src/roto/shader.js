@@ -9,7 +9,9 @@ import { PAPER_GLSL } from '../paper.js';
 export const ROTO_FS = /* glsl */`${PAPER_GLSL}
 uniform vec4 uCam;
 vec2 toPaper(vec2 P){ vec2 c = vec2(960., 540.); return rot(-uCam.w) * ((P - c) / uCam.z) + c + uCam.xy; }
-uniform sampler2D uPrev, uKey, uCol, uGuide, uMask;
+uniform sampler2D uPrev, uKey, uCol, uGuide, uMask, uEyes, uSub;
+uniform float uSubTex;
+uniform float uEyeOn; uniform vec3 uEa, uEb;  // likeness lock: drawing px -> frame-0 px of the painted key's eyes
 uniform vec2 uVid;            // video work size (px)
 uniform vec3 uView;           // centre (uv) + zoom
 uniform vec3 uTa, uTb;        // T_i  : current frame px -> frame-0 px (rows)
@@ -20,6 +22,8 @@ uniform float uLock;          // 1 = keyframe only (opening of the shot), 0 = fu
 uniform float uMaskGain, uRedrawAll;
 uniform vec3 uPal[16]; uniform int uNPal;
 uniform float uLev[6]; uniform int uNLev;
+uniform float uQuant; uniform vec3 uInkDark;
+uniform float uFaceKeep, uSubOn, uSubLo, uSubHi, uSnapAmt;
 uniform float uSnap, uShade, uLineTh, uLineW, uLineA, uBoldA, uGran, uWet, uGlow, uWash, uFaceFlat;
 uniform vec3 uInk;            // line ink colour
 uniform float uSeed, uDark;
@@ -84,6 +88,18 @@ void main(){
   vec3 keyN = key * mix(vec3(1.), tex, 0.55);
   float mask = clamp(texture(uMask, clamp(uv0, 0., 1.)).r * uMaskGain, 0., 1.);
   if (!inKey) mask = 1.;
+  // subject matte (per drawing): inside the motion region, only what the video does DIFFERENTLY from the painting is
+  // redrawn — water, walls and ground the video merely reproduces keep the painted keyframe (no muddy redraw bands)
+  if (uSubOn > 0. && inKey) {
+    float faceM = smoothstep(0.1, 0.5, texture(uGuide, uvf).b);   // faces are always redrawn (re-mouthing)
+    float sub;
+    if (uSubTex > 0.) sub = texture(uSub, uvf).r;                // prep's region-filled matte (whole subjects)
+    else {                                                         // fallback: per-pixel difference from the key
+      vec3 sB = textureLod(uCol, uvf, 1.2).rgb, kB = textureLod(uKey, uv0, 2.2).rgb;
+      sub = smoothstep(uSubLo, uSubHi, length(toLab(sB) - toLab(kB)));
+    }
+    mask *= max(sub, faceM);
+  }
   mask = max(mask, uRedrawAll);
   float keyAmt = max(1. - mask, uLock);
   if (keyAmt >= 0.999) { o = vec4(keyN, 1.); return; }
@@ -100,7 +116,9 @@ void main(){
   vec3 col;
   if (uPaper == 0) {
     // ===== 绢 SILK: flat mineral fills + iron-wire gongbi line
-    float conf; vec3 fl = snap(src, conf);
+    float conf; vec3 fl = mix(src, snap(src, conf), uSnapAmt);
+    // faces: the source is already flattened by prep; snapping skin to a scene pigment would bleach or tint her
+    fl = mix(fl, src, uFaceKeep * smoothstep(0.2, 0.8, face));
     float sh = mix(uShade, uShade * uFaceFlat, face);
     float lr = clamp(luma(src) / max(luma(fl), 0.03), 0.6, 1.4);
     fl *= mix(1., lr, sh);
@@ -118,22 +136,27 @@ void main(){
     col = mix(col, uInk * mix(vec3(1.), tex, 0.4), clamp(a, 0., 1.));
   } else if (uPaper == 1) {
     // ===== 宣 INK: monochrome washes on xuan, wet edges, granulation, 留白, bold dry-brush contours; Earth keeps colour
-    float l = quantL(lumAt(pf));
+    float l0 = lumAt(pf);
+    float l = mix(l0, quantL(l0), uQuant);             // washes keep their gradation; levels only pull toward the painter's
     // wet edge: a wash is darkest at its rim, where the water carried the pigment as it dried
     float s = 0.;
     for (int k = 0; k < 8; k++) {
       float an = float(k) * 0.7854;
-      s += quantL(lumAt(pf + vec2(cos(an), sin(an)) * 3.5));
+      float ln = lumAt(pf + vec2(cos(an), sin(an)) * 3.5);
+      s += mix(ln, quantL(ln), uQuant);
     }
     s /= 8.;
     float rim = clamp(s - l, 0., 0.25);
-    float paperL = luma(uPm);
-    float d = -log(max(l / max(uLev[uNLev - 1], 0.3), 0.025));
-    float mid = smoothstep(0.08, 0.5, d) * (1. - smoothstep(1.6, 3.0, d));
-    d *= 1. + uGran * (gran - .5) * 1.4 * mid + uGran * 0.5 * (fine - .5) * mid;
-    d += rim * uWet * 4.;
-    d = l > uLev[uNLev - 1] - 0.05 ? 0. : d;                 // 留白: the lightest wash is the paper itself
-    col = inkOver(prev, vec3(1.0, 0.975, 0.91), d);
+    // coverage is luminance-matched between the painting's paper level and its darkest pigment, so the redraw reaches
+    // exactly the keyframe's own blacks and greys; granulation and the wet rim then modulate it
+    float Lp = uLev[uNLev - 1], Ld = luma(uInkDark);
+    float cov = clamp((Lp - l) / max(Lp - Ld, 0.05), 0., 1.);
+    float mid = smoothstep(0.05, 0.3, cov) * (1. - smoothstep(0.75, 0.98, cov));
+    float clump = vnoise(Pw * 0.55 + uSeed * 2.3);   // pigment settles in clumps a few fibres wide, not per pixel
+    cov *= 1. + uGran * (gran - .5) * 0.8 * mid + uGran * 0.5 * (clump - .5) * mid;
+    cov += rim * uWet * 1.6 * (1. - cov);
+    cov = l > Lp - 0.04 ? 0. : clamp(cov, 0., 1.);          // 留白: the lightest wash is the paper itself
+    col = mix(prev, uInkDark * mix(vec3(1.), tex, 0.3), cov);
     // bold contour with 飞白 dry-brush gaps along the stroke
     float gx = texture(uGuide, (pf + vec2(2., 0.)) / uVid).g - texture(uGuide, (pf - vec2(2., 0.)) / uVid).g;
     float gy = texture(uGuide, (pf + vec2(0., 2.)) / uVid).g - texture(uGuide, (pf - vec2(0., 2.)) / uVid).g;
@@ -145,28 +168,42 @@ void main(){
     float a = core * dry * uBoldA * (0.85 + 0.25 * fib);
     float at = smoothstep(uLineTh - 0.1, uLineTh + 0.12, G.r) * uLineA;   // fine line for detail (visor, joints)
     float A = clamp(max(a, at), 0., 1.);
-    col = mix(col, inkOver(prev, vec3(1.0, 0.975, 0.91), 3.2), A);
+    col = mix(col, uInkDark * mix(vec3(1.), tex, 0.3), A);
     // Earth: the only colour on the Moon (azurite / malachite hue), drawn as mineral pigment
     float mx = max(src.r, max(src.g, src.b)), mn = min(src.r, min(src.g, src.b));
     float satS = (mx - mn) / max(mx, 1e-3);
     float blueGreen = smoothstep(0.02, 0.10, src.b - src.r) + smoothstep(0.02, 0.10, src.g - src.r) * 0.6;
-    float earth = smoothstep(0.18, 0.32, satS) * clamp(blueGreen, 0., 1.) * smoothstep(0.12, 0.25, mx);
+    float earth = smoothstep(0.18, 0.32, satS) * smoothstep(0.07, 0.14, mx - mn) * clamp(blueGreen, 0., 1.) * smoothstep(0.12, 0.25, mx);
     float conf; vec3 ec = snap(src, conf);
     col = mix(col, ec * mix(vec3(1.), tex, 0.55), earth);
   } else {
-    // ===== 磁青泥金 GOLD: line only, gold weight from edge strength, slight emboss; glow only in the drop
-    float th = uLineTh + wob;
-    float v = max(G.r, G.g * 0.75);
-    float a = smoothstep(th - uLineW, th + uLineW * 0.6, v);
-    float e = texture(uGuide, (pf + vec2(-1.2, -1.2)) / uVid).r - texture(uGuide, (pf + vec2(1.2, 1.2)) / uVid).r;
-    vec3 gold = goldInk(Pw, uSeed) * (0.92 + 0.45 * e) * (0.9 + 0.2 * fib);
-    // the ground: our indigo paper, toned a touch by the plate's value so dark masses stay dark (no fills, no colour)
+    // ===== 磁青泥金 GOLD: re-inked in powdered gold on our indigo. The source is already gold line art, so its light IS
+    // the gold's density (every hair strand survives); our even line field adds weight where edges are strong; emboss
+    // from the line field's slope; glow only in the drop section.
     float lsrc = luma(src);
-    vec3 ground = prev * mix(0.82, 1.08, smoothstep(0.05, 0.4, lsrc));
-    float wash = smoothstep(0.42, 0.85, lsrc) * uWash;        // 泥金 wash on what is lit (the moon disc, the screen)
-    col = mix(ground, goldInk(Pw * 0.7, uSeed + 3.) * 0.75, wash * (0.75 + 0.25 * gran));
-    col = mix(col, gold, clamp(a * uLineA, 0., 1.));
-    if (uGlow > 0.) col += gold * smoothstep(0.0, 0.6, G.g) * uGlow * 0.45;
+    float lbg = luma(textureLod(uCol, uvf, 4.).rgb);
+    float dens = pow(smoothstep(0.05, 0.6, lsrc), 0.8) * (0.8 + 0.2 * smoothstep(0.0, 0.15, lsrc - lbg));
+    float th = uLineTh + wob;
+    float lineA = smoothstep(th - uLineW, th + uLineW * 0.6, max(G.r, G.g * 0.75)) * 0.55;
+    float e = texture(uGuide, (pf + vec2(-1.2, -1.2)) / uVid).r - texture(uGuide, (pf + vec2(1.2, 1.2)) / uVid).r;
+    vec3 gold = goldInk(Pw, uSeed) * (0.92 + 0.4 * e) * (0.9 + 0.2 * fib);
+    float gm = vnoise(Pw * 0.9 + uSeed) * .55 + vnoise(Pw * 3.1 + uSeed * 1.7) * .45;   // wash: matte gold, no glitter
+    vec3 goldW = mix(vec3(0.74, 0.57, 0.28), vec3(0.91, 0.75, 0.41), gm) * (0.94 + 0.1 * fib);
+    gold = mix(goldW, gold, smoothstep(0.2, 0.6, max(G.r, G.g)));
+    vec3 ground = prev * mix(0.85, 1.0, smoothstep(0.03, 0.2, lsrc));
+    // luminance-matched: the gold is laid exactly as thick as the source is light (fine strands keep their weight)
+    float lg = luma(ground), lgo = luma(gold);
+    float a = clamp((lsrc * 1.04 - lg) / max(lgo - lg, 0.05), 0., 1.) * mix(1., dens, 0.25);
+    a = clamp(max(a * uWash / 0.85, lineA) * uLineA, 0., 1.);
+    col = mix(ground, gold, a);
+    if (uGlow > 0.) col += gold * smoothstep(0.55, 0.95, lsrc) * smoothstep(0.0, 0.6, G.g + dens * 0.3) * uGlow * 0.45;
+  }
+  // likeness lock: the keyframe's PAINTED eyes, brows and nose tip ride on the head (the video model shrinks eyes)
+  if (uEyeOn > 0.) {
+    vec2 pe = aff(uEa, uEb, pf);
+    float em = texture(uEyes, clamp(pe / uVid, 0., 1.)).r * uEyeOn;
+    vec3 ke = texture(uKey, clamp(pe / uVid, 0., 1.)).rgb * mix(vec3(1.), tex, 0.55);
+    col = mix(col, ke, em);
   }
   o = vec4(mix(col, keyN, keyAmt), 1.);
 }`;

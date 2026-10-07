@@ -11,6 +11,7 @@ Per frame (NaN when no face):
     jaw    blendshape jawOpen          width  mouth corners 78-308 / face height
     eye    mean eyelid opening (159-145, 386-374) / inter-ocular (33-263)
     iris   mean iris diameter (469-471, 474-476) / inter-ocular   (likeness: Seedance shrinks eyes over a clip)
+    yaw    (nose tip - eye-corner midpoint).x / inter-ocular: 0 = frontal, |0.3+| = three-quarter; a jump = head turn
     mouth  mouth centre (px) and face height (px), for crops
 """
 import json
@@ -70,6 +71,7 @@ def measure(L, bs):
     gap = np.mean([d(13, 14), d(82, 87), d(312, 317)]) / fh
     return {"gap": gap, "jaw": bs.get("jawOpen", np.nan), "width": d(78, 308) / fh,
             "eye": (d(159, 145) + d(386, 374)) / 2 / io, "iris": (d(469, 471) + d(474, 476)) / 2 / io,
+            "yaw": float((L[1][0] - (L[33][0] + L[263][0]) / 2) / io),   # nose tip vs eye-corner midpoint: 0 = frontal
             "mx": float((L[13][0] + L[14][0]) / 2), "my": float((L[13][1] + L[14][1]) / 2), "fh": fh,
             "box": [float(L[:, 0].min()), float(L[:, 1].min()), float(L[:, 0].max()), float(L[:, 1].max())]}
 
@@ -106,7 +108,7 @@ def track(mp4):
         m = measure(*hit)
         prev = m["box"]
         rows.append(m)
-    keys = ["gap", "jaw", "width", "eye", "iris", "mx", "my", "fh"]
+    keys = ["gap", "jaw", "width", "eye", "iris", "yaw", "mx", "my", "fh"]
     out = {"file": mp4, "fps": fps, "n": len(rows), "hit": float(np.mean([r is not None for r in rows])) if rows else 0}
     for k in keys:
         out[k] = [None if r is None or not np.isfinite(r[k]) else round(float(r[k]), 5) for r in rows]

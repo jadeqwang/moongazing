@@ -45,6 +45,7 @@ uniform float uGrain, uGrainSeed, uVignette, uFade, uBump, uWarm, uFlash, uFlash
 uniform vec3 uOpenColor;
 uniform vec3 uFadeColor;
 uniform vec4 uDeflect; // x,y (design px), amplitude (px), radius (px)
+uniform vec2 uFocus;   // the shot's focal point: the vignette falls off around it
 out vec4 o;
 void main(){
   vec2 P = PX();
@@ -59,8 +60,8 @@ void main(){
   }
   vec3 col = FBO(uPrev, Q).rgb;
   col *= 1. - shade;
-  vec2 q = P / vec2(1920., 1080.) - .5;
-  col *= 1. - uVignette * smoothstep(0.15, 0.75, dot(q, q) * 1.6);
+  vec2 q = (P - uFocus) / vec2(1920., 1080.);
+  col *= 1. - uVignette * smoothstep(0.12, 0.85, dot(q, q) * 1.6);
   // static grain (seeded per shot): fine luminance + slight chroma, plus a soft mottle
   vec2 dp = floor(gl_FragCoord.xy);
   float g = hash12(dp + uGrainSeed * 37.) - .5;
@@ -135,7 +136,7 @@ export class Pipeline {
       uPrev: this.cur, uGrain: p.grain ?? 0.035, uGrainSeed: p.grainSeed ?? 0, uVignette: p.vignette ?? 0.08,
       uFade: p.fade ?? 0, uFadeColor: p.fadeColor ?? [0, 0, 0], uBump: p.bump ?? 0, uWarm: p.warm ?? 0,
       uDeflect: p.deflect ?? [0, 0, 0, 1], uFlash: p.flash ?? 0, uFlashSeed: p.grainSeed ?? 0,
-      uOpen: p.open ?? 1, uOpenColor: p.openColor ?? [0.96, 0.92, 0.82],
+      uFocus: p.focus ?? [960, 540], uOpen: p.open ?? 1, uOpenColor: p.openColor ?? [0.96, 0.92, 0.82],
     }, null);
   }
 }

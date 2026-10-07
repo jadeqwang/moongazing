@@ -22,7 +22,7 @@ moons and lonely wine
 
 ## 望明月, Moongazing (credits)
 
-English lyrics by Jade Wang (previously published as a poem, "To Li Bai" in the Oyez Review in 2006)
+English lyrics by Jade Wang (previously published as a poem, "To Li Bai" in the Oyez Review in 2007)
 Chinese lyrics from traditional Li Bai poems.
 Chord progression and melody by Jade Wang and Charlie van Norman, pulled from a 2011 jam session.
 Translated from guitar to multiple instruments and genres by Suno.
