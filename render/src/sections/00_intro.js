@@ -26,6 +26,14 @@ function inkBleed(ctx, key, P, t, a, b) {
   }, { mode: 'ink', absorb: 0.5, seed: 304 });
 }
 
+// a small, quiet title chop, top-right, there from frame 0 (any first frame / thumbnail already says what this is)
+function chop(ctx, t) {
+  const a = 0.86 * (1 - smooth(4.9, 5.5, t));
+  if (a <= 0) return;
+  calli(ctx, 'chop0', { text: '望明月', size: 30, x: 1862, y: 54, color: INKC, seed: 9, alpha: a }, t, -10, 0.1, 99);
+  ctx.pipe.layer((g) => { const img = ctx.assets.seal_wangyue_baiwen || ctx.assets.seal_wangyue; if (!img) return; g.globalAlpha = a; g.drawImage(img, 1831, 160, 32, 32 * img.height / img.width); }, { mode: 'ink', absorb: 0.4, seed: 13 });
+}
+
 export const range = [0, 15.67];
 export default function shots(B, X, L) {
   const bar = (n, b = 1) => B.bar(n, b);
@@ -51,15 +59,15 @@ export default function shots(B, X, L) {
     + (t > 2.62 ? 0.75 * (1 - Math.exp(-(t - 2.62) / 1.3)) + 0.12 * (t - 2.62) : 0);
   let now = 0;
   const dropCam = (t) => { now = t; return moonRiseCam(t); };
-  const bloom = () => ({ tFall: FIRST, get tImpact() { return now < HIT ? HIT : now - bloomClock(now); }, resolveAt: [3.58, 5.1] });
+  const bloom = () => ({ hang: true, tFall: FIRST, get tImpact() { return now < HIT ? HIT : now - bloomClock(now); }, resolveAt: [3.58, 5.1] });
   const SHANGHAI = /shanghai|pudong|puxi/i.test(X.text('K_0.6'));
   const K06_OFF = 1.3, K06_END = { x: 0.58, y: 0.52, zoom: 1.18 };   // shared with 1.1 (01_intro_b.js)
   return [
     // 0.1 — a drop of ink falls on xuan and blooms into a full Moon
     //       (its shadow gathers in the silence; it falls on the first sound and lands on the first strum, 2.44)
-    { id: '0.1', t0: 0, t1: BOOM, paper: 'xuan', scene: 'inkmoon', params: bloom(), grain: 1, cam: dropCam },
+    { id: '0.1', t0: 0, t1: BOOM, paper: 'xuan', scene: 'inkmoon', params: bloom(), grain: 1, cam: dropCam, needs: ['seal_wangyue_baiwen'], type: (ctx, t) => chop(ctx, t) },
     // 0.2 — the bloom settles, the maria drop in wet-in-wet, the real Moon resolves (from the 3.58 pluck)
-    { id: '0.2', t0: BOOM, t1: S03, paper: 'xuan', scene: 'inkmoon', params: bloom(), grain: 1, cam: dropCam },
+    { id: '0.2', t0: BOOM, t1: S03, paper: 'xuan', scene: 'inkmoon', params: bloom(), grain: 1, cam: dropCam, needs: ['seal_wangyue_baiwen'], type: (ctx, t) => chop(ctx, t) },
 
     // 0.3 — Chang'e rises past the Moon: K_0.3/take_1 redrawn on silk (the painting holds; her figure and ribbons are
     //       redrawn on twos from the h3 motion base). The take's head exits top at ~3 s; the shot is 2.35 s.

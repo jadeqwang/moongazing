@@ -46,37 +46,37 @@ export const colophon = {
     const rule = smooth(S + 3.4, S + 4.1, t), col = smooth(S + 4.0, S + 5.0, t);
     // dedication, centred, quiet; small-caps feel with open tracking
     ctx.pipe.layer((g) => {
-      g.fillStyle = '#1c1b1e'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
-      g.globalAlpha = ded * 0.92; g.font = '500 23px Cormorant'; g.letterSpacing = '5px';
-      DED_EN.forEach((l, i) => g.fillText(l, 960, 150 + i * 42));
-      g.globalAlpha = dedZ * 0.92; g.font = '30px MaShanZheng'; g.letterSpacing = '3px';
-      DED_ZH.forEach((l, i) => g.fillText(l, 960, 262 + i * 46));
+      g.fillStyle = '#0f0e10'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+      g.globalAlpha = ded; g.font = '600 27px Cormorant'; g.letterSpacing = '5px';
+      DED_EN.forEach((l, i) => g.fillText(l, 960, 128 + i * 48));
+      g.globalAlpha = dedZ; g.font = '36px MaShanZheng'; g.letterSpacing = '3px';
+      DED_ZH.forEach((l, i) => g.fillText(l, 960, 248 + i * 52));
       g.letterSpacing = '0px';
     }, { mode: 'ink', absorb: 0.4, seed: 91 });
     // the vermilion hairline, drawn from the centre
-    if (rule > 0) ctx.pipe.layer((g) => { g.fillStyle = 'rgba(200,49,43,0.9)'; const w = 210 * rule; g.fillRect(960 - w, 357, 2 * w, 1.4); }, { mode: 'ink', absorb: 0.3, seed: 92 });
+    if (rule > 0) ctx.pipe.layer((g) => { g.fillStyle = 'rgba(200,49,43,0.9)'; const w = 230 * rule; g.fillRect(960 - w, 350, 2 * w, 1.6); }, { mode: 'ink', absorb: 0.3, seed: 92 });
     if (col <= 0) return;
     // the colophon: a single centred bilingual list
     ctx.pipe.layer((g) => {
-      g.globalAlpha = col * 0.92; g.fillStyle = '#1c1b1e'; g.textBaseline = 'alphabetic'; g.textAlign = 'center';
+      g.globalAlpha = col; g.fillStyle = '#0f0e10'; g.textBaseline = 'alphabetic'; g.textAlign = 'center';
       CREDITS.forEach(([en, zh], i) => {
-        const y = 432 + i * 86;
-        g.font = '500 22px Cormorant'; g.letterSpacing = '1px'; g.fillText(en, 960, y);
-        g.globalAlpha = col * 0.78; g.font = '400 17px NotoSerifSC'; g.letterSpacing = '2px'; g.fillText(zh, 960, y + 30);
-        g.globalAlpha = col * 0.92;
+        const y = 418 + i * 92;
+        g.font = '600 26px Cormorant'; g.letterSpacing = '1px'; g.fillText(en, 960, y, 1500);
+        g.globalAlpha = col * 0.88; g.font = '500 20px NotoSerifSC'; g.letterSpacing = '2px'; g.fillText(zh, 960, y + 34, 1500);
+        g.globalAlpha = col;
       });
       g.letterSpacing = '0px'; g.textAlign = 'left';
       // the title as a short vertical inscription at the right edge, like a signature
-      g.font = '46px MaShanZheng'; g.textAlign = 'center';
-      ['望', '明', '月'].forEach((ch, k) => g.fillText(ch, 1772, 470 + k * 52));
+      g.font = '54px MaShanZheng'; g.textAlign = 'center';
+      ['望', '明', '月'].forEach((ch, k) => g.fillText(ch, 1790, 470 + k * 60));
       g.textAlign = 'left';
     }, { mode: 'ink', absorb: 0.35, seed: 93 });
-    colophon._sealX = 1772 - 6;
+    colophon._sealX = 1790 - 6;
     // the small 望月 seal at the foot of the colophon
     const img = ctx.assets.seal_wangyue;
     if (img) {
-      seal = seal || sealFromImage(ctx.type, img, 64);
-      ctx.pipe.layer((g) => drawStamp(g, seal, { x: (colophon._sealX || 1400) + 6, y: 652, t, tLand: S + 5.4, rot: 0.02, approach: 0.12 }), { mode: 'ink', absorb: 0.5, seed: 94 });
+      seal = seal || sealFromImage(ctx.type, img, 76);
+      ctx.pipe.layer((g) => drawStamp(g, seal, { x: (colophon._sealX || 1400) + 6, y: 690, t, tLand: S + 5.4, rot: 0.02, approach: 0.12 }), { mode: 'ink', absorb: 0.5, seed: 94 });
     }
   },
 };

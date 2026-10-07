@@ -44,7 +44,9 @@ export default function shots(B, X, L) {
   const S21 = B.bar(17), S22 = L.L02.start, S23 = L.L03.start, S23b = L.L03.words[6].start, S24 = L.L04.start, S25 = B.bar(24), S31 = L.L05.start;
   const small = { size: 40, font: 'Cormorant', tracking: 0.03, hold: 0.9 };
   const K21_ROTO = true;   // K_2.1/take_2 (h3, v7 keyframe: snow falls, the boatman rows); false = JS boat drift over the split plate
-  const LS1_ROTO = true;   // false = the painted J_LS1 still (parallax) if the take has to be pulled
+  const LS1 = X.pick('LS1'), LS1_ROTO = !!LS1;
+  // take_24 stays three-quarter for the whole clip, so 2.3 runs to the end of the line (no cutaway); older takes cut away
+  const LS1_FULL = !!LS1 && LS1.take === 'take_24';   // false = the painted J_LS1 still (parallax) if the take has to be pulled
   const TEA = X.has('J_3.1') ? 'J_3.1' : 'K_3.1';
   const P25 = { from: { x: 0.5, y: 0.48, zoom: 1.2 } };   // the Verse 2 teahouse (shared with 3.1 in 03_verse2.js)
   return [
@@ -74,10 +76,10 @@ export default function shots(B, X, L) {
         inscription(ctx, 'ins22', '垂柳', 1876, 600, t, S22 + 0.4, S23 - 0.05);   // below Jade's hands
       } },
     // 2.3 — LS1: the canopied rowboat on West Lake; Jade sings in 3/4 profile
-    { id: '2.3', t0: S23, t1: LS1_ROTO ? S23b : S24, paper: 'silk', grain: 23, focus: [1180, 420],
+    { id: '2.3', t0: S23, t1: LS1_ROTO && !LS1_FULL ? S23b : S24, paper: 'silk', grain: 23, focus: [1180, 420],
       // LS1/take_19 (Seedance 2.0 mini, vocal-referenced, new J_LS1 with her mother): she turns from the lake toward us
       // and sings; redrawn on silk, lips drawn from the vocal stem (sync: media/gen/LS1/sync.json, ref 39.23, lag +0.21)
-      scene: [LS1_ROTO ? { type: 'roto', clip: 'LS1/take_19', paper: 'silk', ref_t0: 39.23, lag: 0.21, lock: 0.25, mouth: false, eyelock: false, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 } }
+      scene: [LS1_ROTO ? { type: 'roto', clip: LS1.clip, paper: 'silk', ref_t0: 39.23, lag: LS1.lag, lock: 0.25, mouth: false, eyelock: false, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 } }
         : X.has('J_LS1') ? kf('J_LS1', { from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 },
         masks: { base: [0.1, 0.4], polys: [{ pts: [[0.56, 0], [1, 0], [1, 1], [0.5, 1]], depth: 0.85, blur: 14 }, { pts: [[0, 0.47], [0.56, 0.47], [0.56, 0.8], [0, 0.8]], water: 1, blur: 12 }, { pts: [[0.72, 0.0], [1, 0.0], [1, 0.08], [0.72, 0.08]], flutter: 0.5, blur: 10 }] },
         shimmer: 1.2, flutter: [1.4, 1.6] }) : ph('LS1 — Jade sings in the West Lake rowboat', 'J_LS1')],
@@ -87,7 +89,7 @@ export default function shots(B, X, L) {
       } },
     // 2.3b — "…over water": the take turns her full-face from ~clip 3 s, where the redraw ghosts (doubled glasses), so on
     //        the word "water" we cut wide to the lake: the same boat (Jade and her mother) drifting under the bridge
-    ...(LS1_ROTO ? [{ id: '2.3b', t0: S23b, t1: S24, paper: 'silk', grain: 230, focus: [960, 640],
+    ...(LS1_ROTO && !LS1_FULL ? [{ id: '2.3b', t0: S23b, t1: S24, paper: 'silk', grain: 230, focus: [960, 640],
       scene: [X.has('K_2.1_lake') && X.has('K_2.1_boat')
         ? kf('K_2.1_lake', { from: { x: 0.5, y: 0.66, zoom: 1.62 }, to: { x: 0.47, y: 0.66, zoom: 1.7 }, par: [-0.008, 0], dolly: 0.03, ease: 'linear',
           over: { img: 'K_2.1_boat', from: [-0.006, 0.0005], to: [-0.016, 0.002] },

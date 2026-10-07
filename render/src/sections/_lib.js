@@ -23,6 +23,19 @@ export function card(ctx, key, o, t, a, b, mode = 'ink') {
   if (o.panel) panel(ctx, c.box, tm.alpha, o.panel);
   ctx.pipe.layer((g) => c.draw(g, tm.wipe, tm.alpha * (o.opacity ?? 1)), { mode, absorb: mode === 'ink' ? 0.45 : 0, seed: 40 });
 }
+// legibility on phones: measure the ground under the type (luminance mean/std of the frame so far); when it is busy or
+// too close in value to the type, lay a soft paper-toned (dark type) or ink-toned (pale type) halo behind it
+export const LYR_SCALE = 1.25;
+function lumOf(css) { const m = /#(..)(..)(..)/.exec(css || '#17171b'); return m ? (0.299 * parseInt(m[1], 16) + 0.587 * parseInt(m[2], 16) + 0.114 * parseInt(m[3], 16)) / 255 : 0.1; }
+export function scrim(ctx, box, alpha, color, force) {
+  const tl = lumOf(color), dark = tl < 0.5;
+  const inner = { x: box.x + box.w * 0.08, y: box.y + box.h * 0.12, w: box.w * 0.84, h: box.h * 0.76 };
+  const st = ctx.pipe.sampleStats ? ctx.pipe.sampleStats(inner) : { mean: dark ? 0.9 : 0.1, std: 0 };
+  const contrast = Math.abs(st.mean - tl);
+  let k = Math.max(clamp((st.std - 0.05) / 0.12), clamp((0.42 - contrast) / 0.28));
+  if (force) k = Math.max(k, 0.8);
+  if (k > 0.03) panel(ctx, box, alpha * Math.min(1, k) * 0.95, dark ? 'light' : 'dark');
+}
 // Chinese calligraphy brushed in from a over `dur`, fading at b
 export function calli(ctx, key, o, t, a, dur, b, mode = 'ink') {
   const it = ctx.type.inkText(key, { font: 'MaShanZheng', lead: 1.02, ...o });
@@ -46,7 +59,16 @@ export function panel(ctx, box, alpha, kind = 'dark') {
 }
 export function hud(ctx, text, x, y, o = {}, alpha = 1, mode = 'over') {
   if (alpha <= 0) return;
-  ctx.pipe.layer((g) => ctx.type.hud(g, text, x, y, { size: 14, tracking: 0.16, ...o, color: o.rgb ? `rgba(${o.rgb},${(alpha * (o.a ?? 0.85)).toFixed(3)})` : (o.color || `rgba(240,232,214,${(alpha * 0.85).toFixed(3)})`) }), { mode, seed: 46 });
+  const drop = ctx.shot && ctx.shot.section === '07_drop';
+  const k = drop ? 1.5 : 1, a = drop ? Math.min(1, (o.a ?? 0.85) * 1.2) : (o.a ?? 0.85);
+  const size = Math.round((o.size || 14) * k);
+  // anchored at the frame edges: bottom/right-hand labels keep their margin as they grow
+  // stacked labels keep their rhythm: distances from the nearest frame edge scale with the type
+  const yy = !drop ? y : y > 540 ? 1080 - (1080 - y) * k + (k - 1) * 18 : 40 + (y - 40) * k;
+  ctx.pipe.layer((g) => {
+    if (drop) { g.shadowColor = 'rgba(0,0,0,0.7)'; g.shadowBlur = 8; g.shadowOffsetY = 1; }
+    ctx.type.hud(g, text, x, yy, { tracking: 0.16, ...o, size, color: o.rgb ? `rgba(${o.rgb},${(alpha * a).toFixed(3)})` : (o.color || `rgba(240,232,214,${(alpha * a).toFixed(3)})`) });
+  }, { mode, seed: 46 });
 }
 export const bump = (lt, k = 0.010) => ({ bump: k * Math.exp(-lt / 0.12) });
 
@@ -62,11 +84,15 @@ export function lyricEN(ctx, line, o, t, mode = 'ink') {
     const last = i === W.length - 1 || (o.breaks && o.breaks.includes(i + 1));
     const txt = (o.text && o.text[i]) || w.text;
     const punct = (o.punct && o.punct[i]) || '';
-    cur.push({ t: txt + punct + (last ? '' : ' '), ...(o.big && o.big[i] ? { size: o.big[i] } : {}), ...(o.italic && o.italic.includes(i) ? { font: 'CormorantItalic' } : {}) });
+    cur.push({ t: txt + punct + (last ? '' : ' '), ...(o.big && o.big[i] ? { size: Math.round(o.big[i] * LYR_SCALE) } : {}), ...(o.italic && o.italic.includes(i) ? { font: 'CormorantItalic' } : {}) });
   });
   if (cur.length) lines.push(cur);
   const key = `lyr-${line.id}-${o.key || ''}-${o.w0 ?? 0}`;
-  const c = ctx.type.card(key, { tracking: 0.02, leading: 1.12, size: 64, ...o, lines });
+  const c = ctx.type.card(key, { tracking: 0.02, leading: 1.12, weight: 600, ...o, size: Math.round((o.size || 64) * LYR_SCALE), lines });
+  // keep the (now larger) line inside the 4% safe area
+  const SAFE = 64, bx = c.box, pad = (o.size || 64) * LYR_SCALE * 0.6;
+  const vx = bx.x + pad, vy = bx.y + pad, vw = bx.w - 2 * pad, vh = bx.h - 2 * pad;
+  const sx = Math.min(0, 1920 - SAFE - (vx + vw)) + Math.max(0, SAFE - vx), sy = Math.min(0, 1080 - 40 - (vy + vh)) + Math.max(0, SAFE * 0.6 - vy);
   const lead = o.lead ?? 0.06;
   const end = o.until ?? (line.end + (o.hold ?? 0.6));
   const alpha = (1 - smooth(end - 0.35, end, t)) * smooth((o.from ?? -1e9), (o.from ?? -1e9) + 0.25, t);
@@ -83,8 +109,9 @@ export function lyricEN(ctx, line, o, t, mode = 'ink') {
     });
     return e;
   });
-  if (o.panel) panel(ctx, c.box, alpha, o.panel);
-  ctx.pipe.layer((g) => { if (o.dy) g.translate(0, typeof o.dy === 'function' ? o.dy(t) : o.dy); c.drawReveal(g, edges, alpha * (o.opacity ?? 1)); }, { mode, absorb: mode === 'ink' ? 0.45 : 0, seed: 47 });
+  const box = { x: bx.x + sx, y: bx.y + sy, w: bx.w, h: bx.h };
+  scrim(ctx, box, alpha * smooth(W[0].start - lead - 0.1, W[0].start + 0.25, t), o.color, o.panel);   // the halo arrives with the first word
+  ctx.pipe.layer((g) => { g.translate(sx, sy); if (o.dy) g.translate(0, typeof o.dy === 'function' ? o.dy(t) : o.dy); c.drawReveal(g, edges, alpha * (o.opacity ?? 1)); }, { mode, absorb: mode === 'ink' ? 0.45 : 0, seed: 47 });
 }
 // character onset times for a Chinese line (punctuation follows the previous character)
 export function charTimes(line) {

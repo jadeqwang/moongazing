@@ -25,7 +25,12 @@ for (const d of ['media/keyframes', 'media/keyframes/jade', 'media/chars/identit
   try { for (const f of fs.readdirSync(path.join(REPO, d))) files.add(f.replace(/\.(jpe?g|png|webp)$/i, '')); } catch (e) { /* none */ }
 }
 const all = process.argv.includes('--all-assets');
-const X = { audio: AUDIO, has: (k) => all || files.has(k) || ['S1', 'S1b', 'S2', 'S3', 'S4', 'goldline', 'gongbi'].includes(k), text: (k) => { try { return fs.readFileSync(path.join(REPO, 'media/keyframes', k + '.txt'), 'utf8'); } catch (e) { return ''; } } };
+const picks = (() => { try { return JSON.parse(fs.readFileSync(path.join(REPO, 'media/gen/picks.json'))); } catch (e) { return {}; } })();
+const PICK_KF = { LS1: 'J_LS1', LS2: 'J_LS2', LS3: 'J_LS3' };
+const kfMtime = (k) => { for (const d of ['media/keyframes', 'media/keyframes/jade']) for (const e of ['.jpg', '.png']) { try { return fs.statSync(path.join(REPO, d, k + e)).mtimeMs; } catch (er) { /* next */ } } return 0; };
+const pick = (k) => { const v = picks[k]; if (!v || !v.take) return null; let m; try { m = fs.statSync(path.join(REPO, 'media/gen', k, 'roto', v.take)).mtimeMs; } catch (e) { return null; }
+  if (m + 60000 < kfMtime(PICK_KF[k] || k)) return null; return { take: v.take, lag: v.lag_s ?? 0, clip: `${k}/${v.take}` }; };
+const X = { audio: AUDIO, pick, has: (k) => all || files.has(k) || ['S1', 'S1b', 'S2', 'S3', 'S4', 'goldline', 'gongbi'].includes(k), text: (k) => { try { return fs.readFileSync(path.join(REPO, 'media/keyframes', k + '.txt'), 'utf8'); } catch (e) { return ''; } } };
 const scenesSrc = fs.readFileSync(path.join(ROOT, 'src/shots.js'), 'utf8');
 const sceneNames = new Set(/export const SCENES = \{([^}]*)\}/s.exec(scenesSrc)[1].split(',').map((s) => s.trim()).filter(Boolean));
 

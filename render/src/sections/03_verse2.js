@@ -74,7 +74,8 @@ export default function shots(B, X, L) {
     { id: '3.1', t0: S31, t1: S32, paper: 'silk', grain: 31, focus: [1000, 640],
       // J_3.1: Jade, her mother and M at a Hangzhou teahouse table, blossoms, silk lanterns, snow outside (K_3.1 until
       // it lands); continues 2.5's pull-back from behind the opened lattice doors
-      scene: [X.has('J_3.1') ? kf('J_3.1', { from: { x: 0.5, y: 0.5, zoom: 1.12 }, to: { x: 0.5, y: 0.52, zoom: 1.04 }, par: [0, 0], dolly: -0.04, masks: { base: [0.0, 0.6] } })
+      scene: [X.pick('J_3.1') ? { type: 'roto', clip: X.pick('J_3.1').clip, paper: 'silk', offset: 0.2, lock: 0.3, from: { x: 0.5, y: 0.5, zoom: 1.12 }, to: { x: 0.5, y: 0.52, zoom: 1.04 } }
+        : X.has('J_3.1') ? kf('J_3.1', { from: { x: 0.5, y: 0.5, zoom: 1.12 }, to: { x: 0.5, y: 0.52, zoom: 1.04 }, par: [0, 0], dolly: -0.04, masks: { base: [0.0, 0.6] } })
         : X.has('K_3.1') ? kf('K_3.1', { from: { x: 0.5, y: 0.5, zoom: 1.12 }, to: { x: 0.5, y: 0.52, zoom: 1.04 }, par: [0, 0], dolly: -0.04,
           masks: { base: [0.0, 0.6], polys: [{ pts: [[0.25, 0.3], [0.85, 0.3], [0.85, 1], [0.25, 1]], depth: 0.85, blur: 10 }] },
           mist: { color: [0.95, 0.94, 0.9], amount: 0.18, y0: 80, y1: 360, speed: 6 } }) : ph('Afternoon teahouse; Jade, her mother and M at the table; snow', 'J_3.1')],
@@ -82,7 +83,8 @@ export default function shots(B, X, L) {
     // 3.2 — a tangyuan bitten into a crescent (月缺) on the same table: J_3.2 (macro still, slow push) when it lands;
     //       until then K_3.2/take_2 (Seedance: the chopsticks lift the bitten crescent out of the bowl)
     { id: '3.2', t0: S32, t1: S33, paper: 'silk', grain: 32,
-      scene: [X.has('J_3.2') ? kf('J_3.2', { from: { x: 0.5, y: 0.52, zoom: 1.06 }, to: { x: 0.49, y: 0.5, zoom: 1.16 }, dolly: 0.08, masks: { base: [0.1, 0.7] } })
+      scene: [X.pick('J_3.2') ? { type: 'roto', clip: X.pick('J_3.2').clip, paper: 'silk', offset: 0.3, lock: 0.25, from: { x: 0.5, y: 0.52, zoom: 1.06 }, to: { x: 0.49, y: 0.5, zoom: 1.16 } }
+        : X.has('J_3.2') ? kf('J_3.2', { from: { x: 0.5, y: 0.52, zoom: 1.06 }, to: { x: 0.49, y: 0.5, zoom: 1.16 }, dolly: 0.08, masks: { base: [0.1, 0.7] } })
         : { type: 'roto', clip: 'K_3.2/take_2', paper: 'silk', offset: 1.7, lock: 0.0, from: { x: 0.45, y: 0.52, zoom: 1.08 }, to: { x: 0.43, y: 0.5, zoom: 1.18 } }],
       // the lyric sits low on the dark table, under the bowl
       type(ctx, t) { lyricEN(ctx, L.L06, { ...mid, key: 'a', x: 1860, y: 1030, align: 'right', color: PALE, panel: 'dark', w1: 2, text: { 1: 'tea.' }, until: S33 + 0.1 }, t, 'over'); } },
@@ -118,8 +120,9 @@ export default function shots(B, X, L) {
     ...[['3.7', S37, X.has('J_3.7_close') ? bar(37) : S38, 'J_3.7'], ...(X.has('J_3.7_close') ? [['3.7b', bar(37), S38, 'J_3.7_close']] : [])].map(([id, a, b, img], i) => ({
       id, t0: a, t1: b, paper: 'silk', grain: 37 + i * 100,
       // J_3.7/take_6 (M reaches to the glowing Earth, Jade tilts her head) then J_3.7_close/take_4, redrawn on silk
-      scene: [{ type: 'roto', clip: i === 0 ? 'J_3.7/take_6' : 'J_3.7_close/take_4', paper: 'silk', offset: i === 0 ? 0.6 : 1.0, lock: 0.3,
-        from: { x: 0.52, y: 0.5, zoom: 1.03 }, to: { x: 0.56, y: 0.48, zoom: 1.12 } }],
+      scene: [X.pick(img) ? { type: 'roto', clip: X.pick(img).clip, paper: 'silk', offset: i === 0 ? 0.6 : 1.0, lock: 0.3,
+        from: { x: 0.52, y: 0.5, zoom: 1.03 }, to: { x: 0.56, y: 0.48, zoom: 1.12 } }
+        : X.has(img) ? kf(img, { from: { x: 0.52, y: 0.5, zoom: 1.03 }, to: { x: 0.56, y: 0.48, zoom: 1.12 }, dolly: 0.06, masks: { base: [0.1, 0.5] } }) : ph('Jade holds M; both look down at a glowing relief of the Earth', img)],
       type(ctx, t) { lyricEN(ctx, L.L09, { ...mid, size: 80, x: 110, y: 480, color: PALE, breaks: [2], hold: 1.6 }, t, 'over'); },   // pale on the dark museum wall
     })),
     // 3.8 — turnaround: suit-up, the harness clicks shut on 74.4, the photo of the kids on the panel

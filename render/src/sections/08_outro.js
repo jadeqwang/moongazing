@@ -35,8 +35,13 @@ export default function shots(B, X, L) {
       post: (t, lt) => ({ bump: 0.006 * Math.exp(-Math.max(0, lt - JOIN) / 0.15) * (lt >= JOIN ? 1 : 0) }) },
     // 8.2b — the impact, on the beat: everyone tumbles onto the rug
     ...(split ? [{ id: '8.2b', t0: S82b, t1: S83, paper: 'silk', grain: 85, focus: [1000, 680],
-      scene: [TAKE_82.b ? { type: 'roto', clip: `K_8.2b/${TAKE_82.b}`, paper: 'silk', lock: 0.2, from: { x: 0.52, y: 0.56, zoom: 1.16 }, to: { x: 0.52, y: 0.54, zoom: 1.08 } } : kf('K_8.2b', { from: { x: 0.52, y: 0.56, zoom: 1.16 }, to: { x: 0.52, y: 0.54, zoom: 1.08 }, dolly: -0.04,
-        masks: { base: [0.1, 0.5], polys: [{ pts: [[0.3, 0.45], [0.95, 0.45], [0.95, 1], [0.3, 1]], depth: 0.9, blur: 14 }] } })],
+      // the roto take smears arms and torsos together at the moment of contact (≈197.9–198.6): on the bar-109 beat 3
+      // (197.95) cut to the painted K_8.2b still and hold it through the impact to the 8.3 cut (a cross-fade ghosts:
+      // the take has moved away from the still's pose by then)
+      scene: [...(TAKE_82.b ? [{ type: 'roto', clip: `K_8.2b/${TAKE_82.b}`, paper: 'silk', lock: 0.2, from: { x: 0.52, y: 0.56, zoom: 1.16 }, to: { x: 0.52, y: 0.54, zoom: 1.08 } },
+        { name: 'plate', params: { img: 'K_8.2b', grade: 'native', from: { x: 0.52, y: 0.56, zoom: 1.16 }, to: { x: 0.52, y: 0.54, zoom: 1.08 }, opacity: (t) => (t >= B.bar(109, 3) ? 1 : 0) } }] : []),
+        ...(TAKE_82.b ? [] : [kf('K_8.2b', { from: { x: 0.52, y: 0.56, zoom: 1.16 }, to: { x: 0.52, y: 0.54, zoom: 1.08 }, dolly: -0.04,
+        masks: { base: [0.1, 0.5], polys: [{ pts: [[0.3, 0.45], [0.95, 0.45], [0.95, 1], [0.3, 1]], depth: 0.9, blur: 14 }] } })])],
       post: (t, lt) => ({ bump: 0.012 * Math.exp(-lt / 0.12) }) }] : []),
     // 8.3 — the roof deck: toy Earth and toy Moon side by side on the parapet
     { id: '8.3', t0: S83, t1: S84, paper: 'silk', grain: 83,

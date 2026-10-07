@@ -13,13 +13,14 @@ import { cosmos } from './scenes/cosmos.js';
 import { nightlights } from './scenes/nightlights.js';
 import { wallcalli, assignment } from './scenes/moments.js';
 import { colophon } from './scenes/colophon.js';
+import { singer } from './scenes/singer.js';
 import { roto } from './roto/index.js';
 
 export const SCENES = { inkmoon, plate, ribbons, rocketPad, trajectory, title, tag, washes, beach, wires, earth, streak,
-  placeholder, paperfade, stamp, emblem, letter, dust, seam, earthfar, bluedot, roto, cosmos, nightlights, wallcalli, assignment, colophon };
+  placeholder, paperfade, stamp, emblem, letter, dust, seam, earthfar, bluedot, roto, cosmos, nightlights, wallcalli, assignment, colophon, singer };
 
 // B: Beats, X: { has(key), text(key) } (asset registry), L: lyric lines by id
 export function buildShots(B, store, L, audio = { duration: 212.0 }) {
-  const X = { has: (k) => store.has(k), text: (k) => (store.texts && store.texts[k]) || '', audio };
+  const X = { has: (k) => store.has(k), text: (k) => (store.texts && store.texts[k]) || '', audio, pick: (k) => (store.picks && store.picks[k]) || null };
   return assemble(B, X, L);
 }

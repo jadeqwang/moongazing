@@ -356,9 +356,14 @@ export default function shots(B, X, L) {
   const B6V = { from: { x: 0.56, y: 0.5, zoom: 1.45 }, to: { x: 0.565, y: 0.5, zoom: 1.6 } };
   const BEAT = (bar(81) - bar(80)) / 4;
   const B_SHOTS = [
-    { id: '7.B1', t0: T.B1, t1: T.B2, paper: 'indigo', grain: 75, flash: true, focus: [700, 560],
-      scene: [has('K_7.B1') ? rot('K_7.B1/take_1', { paper: 'silk', offset: 0.6, lock: 0.3, from: { x: 0.42, y: 0.55, zoom: 1.08 }, to: { x: 0.40, y: 0.57, zoom: 1.2 } }) : ph('Arjun drills into a permanently shadowed crater', 'K_7.B1')],
-      type(ctx) { cap(ctx, 'ARJUN RAMAN  ·  PSR  ·  H₂O ICE 5.6 ± 2.9 wt%'); } },
+    // 7.B1 — after NASA's PRIME-1 / TRIDENT drill: wide, then the auger close on beat 3. Each uses its INK roto take
+    //        when picks.json has one prepped after the keyframe (X.pick), else the painted still with parallax.
+    ...[['7.B1', T.B1, bar(73, 3), 'K_7.B1', { x: 0.45, y: 0.55, zoom: 1.06 }, { x: 0.42, y: 0.56, zoom: 1.16 }],
+      ['7.B1b', bar(73, 3), T.B2, 'K_7.B1_close', { x: 0.5, y: 0.5, zoom: 1.04 }, { x: 0.5, y: 0.47, zoom: 1.14 }]].map(([id, a, b, k, from, to], i) => ({
+      id, t0: a, t1: b, paper: 'xuan', grain: 75 + i * 100, flash: i === 0, post: i ? (t, lt) => kick(lt) : undefined, focus: [860, 560],
+      scene: [X.pick(k) ? rot(X.pick(k).clip, { paper: 'ink', offset: 0.3, lock: 0.3, from, to })
+        : has(k) ? kf(k, { from, to, dolly: 0.06, glow: 0.5, masks: { base: [0.1, 0.6] } }) : ph('Arjun drills into a permanently shadowed crater', k)],
+      type(ctx) { cap(ctx, 'ARJUN RAMAN  ·  PSR  ·  H₂O ICE 5.6 ± 2.9 wt%'); } })),
     { id: '7.B2', t0: T.B2, t1: T.B3, paper: 'indigo', grain: 76, post: (t, lt) => kick(lt),
       scene: [has('K_7.B2') ? rot('K_7.B2/take_1', { paper: 'silk', offset: 0.2, lock: 0.6, glow: 0.5, from: { x: 0.55, y: 0.5, zoom: 1.04 }, to: { x: 0.6, y: 0.48, zoom: 1.16 } }) : ph('Jade at the ISRU reactor; molten regolith glows', 'K_7.B2')],
       type(ctx) { cap(ctx, 'JADE WANG  ·  ISRU  ·  MOLTEN REGOLITH ELECTROLYSIS  ·  O₂ 1.0 kg/hr'); } },
