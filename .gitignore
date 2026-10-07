@@ -6,3 +6,7 @@ node_modules/
 media/
 analysis/work/
 analysis/stems/
+render/out/
+render/node_modules/
+render/fonts/*.ttf
+render/fonts/*.otf
