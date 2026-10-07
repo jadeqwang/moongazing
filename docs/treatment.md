@@ -43,3 +43,16 @@ daughter holds Moon; their shadows on the wall perform an eclipse. Three people,
 5. Breakdown — whisper: 举头望明月 (kids look up) / 低头思故乡 (she looks down at Earth).
 6. Build + Drop — Guanghan Station speed-build in gold-on-indigo, crew, families, 2.6s-delay calls, "just 3 more months".
 7. Outro — guzheng; ink returns; homecoming at Mid-Autumn (团圆); closing inscription.
+
+## Research corrections (v0.1)
+- 低头思故乡 staging: from the south pole Earth bobs within ±7° of the horizon. She stands on the high rim of
+  Shackleton crater so Earth sits *below* eye level → she genuinely lowers her head. Sun behind her, her long shadow
+  points toward Earth; Earth reflected in her gold visor.
+- Mid-Autumn mirror: the family sees a FULL moon → she sees a NEW (dark) Earth, glittering with city lights; she finds
+  the lights of home. Their lit fractions always sum to one whole — a hidden 团圆. (Mid-Autumn 2026 = Sep 25.)
+- 月缺 (waning moon) on Earth ⇔ waxing Earth from the Moon. Use phase-pairs as transitions.
+- Suits: China's real lunar suit is 望宇 Wangyu — shares the 望 of 望明月. Our agency suit can nod to it.
+- Moonbase reality: regolith-covered grey mounds, vertical solar arrays on tall masts, fission reactor ~1 km away
+  with radiator fins, glassy sintered landing pad far off. Sun ≤1.5° elevation: ridges are white islands in black ink.
+- Calls: ~2.6 s round-trip pause; drop out when Earth dips below the horizon.
+- Motif: Jade's green jade pendant = a piece of Earth she carries. Li Bai: 小时不识月，呼作白玉盘.
