@@ -211,6 +211,10 @@ def verdict(score):
 
 def eye_drift(m):
     out = {}
+    y = fill(m.get("yaw") or [])  if m.get("yaw") else None
+    if y is not None:
+        out.update(yaw_first=round(float(np.median(y[:6])), 3), yaw_min_abs=round(float(np.min(np.abs(y))), 3),
+                   yaw_range=round(float(np.ptp(y)), 3))
     for k in ("iris", "eye"):
         v = fill(m[k])
         if v is not None and len(v) > 30:
@@ -375,7 +379,7 @@ def run_take(shot, mp4, check=True):
     side = {k: v for k, v in res.items() if k != "_curve"}
     json.dump(res, open(mp4[:-4] + ".sync.json", "w"), indent=1, ensure_ascii=False)
     print(json.dumps({k: side.get(k) for k in ("take", "lag_s", "score", "r_level", "r_hp", "r_sheet", "lag_sheet_only", "score_at_0", "ambiguous",
-                                               "event_lag_s", "event_score", "held_open", "face_hit", "mouth_source", "iris_drift", "verdict")}), flush=True)
+                                               "event_lag_s", "event_score", "held_open", "yaw_first", "yaw_min_abs", "yaw_range", "face_hit", "mouth_source", "iris_drift", "verdict")}), flush=True)
     return side
 
 

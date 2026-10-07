@@ -4,6 +4,28 @@
 are in `media/stylelab/<scene>/<model>_vN.{jpg,json}`. Raw model outputs are in `.../raw/`. The comparison sheets are
 `media/stylelab/SHEET_<scene>.jpg`, and the winners are in `media/stylelab/SHEET_best.jpg`. Note that `media/` is gitignored.*
 
+## GLOBAL RULE: every shot has ONE focal point
+
+*Added 2026-10-07 after feedback on K_7.C4.*
+
+**The rule.** Every frame has exactly one place the eye goes first. Everything else is quieter, simpler, darker or softer,
+and it supports that place.
+- **No crowds of equal-weight elements.** Do not show eight faces with eight tablets, a row of identical lanterns at
+  equal contrast, or every crew member doing the same thing. This is the single biggest tell that a frame is
+  AI-generated.
+
+**How to apply it.**
+- **Stage people the way they behave.** If someone shows a screen, it is one person turning it toward one or two
+  others. Nobody points at the back of their own tablet.
+- **Prefer a pair or a trio over a group.** Show "everyone" by cutting between intimate shots (K_7.C4a–d), not by
+  packing a frame.
+- **Make the focal object readable to the camera.** Use over-the-shoulder from behind or beside the viewer, or have
+  the holder tilt it toward a friend with the camera beside that friend. Pair it with **one reaction face**.
+- **In prompts, say it outright:** "ONE focal point: …; everything else is quieter, simpler, darker." Then check the
+  take: squint, and if two or more things compete, reject it or recompose.
+- **Wides are no exception.** Crowd frames (0.5 rooftops, 7.D4 applause) still need a single lit window, a single
+  lifted face, or a single figure the rest of the crowd frames.
+
 ## Winners at a glance
 
 | Paper | Winner | Model | Runner-up |

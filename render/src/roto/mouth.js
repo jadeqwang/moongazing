@@ -49,9 +49,9 @@ export function drawMouth(g, face, rest, fd, toScreen, k, r, o = {}) {
   const W0 = Math.hypot(cR[0] - cL[0], cR[1] - cL[1]);
   const lift = ((up[0] - mx) * -Math.sin(ang) + (up[1] - my) * Math.cos(ang)); // upper inner lip vs corner line (+ = below)
   const w = W0 * (1 - 0.24 * r) * (1 - 0.06 * k) * (o.width ?? 1);
-  const gap = Math.pow(k, 1.3) * 0.3 * W0 * (1 + 0.15 * r) * (o.open ?? 1);
-  const gU = gap * 0.28, gL = gap * 0.72;
-  const tU = W0 * 0.15, tL = W0 * 0.2;
+  const gap = Math.pow(k, 1.2) * 0.38 * W0 * (1 + 0.15 * r) * (o.open ?? 1);
+  const gU = gap * 0.36, gL = gap * 0.64;
+  const tU = W0 * 0.15, tL = W0 * 0.17;
   const N = 18;
   const curve = (fy) => { const out = []; for (let j = 0; j <= N; j++) { const u = j / N, x = (u - 0.5) * w, s = Math.pow(Math.sin(Math.PI * u), 0.75); out.push([x, fy(u, s, x)]); } return out; };
   const base = (u, s) => lift * 0.35 * s;                                  // the mouth line's own droop at the centre
@@ -64,18 +64,20 @@ export function drawMouth(g, face, rest, fd, toScreen, k, r, o = {}) {
   const path = (A, B) => { g.beginPath(); A.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y))); [...B].reverse().forEach(([x, y]) => g.lineTo(x, y)); g.closePath(); };
   const a = o.alpha ?? 1;
   // lips: rose glaze (multiplied onto the skin; the paper shows through)
-  g.fillStyle = `rgba(${o.lip || '196,104,104'},${0.8 * a})`;
+  g.filter = `blur(${(o.soft ?? 0.9).toFixed(2)}px)`;   // a glaze has a soft wet edge, not a vector edge
+  g.fillStyle = `rgba(${o.lip || '222,160,160'},${0.85 * a})`;
   path(outerU, innerU); g.fill();
-  g.fillStyle = `rgba(${o.lipLo || '206,122,118'},${0.72 * a})`;
+  g.fillStyle = `rgba(${o.lipLo || '230,174,170'},${0.8 * a})`;
   path(innerL, outerL); g.fill();
   // interior
   if (gap > 0.6) {
-    g.fillStyle = `rgba(${o.inside || '128,64,58'},${0.9 * a})`;
+    g.fillStyle = `rgba(${o.inside || '150,92,86'},${0.85 * a})`;
     path(innerU, innerL); g.fill();
   }
+  g.filter = 'none';
   // 口缝: the darkest mark on the face — a fine line along the upper inner lip, tapering into the corners
   const lw = Math.max(0.9, W0 * 0.032) * (o.lineW ?? 1);
-  g.fillStyle = `rgba(${o.line || '58,40,34'},${0.92 * a})`;
+  g.fillStyle = `rgba(${o.line || '84,56,48'},${0.85 * a})`;
   g.beginPath();
   innerU.forEach(([x, y], i) => { const u = i / N, t = Math.pow(Math.sin(Math.PI * u), 0.5); i ? g.lineTo(x, y - lw * 0.5 * t) : g.moveTo(x, y); });
   [...innerU].reverse().forEach(([x, y], j) => { const u = 1 - j / N, t = Math.pow(Math.sin(Math.PI * u), 0.5); g.lineTo(x, y + lw * 0.5 * t); });

@@ -2,6 +2,29 @@
 // in the painting's 留白, word by word on the sung onsets; a short Chinese inscription stands vertical, top-right,
 // with the 望月 seal — the way a painter titles a leaf.
 import { lyricEN, calli, kf, ph, INK, INKC, PALE, PALEC, smooth } from './_lib.js';
+import { plateMap } from '../scenes/plate.js';
+
+// 2.4 → 2.5: the teahouse soaks up through the white silk of the costume (multiply through a wet, lobed blot that
+// spreads from the centre), so the cut lands on the scene already there. Runtime only (canvas), deterministic in t.
+function silkBleed(ctx, key, P, t, a, b, cx = 960, cy = 540) {
+  const img = ctx.assets[key];
+  if (t <= a || !img) return;
+  const p = Math.min(1, (t - a) / (b - a)), m = plateMap(P, 0, 1, img);
+  ctx.pipe.layer((g) => {
+    g.save();
+    g.filter = 'blur(9px)'; g.fillStyle = '#000';
+    const R = 30 + 1500 * p ** 1.5;
+    g.beginPath(); g.arc(cx, cy, R * 0.55, 0, Math.PI * 2); g.fill();
+    for (let i = 0; i < 48; i++) {
+      const h1 = Math.sin(i * 12.9898) * 43758.5453 % 1, h2 = Math.sin(i * 78.233) * 12543.123 % 1;
+      const an = i * 2.39996, d = R * (0.35 + 0.3 * Math.abs(h1)), r = R * (0.12 + 0.2 * Math.abs(h2)) * (0.6 + 0.4 * p);
+      g.beginPath(); g.arc(cx + Math.cos(an) * d, cy + Math.sin(an) * d * 0.8, r, 0, Math.PI * 2); g.fill();
+    }
+    g.filter = 'none'; g.globalCompositeOperation = 'source-in';
+    g.drawImage(img, m.b[0], m.b[1], m.a[0], m.a[1]);
+    g.restore();
+  }, { mode: 'ink', absorb: 0.4, seed: 244 });
+}
 
 export const range = [32.42, 46.82];
 
@@ -18,43 +41,70 @@ function inscription(ctx, key, text, x, y, t, a, b, o = {}) {
 }
 
 export default function shots(B, X, L) {
-  const S21 = B.bar(17), S22 = L.L02.start, S23 = L.L03.start, S24 = L.L04.start, S25 = B.bar(24), S31 = L.L05.start;
+  const S21 = B.bar(17), S22 = L.L02.start, S23 = L.L03.start, S23b = L.L03.words[6].start, S24 = L.L04.start, S25 = B.bar(24), S31 = L.L05.start;
   const small = { size: 40, font: 'Cormorant', tracking: 0.03, hold: 0.9 };
+  const K21_ROTO = true;   // K_2.1/take_2 (h3, v7 keyframe: snow falls, the boatman rows); false = JS boat drift over the split plate
+  const LS1_ROTO = true;   // false = the painted J_LS1 still (parallax) if the take has to be pulled
+  const TEA = X.has('J_3.1') ? 'J_3.1' : 'K_3.1';
+  const P25 = { from: { x: 0.5, y: 0.48, zoom: 1.2 } };   // the Verse 2 teahouse (shared with 3.1 in 03_verse2.js)
   return [
     // 2.1 — West Lake in winter, the Broken Bridge; the camera travels right→left along the scroll
-    { id: '2.1', t0: S21, t1: S22, paper: 'silk', grain: 21,
-      scene: [X.has('K_2.1') ? kf('K_2.1', { from: { x: 0.62, y: 0.52, zoom: 1.22 }, to: { x: 0.42, y: 0.52, zoom: 1.24 }, par: [-0.02, 0], dolly: 0.03, ease: 'linear',
-        masks: { base: [0.0, 0.7], polys: [{ pts: [[0, 0.42], [1, 0.42], [1, 0.8], [0, 0.8]], water: 1, blur: 10 }] }, shimmer: 1.0,
-        mist: { color: [0.86, 0.84, 0.78], amount: 0.3, y0: 260, y1: 440, speed: -10 } }) : ph('West Lake in winter, the Broken Bridge under thin snow', 'K_2.1')],
+    { id: '2.1', t0: S21, t1: S22, paper: 'silk', grain: 21, focus: [960, 700],
+      // K_2.1 round 6 (Jade with her mother in the boat): the boat is its own layer (K_2.1_boat over the boat-less
+      // K_2.1_lake, split by scratchpad boat.py) and drifts right→left under the slow scroll pan; the water breathes.
+      // (The h3 take_1 base was generated from the earlier painting, so it is not used.)
+      scene: [K21_ROTO ? { type: 'roto', clip: 'K_2.1/take_2', paper: 'silk', offset: 0.0, lock: 0.3, from: { x: 0.62, y: 0.52, zoom: 1.22 }, to: { x: 0.44, y: 0.53, zoom: 1.25 } }
+        : X.has('K_2.1_lake') && X.has('K_2.1_boat')
+        ? kf('K_2.1_lake', { from: { x: 0.62, y: 0.52, zoom: 1.22 }, to: { x: 0.44, y: 0.53, zoom: 1.25 }, par: [-0.012, 0], dolly: 0.03, ease: 'linear',
+          over: { img: 'K_2.1_boat', from: [0.007, 0], to: [-0.008, 0.0015] },
+          masks: { base: [0.0, 0.7], polys: [{ pts: [[0, 0.58], [1, 0.58], [1, 0.62], [0.62, 0.66], [0.6, 1], [0, 1]], water: 1, blur: 14 }] }, shimmer: 0.8,
+          mist: { color: [0.86, 0.84, 0.78], amount: 0.3, y0: 260, y1: 440, speed: -10 } })
+        : X.has('K_2.1') ? kf('K_2.1', { from: { x: 0.62, y: 0.52, zoom: 1.22 }, to: { x: 0.44, y: 0.53, zoom: 1.25 }, par: [-0.012, 0], dolly: 0.03, ease: 'linear',
+          mist: { color: [0.86, 0.84, 0.78], amount: 0.3, y0: 260, y1: 440, speed: -10 } }) : ph('West Lake in winter, the Broken Bridge under thin snow', 'K_2.1')],
       type(ctx, t) {
         lyricEN(ctx, L.L01, { ...small, x: 120, y: 150, color: INK }, t);
-        inscription(ctx, 'ins21', '断桥残雪', 1842, 70, t, S21 + 0.4, S22 - 0.05);
+        inscription(ctx, 'ins21', '断桥残雪', 1846, 40, t, S21 + 0.4, S22 - 0.05, { size: 38 });   // clears the pagoda as the pan passes it
       } },
     // 2.2 — willow switches hanging plain and straight → M's dance ribbons; Jade's hands correct the Chang'e pose
     { id: '2.2', t0: S22, t1: S23, paper: 'silk', grain: 22,
-      scene: [X.has('K_2.2') ? kf('K_2.2', { from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.56, y: 0.47, zoom: 1.12 },
-        masks: { base: [0.2, 0.5], polys: [{ pts: [[0, 0], [0.5, 0], [0.5, 1], [0, 1]], flutter: 0.8, blur: 16 }, { pts: [[0.5, 0.2], [0.82, 0.2], [0.82, 1], [0.5, 1]], depth: 0.8, blur: 10 }] },
-        flutter: [2.2, 1.4] }) : ph('Willow switches → M’s dance ribbons; Jade’s hands correct her arm', 'K_2.2')],
+      // K_2.2/take_3 (Seedance 2.0): Jade's hands lift M's arm into the Chang'e pose, ribbons hang straight
+      scene: [{ type: 'roto', clip: 'K_2.2/take_3', paper: 'silk', offset: 0.0, lock: 0.4, style: { lineTh: 0.64, lineA: 0.6 }, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.56, y: 0.47, zoom: 1.12 } }],
       type(ctx, t) {
         lyricEN(ctx, L.L02, { ...small, x: 1860, y: 1010, align: 'right', color: INK }, t);
-        inscription(ctx, 'ins22', '垂柳', 1876, 360, t, S22 + 0.4, S23 - 0.05);
+        inscription(ctx, 'ins22', '垂柳', 1876, 600, t, S22 + 0.4, S23 - 0.05);   // below Jade's hands
       } },
     // 2.3 — LS1: the canopied rowboat on West Lake; Jade sings in 3/4 profile
-    { id: '2.3', t0: S23, t1: S24, paper: 'silk', grain: 23,
-      scene: [X.has('J_LS1') ? kf('J_LS1', { from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 },
-        masks: { base: [0.1, 0.5], polys: [{ pts: [[0.55, 0], [1, 0], [1, 1], [0.5, 1]], depth: 0.85, blur: 12 }, { pts: [[0, 0.45], [0.55, 0.45], [0.55, 0.75], [0, 0.75]], water: 1, blur: 10 }, { pts: [[0.6, 0.15], [0.75, 0.15], [0.75, 0.7], [0.6, 0.7]], flutter: 0.35, blur: 12 }] },
+    { id: '2.3', t0: S23, t1: LS1_ROTO ? S23b : S24, paper: 'silk', grain: 23, focus: [1180, 420],
+      // LS1/take_19 (Seedance 2.0 mini, vocal-referenced, new J_LS1 with her mother): she turns from the lake toward us
+      // and sings; redrawn on silk, lips drawn from the vocal stem (sync: media/gen/LS1/sync.json, ref 39.23, lag +0.21)
+      scene: [LS1_ROTO ? { type: 'roto', clip: 'LS1/take_19', paper: 'silk', ref_t0: 39.23, lag: 0.21, lock: 0.25, mouth: false, eyelock: false, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 } }
+        : X.has('J_LS1') ? kf('J_LS1', { from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 },
+        masks: { base: [0.1, 0.4], polys: [{ pts: [[0.56, 0], [1, 0], [1, 1], [0.5, 1]], depth: 0.85, blur: 14 }, { pts: [[0, 0.47], [0.56, 0.47], [0.56, 0.8], [0, 0.8]], water: 1, blur: 12 }, { pts: [[0.72, 0.0], [1, 0.0], [1, 0.08], [0.72, 0.08]], flutter: 0.5, blur: 10 }] },
         shimmer: 1.2, flutter: [1.4, 1.6] }) : ph('LS1 — Jade sings in the West Lake rowboat', 'J_LS1')],
       type(ctx, t) {
         lyricEN(ctx, L.L03, { ...small, x: 110, y: 120, color: INK, breaks: [4] }, t);
         inscription(ctx, 'ins23', '西湖', 620, 60, t, S23 + 0.5, S24 - 0.05);
       } },
+    // 2.3b — "…over water": the take turns her full-face from ~clip 3 s, where the redraw ghosts (doubled glasses), so on
+    //        the word "water" we cut wide to the lake: the same boat (Jade and her mother) drifting under the bridge
+    ...(LS1_ROTO ? [{ id: '2.3b', t0: S23b, t1: S24, paper: 'silk', grain: 230, focus: [960, 640],
+      scene: [X.has('K_2.1_lake') && X.has('K_2.1_boat')
+        ? kf('K_2.1_lake', { from: { x: 0.5, y: 0.66, zoom: 1.62 }, to: { x: 0.47, y: 0.66, zoom: 1.7 }, par: [-0.008, 0], dolly: 0.03, ease: 'linear',
+          over: { img: 'K_2.1_boat', from: [-0.006, 0.0005], to: [-0.016, 0.002] },
+          masks: { base: [0.0, 0.7], polys: [{ pts: [[0, 0.58], [1, 0.58], [1, 0.62], [0.62, 0.66], [0.6, 1], [0, 1]], water: 1, blur: 14 }] }, shimmer: 0.8 })
+        : kf('K_2.1', { from: { x: 0.5, y: 0.66, zoom: 1.62 }, to: { x: 0.47, y: 0.66, zoom: 1.7 } })],
+      type(ctx, t) { lyricEN(ctx, L.L03, { ...small, x: 110, y: 120, color: INK, breaks: [4] }, t); } }] : []),
     // 2.4 — insert: her hand smoothing the silk of the Chang'e costume; the silk ripple becomes a lake ripple
     { id: '2.4', t0: S24, t1: S25, paper: 'silk', grain: 24,
-      scene: [ph('Insert — Jade’s hand smoothing the silk of the Chang’e costume; the ripple becomes the lake', 'K_2.4 (gen-v)')],
-      type(ctx, t) { lyricEN(ctx, L.L04, { ...small, x: 960, y: 1000, align: 'center', color: INK }, t); } },
-    // 2.5 — fill: the teahouse lattice doors open (K_3.1 revealed from the centre)
+      // K_2.4/take_3 (Seedance 2.0): her hands smooth the silk of the costume, the folds run like water
+      scene: [{ type: 'roto', clip: 'K_2.4/take_3', paper: 'silk', offset: 0.0, lock: 0.35, style: { lineTh: 0.64, lineA: 0.6 }, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.47, y: 0.52, zoom: 1.1 } }],
+      needs: [TEA],
+      type(ctx, t) { silkBleed(ctx, TEA, P25, t, S25 - 0.62, S25); lyricEN(ctx, L.L04, { ...small, x: 960, y: 1000, align: 'center', color: INK }, t); } },
+    // 2.5 — fill (kick lead-in 45.3): the teahouse, Jade, her mother and M at the table (J_3.1, the three-generation
+    //       Hangzhou memory; K_3.1 until it lands), already soaked through the silk at the end of 2.4; 3.1 continues
+    //       the same slow pull-back on the kit.
     { id: '2.5', t0: S25, t1: S31, paper: 'silk', grain: 25,
-      scene: [X.has('K_3.1') ? kf('K_3.1', { from: { x: 0.5, y: 0.48, zoom: 1.2 }, to: { x: 0.5, y: 0.5, zoom: 1.12 }, reveal: (t, lt) => smooth(0.0, 1.4, lt) * 1.4 }) : ph('Teahouse lattice doors swing open', 'K_3.1')],
-      type(ctx, t) { lyricEN(ctx, L.L04, { ...small, key: 'b', x: 960, y: 1000, align: 'center', color: INK, until: L.L04.end + 0.7 }, t); } },
+      scene: [X.has(TEA) ? kf(TEA, { ...P25, to: { x: 0.5, y: 0.5, zoom: 1.12 }, par: [0, 0], dolly: 0 }) : ph('The teahouse', TEA)],
+      type(ctx, t) { lyricEN(ctx, L.L04, { ...small, key: 'b', x: 80, y: 660, breaks: [2], color: INK, until: L.L04.end + 0.7 }, t); } },   // on the plain wall, left of the family
   ];
 }

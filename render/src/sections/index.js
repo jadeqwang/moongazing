@@ -8,10 +8,11 @@ import * as s05 from './05_interlude.js';
 import * as s06 from './06_breakdown.js';
 import * as s07 from './07_drop.js';
 import * as s08 from './08_outro.js';
+import * as s09 from './09_credits.js';
 
 export const SECTIONS = [
   ['00_intro', s00], ['01_intro_b', s01], ['02_verse1', s02], ['03_verse2', s03], ['04_hook', s04],
-  ['05_interlude', s05], ['06_breakdown', s06], ['07_drop', s07], ['08_outro', s08],
+  ['05_interlude', s05], ['06_breakdown', s06], ['07_drop', s07], ['08_outro', s08], ['09_credits', s09],
 ];
 
 export function assemble(B, X, L) {

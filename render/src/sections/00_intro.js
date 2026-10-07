@@ -1,31 +1,73 @@
 // SECTION 0 · COLD OPEN / INTRO A — 0.00–15.67 (docs/script.md §0). Owner: motion lead.
 import { card, calli, bump, INK, PALE, INKC, PALEC, WHITE, smooth, easeInOutSine } from './_lib.js';
+import { plateMap } from '../scenes/plate.js';
+
+// 0.3 → 0.4: the ink of the Moon palace bleeds over Chang'e. The incoming painting (at 0.4's first framing) is laid
+// on as sumi (multiply) through a wet, lobed blot that spreads from the dark sky; its whites leave her showing, so at
+// the cut only the palace's white paper "turns". Runtime only (canvas), deterministic in t.
+const P04 = { from: { x: 0.52, y: 0.5, zoom: 1.03 }, par: [-0.014, 0.004] };
+function inkBleed(ctx, key, P, t, a, b) {
+  const img = ctx.assets[key];
+  if (t <= a || !img) return;
+  const p = Math.min(1, (t - a) / (b - a)), m = plateMap(P, 0, 1, img);
+  ctx.pipe.layer((g) => {
+    g.save();
+    g.filter = 'blur(7px)'; g.fillStyle = '#000';
+    const R = 30 + 1450 * p ** 1.6;
+    g.beginPath(); g.arc(700, 430, R * 0.55, 0, Math.PI * 2); g.fill();
+    for (let i = 0; i < 48; i++) {   // lobes: the wet front runs ahead unevenly along the fibres
+      const h1 = Math.sin(i * 12.9898) * 43758.5453 % 1, h2 = Math.sin(i * 78.233) * 12543.123 % 1;
+      const an = i * 2.39996, d = R * (0.35 + 0.3 * Math.abs(h1)), r = R * (0.12 + 0.2 * Math.abs(h2)) * (0.6 + 0.4 * p);
+      g.beginPath(); g.arc(700 + Math.cos(an) * d, 430 + Math.sin(an) * d * 0.8, r, 0, Math.PI * 2); g.fill();
+    }
+    g.filter = 'none'; g.globalCompositeOperation = 'source-in';
+    g.drawImage(img, m.b[0], m.b[1], m.a[0], m.a[1]);
+    g.restore();
+  }, { mode: 'ink', absorb: 0.5, seed: 304 });
+}
 
 export const range = [0, 15.67];
 export default function shots(B, X, L) {
   const bar = (n, b = 1) => B.bar(n, b);
   const FIRST = 1.78, BOOM = 2.84, S03 = 5.86, S04 = bar(4), S05 = bar(5), S06 = 13.10;
   const LIFT = bar(8);
-  const moonRiseCam = (t) => ({ zoom: 1 + 0.07 * easeInOutSine(t / S03), y: -8 * (t / S03) });
+  // the camera breathes in on the Moon, then (5.0 → the 5.86 pluck) glides so the ink Moon lands exactly where the
+  // painted Moon of K_0.3 sits in 0.3's first frame (centre 1665,-11, R 633 px) — a match cut, ink → silk.
+  const moonRiseCam = (t) => {
+    const z0 = 1 + 0.07 * easeInOutSine(Math.min(1, t / 5.0)), y0 = -8 * Math.min(1, t / 5.0);
+    const g = smooth(4.95, S03, t), gz = g * g * (3 - 2 * g) * 0.35 + g * g * 0.65;   // zoom accelerates into the cut
+    const z = z0 + (2.18 - z0) * gz;
+    return { zoom: z, x: -323 * g, y: y0 + (253 - y0) * g };
+  };
+  // INK DROP SYNC — the first strum is a rolled guzheng chord: onsets 2.43/2.49/2.55, peak 2.62, next hit 2.87.
+  // The drop falls from the first sound (1.78) and HITS the paper at 2.44 (frame 58 is the last airborne frame,
+  // frame 59 the first wet one). After contact the bloom runs on a "bloom clock" s(t) instead of wall time: a small
+  // splat on each finger of the roll, the main expansion on the 2.62 peak, a secondary pulse on 2.87, then a slow
+  // settle. The inkmoon scene derives everything from s = t - tImpact, so tImpact is evaluated per frame as t - s(t)
+  // (a getter on the params; `cam` runs first each frame and records t). Pure function of t: deterministic.
+  const HIT = 2.44, ROLL = [[2.44, 0.045, 0.10], [2.49, 0.022, 0.09], [2.55, 0.022, 0.09], [2.62, 0.27, 0.26], [2.87, 0.20, 0.30]];
+  const eo = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : 1 - (1 - x) ** 3);
+  const bloomClock = (t) => ROLL.reduce((s, [t0, A, d]) => s + A * eo((t - t0) / d), 0)
+    + (t > 2.62 ? 0.75 * (1 - Math.exp(-(t - 2.62) / 1.3)) + 0.12 * (t - 2.62) : 0);
+  let now = 0;
+  const dropCam = (t) => { now = t; return moonRiseCam(t); };
+  const bloom = () => ({ tFall: FIRST, get tImpact() { return now < HIT ? HIT : now - bloomClock(now); }, resolveAt: [3.58, 5.1] });
   const SHANGHAI = /shanghai|pudong|puxi/i.test(X.text('K_0.6'));
+  const K06_OFF = 1.3, K06_END = { x: 0.58, y: 0.52, zoom: 1.18 };   // shared with 1.1 (01_intro_b.js)
   return [
     // 0.1 — a drop of ink falls on xuan and blooms into a full Moon
-    //       (its shadow gathers in the silence; it falls on the first sound and lands exactly on the 2.84 hit)
-    { id: '0.1', t0: 0, t1: BOOM, paper: 'xuan', scene: 'inkmoon', params: { tFall: FIRST, tImpact: BOOM }, grain: 1, cam: moonRiseCam },
-    // 0.2 — the bloom spreads with the pluck's decay, the maria drop in wet-in-wet, the real Moon resolves
-    { id: '0.2', t0: BOOM, t1: S03, paper: 'xuan', scene: 'inkmoon', params: { tFall: FIRST, tImpact: BOOM, resolveAt: [4.25, 5.35] }, grain: 1, cam: moonRiseCam },
+    //       (its shadow gathers in the silence; it falls on the first sound and lands on the first strum, 2.44)
+    { id: '0.1', t0: 0, t1: BOOM, paper: 'xuan', scene: 'inkmoon', params: bloom(), grain: 1, cam: dropCam },
+    // 0.2 — the bloom settles, the maria drop in wet-in-wet, the real Moon resolves (from the 3.58 pluck)
+    { id: '0.2', t0: BOOM, t1: S03, paper: 'xuan', scene: 'inkmoon', params: bloom(), grain: 1, cam: dropCam },
 
-    // 0.3 — BOOM: Chang'e rises past the Moon (K_0.3)
-    { id: '0.3', t0: S03, t1: S04, paper: 'silk', grain: 3, scene: 'plate',
-      params: { img: 'K03', grade: 'native', from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.49, y: 0.47, zoom: 1.10 }, par: [0.004, 0.05], dolly: 0.04,
-        masks: { base: [0.15, 0.35], polys: [
-          { pts: [[0.62, 0], [1, 0], [1, 0.62], [0.66, 0.62], [0.56, 0.45], [0.55, 0.2]], depth: 0.05, blur: 8 },
-          { pts: [[0.40, 0.0], [0.56, 0.02], [0.50, 0.30], [0.44, 0.62], [0.36, 0.96], [0.08, 0.99], [0.16, 0.62], [0.26, 0.24]], depth: 0.8, blur: 7 },
-          { pts: [[0.36, 0.35], [0.44, 0.55], [0.36, 0.99], [0.06, 0.99], [0.12, 0.62], [0.22, 0.42]], flutter: 0.9, blur: 14 },
-          { pts: [[0.0, 0.78], [0.45, 0.78], [0.5, 1], [0, 1]], depth: 0.6, blur: 16 },
-        ] },
-        flutter: [5, 3.2], mist: { color: [0.86, 0.78, 0.6], amount: 0.28, y0: 760, y1: 1080, speed: 14 } },
+    // 0.3 — Chang'e rises past the Moon: K_0.3/take_1 redrawn on silk (the painting holds; her figure and ribbons are
+    //       redrawn on twos from the h3 motion base). The take's head exits top at ~3 s; the shot is 2.35 s.
+    { id: '0.3', t0: S03, t1: S04, paper: 'silk', grain: 3, focus: [560, 420],
+      scene: [{ type: 'roto', clip: 'K_0.3/take_1', paper: 'silk', lock: 0.35, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.49, y: 0.47, zoom: 1.10 } }],
+      needs: ['K04'],
       type(ctx, t) {
+        inkBleed(ctx, 'K04', P04, t, S04 - 0.6, S04);
         calli(ctx, 'z03', { text: '嫦娥奔月', size: 150, x: 1848, y: 64, color: INKC, seed: 31 }, t, S03 + 0.1, 0.85, S04 - 0.02);
         card(ctx, 'c03', { lines: [[{ t: 'Long ago, the legend says,', font: 'CormorantItalic', size: 74 }], [{ t: 'Chang’e flew to the ' }, { t: 'Moon.', size: 134 }]],
           size: 104, x: 1840, y: 826, align: 'right', color: INK }, t, S03 + 0.3, S04 - 0.02);
@@ -46,10 +88,9 @@ export default function shots(B, X, L) {
       } },
 
     // 0.5 — every Mid-Autumn, a billion people… (K_0.5)
-    { id: '0.5', t0: S05, t1: S06, paper: 'silk', grain: 5, scene: 'plate',
-      params: { img: 'K05', grade: 'native', from: { x: 0.5, y: 0.52, zoom: 1.05 }, to: { x: 0.47, y: 0.5, zoom: 1.13 }, par: [-0.01, -0.006], dolly: 0.06,
-        masks: { base: [0.0, 0.85], polys: [{ pts: [[0, 0], [1, 0], [1, 0.3], [0, 0.3]], depth: 0.0, blur: 20 }] },
-        flicker: 0.9, mist: { color: [0.42, 0.48, 0.6], amount: 0.38, y0: 300, y1: 470, speed: 12 } },
+    //       K_0.5/take_1 (h3: lantern light and mist drifting over the roofs) redrawn on silk
+    { id: '0.5', t0: S05, t1: S06, paper: 'silk', grain: 5, focus: [900, 420],
+      scene: [{ type: 'roto', clip: 'K_0.5/take_1', paper: 'silk', offset: 0.6, lock: 0.3, from: { x: 0.5, y: 0.52, zoom: 1.05 }, to: { x: 0.47, y: 0.5, zoom: 1.13 } }],
       type(ctx, t) {
         // Li Bai, 静夜思 — traditionally dated 726 CE (开元十四年), Yangzhou
         card(ctx, 'c05', { lines: [[{ t: 'In 726, Li Bai looked up at the ' }, { t: 'Moon', size: 112 }], [{ t: 'and wrote about ' }, { t: 'missing home.', size: 112 }]],
@@ -60,18 +101,12 @@ export default function shots(B, X, L) {
     // 0.6 — the roof-deck shot. The keyframe is read live; if the new Shanghai/Pudong take has landed (K_0.6.txt says so)
     // use a generic city split (sky far, skyline mid, deck near, lights alive); else the Mei/mother split.
     SHANGHAI
-      ? { id: '0.6', t0: S06, t1: LIFT, paper: 'silk', grain: 6, scene: 'plate',
-        params: { img: 'K06', grade: 'native', from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.6, y: 0.54, zoom: 1.2 }, par: [-0.016, 0.004], dolly: 0.09,
-          masks: { base: [0.1, 0.5], polys: [
-            { pts: [[0, 0], [1, 0], [1, 0.44], [0, 0.44]], depth: 0.0, blur: 24 },
-            { pts: [[0.12, 0.6], [1, 0.6], [1, 0.79], [0.12, 0.79]], depth: 0.3, water: 1, blur: 8 },
-            { pts: [[0, 0.74], [1, 0.74], [1, 1], [0, 1]], depth: 0.85, blur: 6 },
-            { pts: [[0.63, 0.56], [0.81, 0.53], [0.83, 1], [0.62, 1]], depth: 0.95, blur: 5 },
-            { pts: [[0, 0.12], [0.09, 0.12], [0.09, 1], [0, 1]], depth: 0.9, blur: 6 },
-            { pts: [[0, 0.64], [0.21, 0.66], [0.22, 1], [0, 1]], depth: 0.97, flutter: 0.4, blur: 8 },
-            { pts: [[0.68, 0.58], [0.75, 0.58], [0.75, 0.76], [0.68, 0.76]], flutter: 0.45, blur: 8 },
-          ] },
-          flutter: [2.0, 2.6], shimmer: 1.6, flicker: 1.0, mist: { color: [0.32, 0.38, 0.52], amount: 0.22, y0: 480, y1: 640, speed: 9 } } }
+      // K_0.6/take_3 (Seedance): M lifts the toy Moon against the real one and it catches the light; 1.1 continues it
+      ? { id: '0.6', t0: S06, t1: LIFT, paper: 'silk', grain: 6, focus: [1150, 470],
+        scene: [{ type: 'roto', clip: 'K_0.6/take_3', paper: 'silk', offset: K06_OFF, lock: 0.3, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: K06_END },
+          // the night starts to flood indigo over the deck in the last bar before the lift (1.1 finishes it)
+          { name: 'paperfade', params: { paperTo: 'indigo', fade: (t) => 0.5 * smooth(LIFT - 0.7, LIFT, t) } }],
+        }
       : { id: '0.6', t0: S06, t1: LIFT, paper: 'silk', grain: 6, scene: 'plate',
       params: { img: 'K06', grade: 'native', from: { x: 0.56, y: 0.5, zoom: 1.04 }, to: { x: 0.66, y: 0.42, zoom: 1.24 }, par: [-0.012, 0.004], dolly: 0.08,
         masks: { base: [0.05, 0.5], polys: [

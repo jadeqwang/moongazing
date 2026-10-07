@@ -9,13 +9,17 @@ import { title } from './scenes/title.js';
 import { tag, washes, beach, wires, earth, streak } from './scenes/misc.js';
 import { placeholder, paperfade, stamp, emblem, letter, dust, seam, earthfar, bluedot } from './scenes/extra.js';
 import { SECTIONS, assemble } from './sections/index.js';
+import { cosmos } from './scenes/cosmos.js';
+import { nightlights } from './scenes/nightlights.js';
+import { wallcalli, assignment } from './scenes/moments.js';
+import { colophon } from './scenes/colophon.js';
 import { roto } from './roto/index.js';
 
 export const SCENES = { inkmoon, plate, ribbons, rocketPad, trajectory, title, tag, washes, beach, wires, earth, streak,
-  placeholder, paperfade, stamp, emblem, letter, dust, seam, earthfar, bluedot, roto };
+  placeholder, paperfade, stamp, emblem, letter, dust, seam, earthfar, bluedot, roto, cosmos, nightlights, wallcalli, assignment, colophon };
 
 // B: Beats, X: { has(key), text(key) } (asset registry), L: lyric lines by id
-export function buildShots(B, store, L) {
-  const X = { has: (k) => store.has(k), text: (k) => (store.texts && store.texts[k]) || '' };
+export function buildShots(B, store, L, audio = { duration: 212.0 }) {
+  const X = { has: (k) => store.has(k), text: (k) => (store.texts && store.texts[k]) || '', audio };
   return assemble(B, X, L);
 }

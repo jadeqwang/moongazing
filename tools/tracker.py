@@ -15,10 +15,8 @@ GEN = os.path.join(ROOT, "media", "gen")
 KF = os.path.join(ROOT, "media", "keyframes")
 
 # keyframes being redone by other agents (moonbase, family/home, crew) -> WAIT
-WAIT = {"1.5", "5.2", "5.3", "5.4", "6.2", "7.A1", "7.A2", "7.A3", "7.A4", "7.B2", "7.B3", "7.B4", "7.B6", "7.C6",
-        "7.E1", "7.E2"}
-WAIT_WHY = {"6.2": "moon rim (K_6.2i-iii, J_6.2) - moonbase look being redone",
-            "7.C1": "Moon side (station) waits for the moonbase layout; Earth side done"}
+WAIT = set()      # moonbase + Earth keyframes final as of round 3 (2026-10-07)
+WAIT_WHY = {}
 # lip-sync shot -> script id
 LS = {"2.3": "LS1", "3.4": "LS2", "4.3": "LS3"}
 # script id -> generated-clip folder(s) in media/gen
@@ -29,13 +27,23 @@ CLIPS = {"0.3": ["K_0.3"], "1.4": ["J_1.4"], "2.1": ["K_2.1"], "2.3": ["LS1"], "
          "3.1": ["K_3.0_bridge", "K_3.1"], "3.2": ["K_3.2"], "4.2": ["K_4.2"], "4.5": ["K_4.5"], "6.1": ["K_6.1"],
          "7.C1": ["K_7.C1_earth"], "7.C2": ["K_7.C2"], "7.C3": ["K_7.C3"], "7.D4": ["K_7.D4"], "8.1": ["K_8.1"],
          "8.2": ["K_8.2"], "8.3": ["K_8.3"],
-         "7.C4": ["K_7.C4"] + [f"K_7.C4_{c}" for c in ("c1_chen", "c2_anastasia", "c3_adaeze", "c4_arjun", "c5_lucia",
-                                                    "c6_kenji", "c7_layla", "c8_jade")]}
+         "7.C4": [f"K_7.C4{x}" for x in "abcd"] + [f"K_7.C4_{c}" for c in ("c1_chen", "c2_anastasia", "c3_adaeze",
+                                                    "c4_arjun", "c5_lucia", "c6_kenji", "c7_layla", "c8_jade")],
+         "4.7": ["K_4.7"], "5.4": ["K_5.4"], "6.2": ["K_6.2ii", "J_6.2", "J_6.2_visor"], "7.B2": ["K_7.B2"],
+         "7.B3": ["K_7.B3"], "7.B6": ["K_7.B6"], "7.C6": ["K_7.C6"], "7.E1": ["K_7.E1"]}
+CLIPS["4.3"] = ["LS3", "K_4.3b", "K_4.3b_close"]
+CLIPS["3.7"] = ["J_3.7", "J_3.7_close"]
+CLIPS["7.C1"] = ["K_7.C1_earth", "K_7.C1_moon"]
+CLIPS["7.D2"] = ["J_7.D2", "K_7.D2_room"]
+CLIPS["1.5"] = []
+CLIPS["3.1"] = ["J_3.1", "K_3.0_bridge", "K_3.1"]
+CLIPS["3.2"] = ["J_3.2", "K_3.2"]
+CLIPS["8.2"] = ["K_8.2a", "K_8.2b", "K_8.2"]
 # methods for the drop bullets (no method column in the script)
 DROP_METHOD = {"7.A1": "JS", "7.A2": "JS", "7.A3": "JS", "7.A4": "JS", "7.B1": "video base + roto", "7.B2": "video base + roto",
-               "7.B3": "still+parallax", "7.B4": "JS", "7.B5": "JS (ballistic dust)", "7.B6": "JS",
+               "7.B3": "video base + roto", "7.B4": "JS", "7.B5": "JS (ballistic dust)", "7.B6": "video base + roto",
                "7.C1": "video base + roto", "7.C2": "video base + roto", "7.C3": "video base + roto", "7.C4": "video base + roto",
-               "7.C5": "JS (chat UI)", "7.C6": "still+parallax", "3.6a": "JS (rigid rotation)", "7.D1": "video base + roto", "7.D2": "video base + roto",
+               "7.C5": "JS (chat UI)", "7.C6": "video base + roto", "3.6a": "JS (rigid rotation)", "7.D1": "video base + roto", "7.D2": "video base + roto",
                "7.D3": "JS (match cut)", "7.D4": "video base + roto", "7.E1": "video base + roto", "7.E2": "JS",
                "7.E3": "JS", "7.E4": "JS"}
 
@@ -93,6 +101,10 @@ def clip_status(folder, picks):
         rows.append(json.load(open(p)))
     if not rows:
         return None
+    sup = [r for r in rows if r.get("superseded")]
+    rows = [r for r in rows if not r.get("superseded") and r["state"] != "cancelled"]
+    if not rows:
+        return {"folder": folder, "status": f"{len(sup)} superseded (keyframe replaced)", "take": "", "note": "", "lag": ""}
     done = [r for r in rows if r["state"] == "done"]
     err = [r for r in rows if r["state"] in ("error", "collected_error")]
     pend = [r for r in rows if r["state"] in ("queued", "running", "ready", "stale")]
@@ -143,7 +155,7 @@ def main():
         for line in open(sp):
             r = json.loads(line)
             spend += r.get("est_usd", 0) if r["event"] == "submit" else -r.get("refund_usd", 0)
-    L += ["", f"Video spend so far (list-price estimate, errors refunded): **${spend:.2f}** of the $300 cap "
+    L += ["", f"Video spend so far (list-price estimate, errors refunded): **${spend:.2f}** of the $380 cap "
           "(media/gen/spend.jsonl)."]
     open(os.path.join(ROOT, "docs", "production_tracker.md"), "w").write("\n".join(L) + "\n")
     print("wrote docs/production_tracker.md")

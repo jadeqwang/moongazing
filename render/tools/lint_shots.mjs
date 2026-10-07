@@ -11,7 +11,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(ROOT, '..');
-const FPS = 24, TOL = 1 / FPS + 1e-6, END = 212.0;
+const FPS = 24, TOL = 1 / FPS + 1e-6;
+const AUDIO = (() => { try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'data/audio.json'))); } catch (e) { return { duration: 212.0 }; } })();
 const grid = JSON.parse(fs.readFileSync(path.join(REPO, 'analysis/beatgrid.json')));
 const lyr = JSON.parse(fs.readFileSync(path.join(REPO, 'analysis/lyrics_timing.json')));
 const { Beats } = await import(path.join(ROOT, 'src/beats.js'));
@@ -24,7 +25,7 @@ for (const d of ['media/keyframes', 'media/keyframes/jade', 'media/chars/identit
   try { for (const f of fs.readdirSync(path.join(REPO, d))) files.add(f.replace(/\.(jpe?g|png|webp)$/i, '')); } catch (e) { /* none */ }
 }
 const all = process.argv.includes('--all-assets');
-const X = { has: (k) => all || files.has(k) || ['S1', 'S1b', 'S2', 'S3', 'S4', 'goldline', 'gongbi'].includes(k), text: (k) => { try { return fs.readFileSync(path.join(REPO, 'media/keyframes', k + '.txt'), 'utf8'); } catch (e) { return ''; } } };
+const X = { audio: AUDIO, has: (k) => all || files.has(k) || ['S1', 'S1b', 'S2', 'S3', 'S4', 'goldline', 'gongbi'].includes(k), text: (k) => { try { return fs.readFileSync(path.join(REPO, 'media/keyframes', k + '.txt'), 'utf8'); } catch (e) { return ''; } } };
 const scenesSrc = fs.readFileSync(path.join(ROOT, 'src/shots.js'), 'utf8');
 const sceneNames = new Set(/export const SCENES = \{([^}]*)\}/s.exec(scenesSrc)[1].split(',').map((s) => s.trim()).filter(Boolean));
 
@@ -35,9 +36,11 @@ const near = (t, list) => list.reduce((m, e) => Math.min(m, Math.abs(e - t)), 1e
 
 const errors = [], warns = [];
 const shots = assemble(B, X, L);
+const lastMod = SECTIONS[SECTIONS.length - 1][1];
+const END = typeof lastMod.range === 'function' ? lastMod.range(X)[1] : lastMod.range[1];
 // sections stay in their ranges
 for (const [name, mod] of SECTIONS) {
-  const [a, b] = mod.range;
+  const [a, b] = typeof mod.range === 'function' ? mod.range(X) : mod.range;
   for (const s of mod.default(B, X, L)) if (s.t0 < a - TOL || s.t1 > b + TOL) errors.push(`${name}: shot ${s.id} [${s.t0.toFixed(3)}, ${s.t1.toFixed(3)}] outside section range [${a}, ${b}]`);
 }
 // coverage
@@ -64,7 +67,7 @@ shots.forEach((s, i) => {
   if (!['xuan', 'silk', 'silknight', 'indigo', 'rubbing'].includes(s.paper)) errors.push(`${s.id}: unknown paper '${s.paper}'`);
 });
 const ph = shots.filter((s) => (Array.isArray(s.scene) ? s.scene : [s.scene]).some((x) => x && x.name === 'placeholder'));
-console.log(`${shots.length} shots, ${SECTIONS.length} sections, 0 → ${shots[shots.length - 1].t1} s; ${ph.length} placeholder shots: ${ph.map((s) => s.id).join(' ')}`);
+console.log(`audio ${AUDIO.file || 'inputs/moongazing.mp3'} (${AUDIO.duration} s); ${shots.length} shots, ${SECTIONS.length} sections, 0 → ${shots[shots.length - 1].t1} s; ${ph.length} placeholder shots: ${ph.map((s) => s.id).join(' ')}`);
 for (const w of warns) console.log('warn  ' + w);
 for (const e of errors) console.log('ERROR ' + e);
 if (errors.length) { console.log(`${errors.length} error(s)`); process.exit(1); }

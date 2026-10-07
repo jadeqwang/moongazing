@@ -113,6 +113,16 @@ export function lyricZH(ctx, line, o, t, mode = 'ink') {
   const alpha = (1 - smooth(end - 0.4, end, t)) * (o.alpha ?? 1);
   if (p <= 0 || alpha <= 0) return;
   if (o.wash) panel(ctx, it.box, alpha, o.wash === true ? 'dark' : o.wash);
+  const pp = Math.min(p + 0.0001, CT.length + 0.25), bl = smooth(CT[0].start, CT[0].start + 1.2, t);
+  const xf = (g) => {
+    if (o.shake) { const k = Math.floor(t * 24); g.translate(((k * 7919) % 13 - 6) / 6 * o.shake, ((k * 104729) % 11 - 5) / 5 * o.shake); }
+    if (o.dy) g.translate(0, typeof o.dy === 'function' ? o.dy(t) : o.dy);
+    if (o.scale) { const s = typeof o.scale === 'function' ? o.scale(t) : o.scale; const bx = it.box; g.translate(bx.x + bx.w / 2, bx.y + bx.h / 2); g.scale(s, s); g.translate(-(bx.x + bx.w / 2), -(bx.y + bx.h / 2)); }
+  };
+  // a dark halo so a pale character reads over bright passages (white rubbing on stone, carved shadow)
+  if (o.halo) ctx.pipe.layer((g) => { xf(g); const c = it.render(pp, bl, alpha); g.filter = `brightness(0) blur(${o.halo}px)`; g.globalAlpha = 0.85; g.drawImage(c, it.box.x, it.box.y, it.box.w, it.box.h); g.drawImage(c, it.box.x, it.box.y, it.box.w, it.box.h); }, { mode: 'ink', seed: 49 });
+  // held character: the ink keeps creeping into the paper
+  if (o.spread) { const r = o.spread(t); if (r > 0.2) ctx.pipe.layer((g) => { xf(g); const c = it.render(pp, bl, alpha); g.filter = `blur(${r.toFixed(2)}px)`; g.globalAlpha = Math.min(0.7, 0.25 + r * 0.03); g.drawImage(c, it.box.x, it.box.y, it.box.w, it.box.h); }, { mode, absorb: 0.9, seed: 50 }); }
   ctx.pipe.layer((g) => {
     if (o.shake) { const k = Math.floor(t * 24); g.translate(((k * 7919) % 13 - 6) / 6 * o.shake, ((k * 104729) % 11 - 5) / 5 * o.shake); }
     if (o.dy) g.translate(0, typeof o.dy === 'function' ? o.dy(t) : o.dy);

@@ -44,5 +44,20 @@ export const SHOTS = [
     state: S(5), cam: { top: 3500, center: [800, 0, 300], hfov: 60 }, sun: { bearing: 200, elev: 1.0 }, amb: 0.6, edgeNT: 0.035, depthNear: 3000, depthFar: 5000 },
   { id: '7.E2c', paper: 'INK', label: 'Pull-back 3: the south pole (Shackleton, de Gerlache rim)', state: S(5), cam: { top: 60000, center: [3000, 0, 0], hfov: 60 },
     sun: { bearing: 200, elev: 1.0 }, amb: 0.6, edgeNT: 0.03, depthNear: 45000, depthFar: 75000 },
+  // ---------------- round 2
+  { id: '4.7', paper: 'GOLD', label: 'Capsule cabin after TLI cutoff: Jade (back) lifts a drink pouch toward the Moon in the side window; toy Earth floats beside her',
+    state: { space: 'capsule' }, noEarth: true, cam: { world: true, pos: [0.3, 1.65, 1.0], target: [-0.1, 1.38, -1.6], hfov: 70 },
+    sun: { bearing: 150, elev: 20 }, pts: [{ world: [0, 2.2, 0], col: [0.8, 0.75, 0.65], range: 4 }], lights: true, depthNear: 0.3, depthFar: 6 },
+  { id: '5.4', paper: 'INK', label: 'Jade alone at the south lip of the ridge plateau, 460 m SE of the hub, looking NNW: base small at left, Earth low at right',
+    state: S(5, { jadeAt: { bearing: 120, r: 460, facing: 330 } }), cam: { pos: [P(120, 460)[0] + P(150, 5.5)[0], 1.9, P(120, 460)[2] + P(150, 5.5)[2]], aimBearing: 330, pitch: -1.0, hfov: 80 },
+    sun: { bearing: 150, elev: 1.0 }, lights: true, depthNear: 3, depthFar: 3000 },
+  { id: '7.B3', paper: 'GOLD + one green', label: 'Greenhouse (SW module): Lúcia at the sealed growth chamber with the first rosette',
+    state: S(5, { interior: 'greenhouse' }), hide: ['moduleSW', 'moundSW'], cam: { frame: 'greenhouse', pos: [4.7, 2.5, -0.55], target: [2.2, 1.85, 0.2], hfov: 64 },
+    sunOff: true, pts: [{ local: [0.5, 3.6, 0], col: [0.8, 0.55, 0.8], range: 8 }, { local: [2.6, 2.6, 0], col: [0.7, 0.7, 0.65], range: 3 }], lights: true, depthNear: 0.5, depthFar: 12 },
+  { id: '7.B4', paper: 'INK', label: "Kenji's radio array: film strips unrolled on the permanently shadowed floor of Shackleton; sunlit rim 4 km above",
+    state: S(5, { radioArray: true }), noEarth: true, cam: { array: true, pitch: 13, hfov: 72 }, sun: { bearing: 80, elev: 1.5 }, shadowY: 'shack', spot: 'array', amb: 0.12, depthNear: 3, depthFar: 15000 },
+  { id: '7.C1m', paper: 'GOLD', label: 'Moon side of the video call: Jade (from behind) at the galley table, laptop showing the kids',
+    state: S(5, { interior: 'galleyCall' }), hide: ['moduleNE', 'moundNE'], cam: { frame: 'galley', pos: [-2.45, 2.3, 0.45], target: [0.1, 1.85, -0.05], hfov: 62 },
+    sunOff: true, pts: [{ local: [0, 4.2, 0], col: [0.75, 0.7, 0.62], range: 9 }], lights: true, depthNear: 0.5, depthFar: 12 },
 ];
 export const SHOT = Object.fromEntries(SHOTS.map((s) => [s.id, s]));

@@ -27,7 +27,7 @@ import gen  # noqa: E402
 ROOT = gen.ROOT
 GEN = os.path.join(ROOT, "media", "gen")
 SPEND = os.path.join(GEN, "spend.jsonl")
-CAP_USD = float(os.environ.get("VGEN_CAP", "300"))
+CAP_USD = float(os.environ.get("VGEN_CAP", "380"))   # raised from 300 by the user (2026-10-07)
 REFS768 = "/home/jade/Documents/rewind-music-video/assets/character/refs_768/"
 FFMPEG = gen.FFMPEG
 
@@ -285,15 +285,172 @@ for k, v in CELLS.items():
     SHOTS[f"K_7.C4_{k}"] = dict(model=SD, image=kf(f"K_7.C4_{k}.jpg"), duration=4, avatar=(k == "c8_jade"),
                                prompt=_p(f"In a quiet crew bunk at night, lit by the tablet's glow: {v} Gentle, small, "
                                          f"natural movement; breathing; the tablet light flickers softly on the face. {LOCK}"))
+# round 2b: Earth keyframes v5 (socks indoors, boots outdoors, playroom DDR, launch reframed)
+SHOTS["K_1.6"]["prompt"] = _p("Pre-dawn blue hour at the launch viewing area, seen from behind: the father holds the little "
+                              "girl on his hip and she points eagerly across the water at the lit rocket on its distant "
+                              "pad, her arm bobbing; the boy holds his father's hand and rises on his toes to see; the "
+                              "crowd at the fence shifts, a few raise phones; palm fronds sway in the sea breeze; small "
+                              f"waves roll in. {KIDS} {LOCK}")
+SHOTS["K_4.2"]["prompt"] = _p("Launch seen from the beach: behind the family, far across the water, the rocket climbs "
+                              "steadily on its bright flame, the exhaust column lengthening and the glow pulsing on the "
+                              "clouds; the crowd cheers, arms and phones raised, some jumping; the little girl on her "
+                              "father's hip points at the rocket, then claps both hands over her ears; the boy squeezes "
+                              f"his father's hand; the rim light on them flickers with the flame. {KIDS} {LOCK}")
+SHOTS["K_7.C2"]["prompt"] = _p("Downstairs playroom dance game: the father stands right behind his son on the built-in "
+                               "floor dance pad, holding the boy's hands, and both bounce together on bent knees in a "
+                               "steady rhythm, about two bounces per second, stepping onto the arrow panels left, right, "
+                               "left, right, eyes on the screen ahead, the boy concentrating, the father grinning. Beside "
+                               "them the little girl in socks dances happily, arms up, with the small toy robot dog, "
+                               f"which hops and wags. {KIDS} {LOCK}")
+
+
+# round 2c: hook re-cut (4.3b splash park) and the new J_3.7 museum scene
+_SPLASH = ("Summer at a splash park: the little girl runs and leaps through the arcs of water, landing with a splash; "
+           "the boy grins in the spray, squinting, hands up; the water jets pulse up and down in rhythm; dappled sunlight "
+           "moves over the wet ground; droplets sparkle and fall naturally.")
+SHOTS["K_4.3b"] = dict(model=SD, image=kf("K_4.3b.jpg"), duration=5, prompt=_p(f"{_SPLASH} {KIDS} {LOCK}"))
+SHOTS["K_4.3b_close"] = dict(model=SD, image=kf("K_4.3b_close.jpg"), duration=5, prompt=_p(f"{_SPLASH} {KIDS} {LOCK}"))
+_MUSEUM = ("In the dim museum hall, she holds her little daughter on her hip; both look down at the glowing Earth relief "
+           "table; the girl slowly reaches one hand out toward the glowing Earth; the mother tilts her head gently toward "
+           "the girl; soft light ripples across their faces and clothes from the projection. Gentle, small motion.")
+SHOTS["J_3.7"] = dict(model=SD, image=kf("jade/J_3.7.png"), avatar=True, duration=6,
+                      refs=[kf("jade/J_3.7.png"), ref("PXL_20260528_215628802.jpg"), ref("PXL_20250908_195352130.jpg")],
+                      prompt=_p(f"{_MUSEUM} {LIKENESS} {KIDS} {LOCK}"))
+SHOTS["J_3.7_close"] = dict(model=SD, image=kf("jade/J_3.7_close.png"), avatar=True, duration=6,
+                            refs=[kf("jade/J_3.7_close.png"), ref("PXL_20260528_215628802.jpg"), ref("PXL_20250908_195352130.jpg")],
+                            prompt=_p(f"{_MUSEUM} {LIKENESS} {KIDS} {LOCK}"))
+
+
+# round 3: moonbase keyframes final (docs/guanghan_layout.md). Rigid architecture/terrain -> h3 (holds the frame).
+RIGID = ("All architecture, terrain, machinery and the Earth stay perfectly rigid and fixed in place; nothing warps, "
+         "nothing appears or disappears.")
+H3 = "minimax/h3"
+SHOTS.update({
+    "K_4.7": dict(model=SD, image=kf("K_4.7.jpg"), duration=4,
+                  prompt=_p("Weightless inside the spacecraft cabin after the engine cutoff: her long hair floats and "
+                            "drifts slowly in slow-motion curls; the small toy Earth floats and turns slowly beside her; "
+                            "she slowly raises the drink pouch toward the Moon in the small window, a quiet toast; her body "
+                            f"drifts very slightly. Nothing falls - there is no gravity. {RIGID} {LOCK}")),
+    "K_5.4": dict(model=H3, image=kf("K_5.4.jpg"), duration=4,
+                  prompt=_p("The tiny astronaut stands still at the edge of the plateau, looking toward the distant "
+                            "Earth; only the slightest shift of weight; no wind, no dust, no air. "
+                            f"{RIGID} Camera locked, perfectly still.")),
+    "K_7.B2": dict(model=H3, image=kf("K_7.B2.jpg"), duration=4,
+                   prompt=_p("First-person view: the two gloved hands grip the valve wheel and turn it steadily a quarter "
+                             "turn; in the reactor port the molten regolith glow pulses brighter, ember orange. "
+                             f"{RIGID} {LOCK}")),
+    "K_7.B3": dict(model=SD, image=kf("K_7.B3.jpg"), duration=4,
+                   prompt=_p("In the greenhouse module, the botanist leans in closer to the sealed growth chamber and "
+                             "breaks into a delighted smile at the small purple-tinged rosette; the rosette's leaves "
+                             f"stir very slightly. {RIGID} {LOCK}")),
+    "K_7.B6": dict(model=H3, image=kf("K_7.B6.jpg"), duration=4,
+                   prompt=_p("The lunar base sits dark in the terrain shadow; one by one, the habitat's small round windows "
+                             "light up warm amber, left to right; the solar masts stand still. No dust, no air. "
+                             f"{RIGID} Camera locked, perfectly still.")),
+    "K_7.C1_moon": dict(model=SD, image=kf("K_7.C1_moon.jpg"), duration=4,
+                        prompt=_p("Seen from behind at the galley table, she laughs at the video call, her shoulders "
+                                  "shaking and her head tipping back a little; on the laptop screen the two children wave "
+                                  f"and bounce. {RIGID} {LOCK}")),
+    "K_7.C6": dict(model=H3, image=kf("K_7.C6.jpg"), duration=4,
+                   prompt=_p("At the window, her silhouette stays almost perfectly still; a thin curl of steam rises "
+                             "slowly from the tea cup on the sill; outside, the Earth and the far mountains do not move. "
+                             f"{RIGID} Camera locked, perfectly still.")),
+    "K_7.D2_room": dict(model=SD, image=kf("K_7.D2_room.jpg"), duration=5,
+                        prompt=_p("In the galley, she walks slowly to the wall screen showing the school-play livestream "
+                                  "and raises her hand to touch the screen, palm open, and holds it there; on the screen "
+                                  f"the little girl rises toward the paper moon. {RIGID} {LOCK}")),
+    "K_7.E1": dict(model=H3, image=kf("K_7.E1.jpg"), duration=6,
+                   prompt=_p("Inside the observation dome, the crew lift their cups higher together toward the Earth on "
+                             "the horizon, a toast, and hold them up; small natural body movements. The dome's ribs and "
+                             f"the base outside are perfectly rigid. {RIGID} Camera locked, perfectly still.")),
+    "K_6.2ii": dict(model=H3, image=kf("K_6.2ii.jpg"), duration=4,
+                    prompt=_p("On the crater rim the astronaut stands with head lowered, looking down at the dark Earth "
+                              "with its thin crescent; only tiny movements - a slight bow of the helmet, a small shift of "
+                              "the arms. The terrain is absolutely rigid; the Earth does not move; the glow behind the "
+                              f"crest stays fixed. No dust, no air. {RIGID} Camera locked, perfectly still.")),
+    "J_6.2": dict(model=SD, image=kf("jade/J_6.2.png"), avatar=True, duration=4,
+                  refs=[kf("jade/J_6.2.png"), ref("PXL_20250908_195352130.jpg"), ref("PXL_20260528_215628802.jpg")],
+                  prompt=_p("Inside her helmet she is breath-still; only her eyes move slowly as she looks down; the tiny "
+                            "Earth reflection on the visor stays steady; the crater rim below is absolutely rigid. "
+                            f"{LIKENESS} {RIGID} {LOCK}")),
+    "J_6.2_visor": dict(model=SD, image=kf("jade/J_6.2_visor.png"), avatar=True, duration=4,
+                        refs=[kf("jade/J_6.2_visor.png"), ref("PXL_20250908_195352130.jpg"), ref("PXL_20260528_215628802.jpg")],
+                        prompt=_p("Inside her helmet she is breath-still; only her eyes move slowly; the small Earth "
+                                  "reflected on the visor stays perfectly steady; the terrain is absolutely rigid. "
+                                  f"{LIKENESS} {RIGID} {LOCK}")),
+})
+
+
+# round 3b: galley group replaced by pairs/trios
+for _x in "abcd":
+    SHOTS[f"K_7.C4{_x}"] = dict(model=SD, image=kf(f"K_7.C4{_x}_v4.jpg"), duration=4,
+                               prompt=_p("In the galley, crewmates share a family clip on a tablet: the one holding it "
+                                         "tilts the tablet gently toward the friend; the friend laughs softly or presses a "
+                                         "hand to their heart; warm, small, natural movements. The tablet screens stay "
+                                         f"steady and readable. {RIGID} {LOCK}"))
+
+
+# round 4: SHEET_EARTH_v7
+SHOTS["K_2.1"]["prompt"] = _p("The small canopied rowboat carrying two women and the boatman drifts slowly from right to "
+                              "left across the calm winter lake, the boatman at the stern pulling the oar in a slow rhythm; "
+                              "a soft V-shaped wake and small ripples spread behind the boat; reflections shimmer; light "
+                              "snow falls slowly; willow branches sway very gently. Camera locked, still.")
+SHOTS["K_8.2a"] = dict(model="minimax/h3", image=kf("K_8.2a.jpg"), duration=4,
+                       prompt=_p("Homecoming run-in: the mother squats low with her arms wide open; the little girl "
+                                 "sprints toward her at full tilt, pigtails flying, arms out, real running strides with "
+                                 "weight and momentum; the boy runs one step behind her; the father watches and laughs. "
+                                 f"{KIDS} {LOCK}"))
+SHOTS["K_8.2b"] = dict(model="minimax/h3", image=kf("K_8.2b.jpg"), duration=4,
+                       prompt=_p("The impact: the little girl crashes into her mother's arms and they tumble backward onto "
+                                 "the rug together, the mother laughing and hugging her tight as they roll; the boy piles "
+                                 "on; joyful chaos with real weight, physically plausible, nobody hurt; the father laughs. "
+                                 f"{KIDS} {LOCK}"))
+
+
+# round 4b: K_7.C4a-d v5 (four rooms, mid-action, one focal point)
+_C4V5 = {"a": "At the airlock suit bench, the blonde crewmate re-taping a glove pauses and laughs; her friend holds the "
+              "tablet toward her and tilts it gently so she can see; tape and glove in her hands.",
+         "b": "In the crew quarters, the man on the bunk holds the tablet steady; the two crewmates stop at the bunk and lean "
+              "in; the man holding a toothbrush breaks into a soft smile, the woman behind him smiles warmly.",
+         "c": "In the greenhouse, mid-watering with her arm still in the glove port, she looks at the tablet and presses her "
+              "free hand to her heart, moved; the grey-haired colleague holds the tablet and tilts it toward her.",
+         "d": "In the lab, he pauses his logging, pen in hand, and turns to the tablet his colleague holds up beside him; "
+              "he smiles at it; she tilts it gently toward him."}
+for _x, _t in _C4V5.items():
+    SHOTS[f"K_7.C4{_x}"] = dict(model=SD, image=kf(f"K_7.C4{_x}.jpg"), duration=4,
+                               prompt=_p(f"{_t} Small, natural movements. The tablet screen stays steady and readable. "
+                                         f"{RIGID} {LOCK}"))
+
+
+# round 5: three generations at the Hangzhou teahouse (replaces K_3.0_bridge / K_3.1 / K_3.2)
+SHOTS["J_3.1"] = dict(model=SD, image=kf("jade/J_3.1.png"), avatar=True, duration=4,
+                      refs=[kf("jade/J_3.1.png"), ref("PXL_20260528_215628802.jpg"), ref("PXL_20250908_195352130.jpg")],
+                      prompt=_p("Winter afternoon in the teahouse, tiny quiet motions: her mother slowly pours tea from the "
+                                "pot into a cup, a thin stream; the little girl leans against her mother's knee; steam "
+                                f"rises and curls from the cups; snow drifts outside. {LIKENESS} {KIDS} {LOCK}"))
+SHOTS["J_3.2"] = dict(model="minimax/h3", image=kf("jade/J_3.2.png"), duration=4,
+                      prompt=_p("Close on the bowl: steam rises and curls; a pair of chopsticks comes in and gently lifts "
+                                f"the bitten, crescent-shaped tangyuan out of the bowl and holds it up. {LOCK}"))
+
+
+# round 6: LS1 must stay 3/4 for the whole clip (t19 turned full-face; the redraw doubled her glasses)
+LS1_34 = ("She keeps her head turned three-quarters toward the lake the entire time, exactly the head angle of the first "
+          "frame; gentle singing, lips and jaw moving with every syllable of the reference voice; no head turn toward the "
+          "camera, no turn to full profile; only tiny natural head motion. Her mother beside her stays still, looking at the "
+          "lake. The boat drifts slowly; small ripples; willow branches sway gently; light snow. Camera locked, fixed.")
+
+
 SHOTS["LS1"]["prompt"] = SHOTS["LS1"]["prompt"].replace(
     "the boy at the right trails his hand in the water. ", "").replace(
     "Three-quarter profile, she looks out across the lake as she sings; her head moves only a little.",
     "She keeps the three-quarter view of the first frame the whole time - her face stays turned three-quarters toward "
-    "the camera with both eyes visible and never turns into full profile; she looks out across the lake as she sings; "
+    "the camera with both eyes visible and never turns into full profile; as she sings her head turns a little "
+    "TOWARD the camera (to frame-right), never away from it; her gaze rests on the near water in front of the boat; "
     "her head moves only a little.")
 
 
 # ----------------------------------------------------------------------------- helpers
+SHOTS["LS1_34"] = dict(SHOTS["LS1"], prompt=_p(f"{LS1_34} {LIKENESS}"), camera_fixed=True)
 def shot_dir(shot):
     d = os.path.join(GEN, shot)
     os.makedirs(d, exist_ok=True)
@@ -339,13 +496,18 @@ def build_spec(shot, res, note="", over=None):
     model = s["model"]
     inp = {"prompt": s["prompt"], "image": "file:" + os.path.relpath(gen.ref_image(os.path.join(ROOT, s["image"])), ROOT),
            "duration": s["duration"]}
-    if model == "bytedance/seedance-2.0":
+    if model == "bytedance/seedance-2.0-mini":
+        inp.update(resolution=res, aspect_ratio=s.get("aspect", "16:9"), generate_audio=False, fps=24,
+                   camera_fixed=True, watermark=False, use_virtual_avatar=bool(s.get("avatar")))
+        if s.get("audio"):
+            inp["reference_audio"] = "file:" + s["audio"]
+    elif model == "bytedance/seedance-2.0":
         inp.update(resolution=res, aspect_ratio=s.get("aspect", "16:9"), generate_audio=False, fps=24,
                    camera_fixed=True, watermark=False, use_virtual_avatar=bool(s.get("avatar")))
     elif model.startswith("bytedance/seedance"):
         # "adaptive" gave 21:9 / 4:3 / 9:16 outputs in round 1 -> 16:9 explicitly (override with aspect=)
         inp.update(resolution=res, aspect_ratio=s.get("aspect", "16:9"), generate_audio=False,
-                   use_virtual_avatar=bool(s.get("avatar")))
+                   use_virtual_avatar=bool(s.get("avatar")), camera_fixed=bool(s.get("camera_fixed", False)))
         if s.get("refs"):
             inp["reference_images"] = ["file:" + os.path.relpath(gen.ref_image(os.path.join(ROOT, r) if not r.startswith("/") else r), ROOT)
                                        for r in s["refs"]]

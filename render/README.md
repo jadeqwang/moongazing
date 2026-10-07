@@ -11,7 +11,7 @@ node tools/render.mjs --encode 0-212 --framedir out/frames_animatic_540 --out ou
 node tools/serve.mjs                            # http://127.0.0.1:8765/index.html?scale=0.5&play=1&debug=1
 ```
 
-`--encode` muxes the original `inputs/moongazing.mp3`, trimmed sample-exactly from the first frame's time and encoded as AAC 320k. The audio is never altered otherwise. Frame files are named by their global frame index (`round(t*24)`), so ranges can be re-rendered and resumed independently.
+`--encode` muxes the film's audio, trimmed sample-exactly from the first frame's time and encoded as AAC 320k. The audio is never altered otherwise. Which file that is comes from `data/audio.json`, written by `node tools/audio_info.mjs`: the master `media/audio/moongazing_master.wav` (or `.mp3`) when it exists, else the original `inputs/moongazing.mp3` (212.0 s). Run `audio_info.mjs` again when the master lands. The credits section stretches to the new duration, and the lint follows. Frame files are named by their global frame index (`round(t*24)`), so ranges can be re-rendered and resumed independently.
 
 ## Layer model (per frame)
 
@@ -38,6 +38,7 @@ node tools/serve.mjs                            # http://127.0.0.1:8765/index.ht
 | `06_breakdown` | breakdown | –122.77 |
 | `07_drop` | drop | –189.86 |
 | `08_outro` | outro | –212 |
+| `09_credits` | dedication and colophon (engine owner) | 212 → end of the audio (at least 11 s) |
 
 Each file exports `range` and a default `shots(B, X, L)`:
 - `B` is the beat grid: `B.bar(n, beat)` gives exact beat times.
@@ -51,16 +52,21 @@ Each file exports `range` and a default `shots(B, X, L)`:
 Change `_lib.js` or the scenes only in coordination.
 
 **Lint:** `tools/lint_shots.mjs` imports the sections in Node. Section files must not touch browser globals at import time. It checks:
-- full coverage from 0 to 212.0 with no gaps and no overlaps
+- full coverage from 0 to the end of the last section (the end of the audio) with no gaps and no overlaps
 - every shot inside its section's range
 - unique shot IDs and known scene and paper names
 - every cut within ±1 frame of a beat, a downbeat, a listed accent, or a lyric line or word onset; shots flagged `grid: 'half'`, the interlude stabs, may also cut on half-beats
 
 It lists the shots still on placeholders.
 
+Use 5–6 workers. At 10 or more, SwiftShader pages run short of memory, images fail to decode and 2D layers can silently drop out of a frame, so `render.mjs` caps workers at 6 unless you pass `--force-workers`.
+
+`--frames` keeps going if a frame fails (for example a browser crash or a broken shader mid-edit). It reports the frames that failed and exits non-zero; rerun with `--resume` to fill them in.
+
 **Type rules:**
 - Lyrics are revealed on the sung onsets: words for English, characters for Chinese.
 - Lyrics never cover faces. Place them in the frame's 留白 and use `panel` when the ground is busy.
+- **One focal point per shot.** Lyrics and HUD never compete with the subject. In busy frames, guide the eye with the slow push (`from`/`to`) and a focal vignette: set `focus: [x, y]` on the shot (optional `vignette`, default 0.32).
 - Verse 1 is in inscription mode. Verse 2 is bigger. The hook is huge. The breakdown is white-on-black rubbing.
 - The drop uses HUD and data type only.
 - The outro closes on the 海上生明月 inscription.
@@ -71,3 +77,40 @@ It lists the shots still on placeholders.
 - **Identity:** `media/chars/identity/` (the 望月 and 廣寒 seals and the emblem).
 - **Fonts:** `fonts/`, OFL.
 - **Moon:** `assets/moon/`, NASA SVS 4720, public domain.
+
+## Roto: redrawing generated clips (`src/roto/`)
+
+Generated video (Seedance / MiniMax) is only a **motion base**. Viewers see our drawing of it, never its pixels.
+
+```
+MPY=/home/jade/Documents/orbital-sunrise-video/video/out/.venv/bin/python   # cv2-contrib + mediapipe
+$MPY ../tools/roto_prep.py LS2/take_7 K_5.1/take_1     # analyse -> media/gen/<shot>/roto/<take>/
+../.venv/bin/python ../tools/sync/mouth_track.py      # vocal stem -> data/mouth.json (re-mouthing)
+bash tools/roto_tests.sh [K_5.1 LS2 ...]              # test renders + before/after -> out/roto_tests/<name>/
+```
+
+In a section file: `{ type: 'roto', clip: 'K_5.1/take_1', paper: 'ink', lag: 0 }`. For lip-sync, use
+`{ type: 'roto', clip: 'LS2/take_7', ref_t0: 53.79, lag: -0.102, lock: 0.25 }` with `ref_t0` and `lag` from
+`media/gen/<LS>/sync.json`. Other parameters are listed at the top of `src/roto/index.js`.
+
+**Prep** (`tools/roto_prep.py`, offline and deterministic):
+- extracts the 24 fps frames;
+- registers the painted keyframe onto frame 0, falling back to frame 0 if the keyframe was redone after the take;
+- tracks the camera;
+- builds the motion union and a per-drawing subject matte, region-filled so a subject is redrawn whole;
+- builds flow-stabilised colour guides and even-width line guides;
+- picks a palette from the keyframe, its moving region and the skin;
+- for faces: sparse face lines, the keyframe's painted eyes, brows and nose carried by the head's motion, and the
+  take's own mouth painted out.
+
+**Render** (`src/roto/shader.js` and `mouth.js`):
+- static regions show the keyframe painting on our paper;
+- subjects are redrawn on twos;
+- the first `lock` seconds dissolve from the keyframe;
+- lips are drawn from the vocal stem at song time.
+
+| Paper | Redraw |
+|---|---|
+| silk | palette-snapped flat fills, 分染 edge shading, mineral granulation, iron-wire ink line |
+| ink | luminance-matched washes in the keyframe's own sumi, wet rims, clumped granulation, 留白, 飞白 dry-brush contour; Earth keeps its colour |
+| gold | source light re-laid as matte 泥金 on indigo (luminance-matched), emboss; glow only in `07_drop` |

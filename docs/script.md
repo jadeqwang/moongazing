@@ -31,7 +31,7 @@ one half kept in Hangzhou, one in Taipei — was shown together again for one su
 
 ## Cast
 - **Jade** — mother, astronaut, mission specialist (ISRU / habitat). Green jade pendant. Glasses always, including inside the helmet (real astronauts wear them).
-- **Kenton** — father. Appears in ≤6 shots, mostly back/hands/wide.
+- **Kenton** — father; wears glasses similar to Jade's. Appears in ≤6 shots, mostly back/hands/wide.
 - **M** (girl, 4) — loose light-brown waves, long bob; white dress with red strawberries; plays Chang'e in the school play.
 - **T** (boy, 7) — very dark hair, large round head, full cheeks, big eyes, strong brows; holds the toy Earth.
 - **Crew of Guanghan Station** (one Earth-wide agency; emblem = a pale-blue dot in a Voyager-style sunbeam, no red — see docs/identity.md):
@@ -44,7 +44,7 @@ one half kept in Hangzhou, one in Taipei — was shown together again for one su
 ## Lip-sync clips (3 only — Seedance 2.5, audio-referenced, then redrawn)
 - **LS1** 39.53–45.98 "the West Lake wind sings over water, / like smoothing silk, and late" — boat, SILK, 3/4 profile.
 - **LS2** 54.09–57.83 "举杯邀明月，对影成三人" — Copernican lesson, Jade holding the flashlight, frontal.
-- **LS3** 80.0–86.2 "…我思念你" (held 你) — in the capsule, helmet on, visor up, under g-load, GOLD.
+- **LS3** reduced: 81.5–82.8 "我思念" in the capsule (mouth drawn from the vocal); the held 你 now cuts to the kids at the splash park (4.3b).
 
 ---
 
@@ -94,16 +94,17 @@ English lyrics: refined serif, small, horizontal, in the 留白; Chinese inscrip
 | 3.4 | 54.09–57.83 | **LS2** — Night, home. Copernican lesson: Jade holds a flashlight (the Sun); T holds a toy Earth, M a toy Moon. On the paper wall their three shadows perform an eclipse — shadow-puppet (皮影) style. | **举杯邀明月，对影成三人** (big calligraphy across the wall) | SILK · **Seedance LS2** + roto; shadows JS |
 | 3.5 | 57.85–61.65 | The letter: a vermilion seal stamps her assignment: 广寒 GUANGHAN STATION · LUNAR SOUTH POLE. Jade at the window, toy Earth in hand. | I think of you — | SILK + GOLD HUD · JS |
 | 3.6 | 61.65–64.7 | **BAND LIFT** → TRAINING MONTAGE (cuts every beat/2 beats): centrifuge spin · NBL pool in suit · parabolic flight float → she wobbles off, doubled over a bag, heave → CUT · wushu stance ≈ EVA posture · geology hammer in Iceland lava · math/orbital mechanics at a desk at 3 a.m. | homesick with waning | SILK→GOLD · stills+gen-v, roto; NASA-worm-era HUD labels |
-| 3.7 | 65.75–71.19 | Last night home before pre-flight quarantine (L–14 days). Jade tucks M in; T, solemn, presses his toy Earth into her hands. She keeps it. M keeps the toy Moon. | moons and lonely wine. | SILK · gen-v + roto |
+| 3.7 | 65.75–71.19 | The last evening before quarantine, Shanghai Natural History Museum: Jade holds M on her hip; both look DOWN at a glowing relief map of the Earth (dinosaur shadows on the wall). M reaches toward the mountains. Foreshadows 低头思故乡. The toy Earth is already packed in her kit. | moons and lonely wine. | SILK · codex from photo → Seedance + roto |
 | 3.8 | 71.19–76.11 | Turnaround (rising hats): suit-up; the walkout; she clips into the seat — buckle CLICK on 74.4; visor reflection of the tower. Final glance at a photo of the kids taped to the panel. | — | GOLD · gen-v + roto |
 
 ## 4 · HOOK — 76.11–101.33 — LAUNCH (GOLD paper; lyrics HUGE, brushed by the exhaust)
 
 | ID | Time | Picture | Lyric | Method |
 |---|---|---|---|---|
-| 4.1 | 76.11–79.9 | Impact 76.17 = IGNITION. Splashed-ink (泼墨) exhaust in gold and ember on indigo; the tower falls away. A waning crescent Moon sits in the sky above. | **月缺酒寒** — written by the exhaust plume itself | GOLD · JS (ink-plume sim) over still |
-| 4.2 | 79.9–82.8 | The family on a Wenchang beach ~4 km away, blue hour; the light arrives first, the roar ~12 s later — M covers her ears late, birds lift off the palms. M holds the toy Moon up next to the real crescent. | **我思念你** | SILK night · still→Seedance + roto |
-| 4.3 | 82.8–86.16 | **LS3** — Inside the capsule: Jade under g-load sings the held 你. Window covered by the escape-tower shroud, then — shroud gone — black space over a thin blue band of atmosphere. Visor clear and closed. | 你 (held, expanding) | GOLD · **Seedance LS3** + roto |
+| 4.1 | 76.11–78.9 | Impact 76.17 = IGNITION. Splashed-ink (泼墨) exhaust in gold and ember on indigo; the tower falls away. A waning crescent Moon above. | **月缺** — written by the exhaust plume | GOLD · JS (ink-plume sim) over still |
+| 4.2 | 78.9–81.5 | The viewing crowd at the fence (Larsen framing, long lens): Kenton holding M on his hip, M pointing, T holding his hand; the rocket rises behind them; the roar arrives ~12 s later. | **酒寒** (held 寒) | SILK night · still→Seedance + roto |
+| 4.3 | 81.5–82.8 | Inside the capsule: Jade under g-load (closed visor, glasses), the shroud still over the window. | **我思念** | GOLD · J_LS3 base + roto (mouth from vocal) |
+| 4.3b | 82.8–86.16 | The held 你 lands on who she misses: summer at an Austin splash park — M in pink running through the water arcs, T in his creeper swim shirt grinning in the spray. The warmest frame in the film. | **你** (one huge character, held) | SILK summer · still→Seedance + roto |
 | 4.4 | 86.62–88.6 | HUD `MET 00:02:41` — first-stage separation = THE SCROLL TEARS: the frame rips along a jagged paper edge; the lower half (Earth, family) falls away with the booster. | **I think of you,** | GOLD+SILK · JS paper tear |
 | 4.5 | 88.6–90.55 | Kids in the mission family viewing room at Wenchang, faces lit by the big screen; T's hand on the glass. | **I think of you** | SILK · still+parallax |
 | 4.6 | 90.7–92.1 | Ad-lib → Orbit: Earth fills the frame for the first time — it IS a 青绿 painting: azurite oceans, malachite land, white clouds. | — | JS Earth (shader) |

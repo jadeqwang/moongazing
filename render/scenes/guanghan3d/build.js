@@ -526,6 +526,10 @@ function galleyInterior(withCrew = 8, crewPose = 'table') {
     const a = i / withCrew * Math.PI * 2 + 0.2; const seated = i % 2 === 0;
     const man = mannequin(seated ? 'sit' : 'lean'); man.position.set(tx + 1.3 * Math.cos(a), m.floorY, 1.3 * Math.sin(a) * 0.9); man.rotation.y = Math.PI - a; frame.add(man);
   }
+  if (crewPose === 'call') { const j = mannequin('sit'); j.position.set(tx - 1.05, m.floorY, 0); j.rotation.y = 0; frame.add(j);
+    const base = mesh(new THREE.BoxGeometry(0.24, 0.015, 0.34), mat(C.metal)); base.position.set(tx - 0.3, m.floorY + 0.79, 0); frame.add(base);
+    const scr = mesh(new THREE.PlaneGeometry(0.34, 0.22), mat(C.screen, { emis: 0xc8b48a }), 'laptopScreen'); scr.position.set(tx - 0.2, m.floorY + 0.9, 0); scr.rotation.y = -Math.PI / 2; scr.rotation.x = 0; scr.rotateX(-0.25); frame.add(scr);
+    const sl = new THREE.LineSegments(new THREE.EdgesGeometry(scr.geometry), lineMat()); sl.userData.isLine = true; scr.add(sl); }
   if (crewPose === 'screen') { const j = mannequin('touch'); j.position.set(m.len / 2 - 0.75, m.floorY, 0.15); j.rotation.y = 0; frame.add(j); }
   grp.userData.frame = frame; grp.userData.halfW = halfW;
   return grp;
@@ -580,7 +584,7 @@ function hubL2Interior() {
   const jade = mannequin('stand'); jade.position.set(-0.45, y0, -(R - 0.75)); jade.rotation.y = Math.PI / 2; grp.add(jade);
   return grp;
 }
-export function mannequin(pose = 'stand', col = C.crewShirt) {
+export function mannequin(pose = 'stand', col = C.crewShirt, suit = false) {
   const grp = new THREE.Group(); grp.userData.tag = 'crew';
   const sk = mat(0xd8c0a8), sh = mat(col), tr = mat(0x3d434c);
   const seated = pose === 'sit';
@@ -603,15 +607,101 @@ export function mannequin(pose = 'stand', col = C.crewShirt) {
     grp.add(arm);
     if (pose === 'cup' && s === 1) { const cup = mesh(new THREE.CylinderGeometry(0.045, 0.035, 0.1, 10), mat(0xe9e4d8)); cup.position.set(0.27, sy + 0.58, s * 0.2); grp.add(cup); }
   }
+  if (suit) { const pack = mesh(new THREE.BoxGeometry(0.28, 0.6, 0.5), mat(C.suit)); pack.position.set(-0.27, hip + 0.35, 0); grp.add(pack);
+    const helm = mesh(new THREE.SphereGeometry(0.18, 16, 12), mat(C.suit)); helm.position.copy(head.position); grp.add(helm); head.visible = false;
+    torso.scale.set(1.35, 1, 1.35); }
   grp.traverse((o) => { o.userData.noEdges = true; });
   // mannequin local +x = facing direction
   return grp;
 }
 function earth() { const e = mesh(new THREE.SphereGeometry(1, 48, 24), mat(C.earth)); e.userData.tag = 'earth'; e.userData.noEdges = true; return e; }
 
+
+// ------------------------------------------------------------------ round-2 sets
+function moduleShell(m, wallCol = C.interior) { // generic horizontal module interior; returns { grp, frame, halfW }
+  const grp = new THREE.Group(); const frame = new THREE.Group(); const [cx, , cz] = P(m.bearing, m.r);
+  frame.position.set(cx, 0, cz); frame.rotation.y = -(m.bearing - 90) * D2R; grp.add(frame);
+  const shell = mesh(new THREE.CylinderGeometry(m.rad, m.rad, m.len, 40, 1, true), mat(wallCol), 'shell'); shell.rotation.z = Math.PI / 2; shell.position.y = m.cy; frame.add(shell);
+  const ribM = mat(0xc9c1b2); for (let x = -m.len / 2 + 0.5; x < m.len / 2; x += 1.0) { const t = mesh(new THREE.TorusGeometry(m.rad * 0.97, 0.06, 4, 40), ribM); t.rotation.y = Math.PI / 2; t.position.set(x, m.cy, 0); t.userData.noEdges = true; frame.add(t); }
+  const halfW = Math.sqrt(m.rad * m.rad - Math.pow(m.floorY - m.cy, 2));
+  const floor = mesh(new THREE.PlaneGeometry(m.len, 2 * halfW), mat(C.floor), 'floor'); floor.rotation.x = -Math.PI / 2; floor.position.y = m.floorY; frame.add(floor);
+  for (const s of [-1, 1]) { const end = mesh(new THREE.CircleGeometry(m.rad, 40), mat(wallCol)); end.rotation.y = Math.PI / 2; end.position.set(s * m.len / 2, m.cy, 0); frame.add(end); }
+  const h = mesh(new THREE.CircleGeometry(0.65, 32), mat(0x6b6660)); h.rotation.y = Math.PI / 2; h.position.set(-m.len / 2 + 0.02, m.floorY + 1.05, 0); frame.add(h);
+  return { grp, frame, halfW };
+}
+function greenhouseInterior() {
+  const m = L.modules.SW; const { grp, frame, halfW } = moduleShell(m); grp.userData.tag = 'greenInt'; grp.userData.frame = frame;
+  const rack = mat(0xbfb6a6), tray = mat(0x6a5a48), leaf = mat(0x5f9e5a), led = mat(0xd070c0, { emis: MAGENTA });
+  for (const s of [-1, 1]) for (const y of [0.55, 1.15, 1.75]) { // three tiers of trays along both walls, magenta LED bars above each
+    const t = mesh(new THREE.BoxGeometry(8.0, 0.12, 0.7), tray); t.position.set(0.2, m.floorY + y, s * (halfW - 0.55)); frame.add(t);
+    const l = mesh(new THREE.BoxGeometry(8.0, 0.04, 0.12), led); l.position.set(0.2, m.floorY + y + 0.48, s * (halfW - 0.55)); frame.add(l);
+    for (let x = -3.6; x <= 4.0; x += 0.45) { const pl = mesh(new THREE.SphereGeometry(0.12, 8, 6), leaf); pl.scale.y = 0.6; pl.position.set(x, m.floorY + y + 0.13, s * (halfW - 0.55)); pl.userData.noEdges = true; frame.add(pl); }
+  }
+  for (const s of [-1, 1]) { const post = mesh(new THREE.BoxGeometry(8.2, 2.3, 0.05), rack); post.position.set(0.2, m.floorY + 1.15, s * (halfW - 0.18)); frame.add(post); }
+  // sealed growth chamber (glovebox) on a bench in the aisle, near the outer end
+  const bench = mesh(new THREE.BoxGeometry(1.0, 0.85, 0.7), rack); bench.position.set(2.6, m.floorY + 0.425, 0); frame.add(bench);
+  const boxEdges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(0.75, 0.6, 0.6)), lineMat()); boxEdges.userData.isLine = true; boxEdges.position.set(2.6, m.floorY + 1.15, 0); frame.add(boxEdges); // glass chamber: edges only
+  for (const s of [-1, 1]) { const port = lines(circlePts(0.09, 16, 0, 'x')); port.position.set(2.6 - 0.38, m.floorY + 1.1, s * 0.14); frame.add(port); }
+  const soil = mesh(new THREE.CylinderGeometry(0.1, 0.09, 0.08, 16), tray); soil.position.set(2.6, m.floorY + 0.89, 0); frame.add(soil);
+  const ros = new THREE.Group(); ros.position.set(2.6, m.floorY + 0.95, 0); frame.add(ros); // the rosette: 8 leaves
+  for (let i = 0; i < 8; i++) { const lf = mesh(new THREE.SphereGeometry(0.05, 8, 6), mat(0x7a9e5a), 'rosette'); lf.scale.set(1.6, 0.3, 0.7); lf.position.set(0.06 * Math.cos(i * 0.785), 0.01, 0.06 * Math.sin(i * 0.785)); lf.rotation.y = -i * 0.785; lf.userData.noEdges = true; ros.add(lf); }
+  const lucia = mannequin('lean'); lucia.position.set(1.75, m.floorY, 0.25); lucia.rotation.y = 0; frame.add(lucia);
+  return grp;
+}
+function capsuleInterior() { // Orion-class crew module interior, axis vertical; floor = aft bulkhead
+  const grp = new THREE.Group(); grp.userData.tag = 'capsuleInt';
+  const r0 = 2.0, r1 = 0.8, h = 2.4, y0 = 0.0;
+  const wall = mesh(new THREE.CylinderGeometry(r1, r0, h, 48, 1, true), mat(0xd7d2c6), 'capsuleWall'); wall.position.y = y0 + h / 2; grp.add(wall);
+  const floor = mesh(new THREE.CircleGeometry(r0, 48), mat(0x8c8378)); floor.rotation.x = -Math.PI / 2; floor.position.y = y0; grp.add(floor);
+  const ceil = mesh(new THREE.CircleGeometry(r1, 32), mat(0xd7d2c6)); ceil.rotation.x = Math.PI / 2; ceil.position.y = y0 + h; grp.add(ceil);
+  const tun = mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.6, 24, 1, true), mat(0xbdb7ab)); tun.position.y = y0 + h + 0.3; grp.add(tun);
+  grp.add(lines([...circlePts(r0 * 0.99, 48, y0 + 0.02), ...circlePts((r0 + r1) / 2 * 0.99, 48, y0 + h / 2), ...circlePts(r1 * 0.99, 32, y0 + h - 0.02)]));
+  // four couches on the floor, a console band
+  for (let i = 0; i < 4; i++) { const c = mesh(new THREE.BoxGeometry(0.55, 0.25, 1.7), mat(0x9a948c), 'couch'); c.position.set(-0.9 + i * 0.6, y0 + 0.35, 0.3); grp.add(c); }
+  const cons = mesh(new THREE.BoxGeometry(1.1, 0.4, 0.08), mat(0x2a3340, { emis: 0x406080 })); cons.position.set(-1.0, y0 + 0.75, -1.3); cons.rotation.set(-0.55, 0.6, 0); grp.add(cons);
+  // the window: on the slanted side wall, bearing 0 (−z), centre at height 1.3
+  const wy = y0 + 1.3, wr = r0 + (r1 - r0) * (1.3 / h);
+  const slope = Math.atan((r0 - r1) / h);
+  const win = new THREE.Group(); win.position.set(0, wy, -wr + 0.02); win.rotation.x = -slope; grp.add(win);
+  const pane = mesh(new THREE.PlaneGeometry(0.34, 0.34), mat(0x000000), 'window'); pane.userData.window = true; win.add(pane);
+  win.add(lines([-0.17, -0.17, 0, 0.17, -0.17, 0, 0.17, -0.17, 0, 0.17, 0.17, 0, 0.17, 0.17, 0, -0.17, 0.17, 0, -0.17, 0.17, 0, -0.17, -0.17, 0,
+    -0.24, -0.24, 0, 0.24, -0.24, 0, 0.24, -0.24, 0, 0.24, 0.24, 0, 0.24, 0.24, 0, -0.24, 0.24, 0, -0.24, 0.24, 0, -0.24, -0.24, 0]));
+  // Jade floating in front of the window (face toward the window, back to camera), right arm raised with a drink pouch
+  const jade = mannequin('cup'); jade.position.set(-0.42, y0 + 0.2, -0.85); jade.rotation.set(0.12, Math.PI / 2, 0.05); grp.add(jade);
+  const toy = mesh(new THREE.SphereGeometry(0.08, 24, 16), mat(C.earth), 'toyEarth'); toy.position.set(-0.85, y0 + 1.45, -0.95); toy.userData.noEdges = true; grp.add(toy);
+  const lamp = mesh(new THREE.CircleGeometry(0.3, 24), mat(0xfff0d0, { emis: 0xfff0d0 })); lamp.rotation.x = Math.PI / 2; lamp.position.y = y0 + h - 0.01; grp.add(lamp);
+  grp.userData.windowDir = new THREE.Vector3(0, Math.sin(slope), -Math.cos(slope)).normalize();
+  grp.userData.windowPos = new THREE.Vector3(0, wy, -wr);
+  return grp;
+}
+function radioArray() { // Kenji's array on the floor of Shackleton: thin film strips unrolled from a rover-mounted spool
+  const grp = new THREE.Group(); grp.userData.tag = 'radioArray';
+  const sh = P(L.shackleton.bearing, L.shackleton.r); const [ox, , oz] = P(260, 1000); const x = sh[0] + ox, z = sh[2] + oz; const y = height(x, z);
+  grp.position.set(x, y, z);
+  const rv = rover(); rv.scale.setScalar(1.6); rv.rotation.y = Math.PI; grp.add(rv);
+  const film = mat(0xd8d4c8);
+  [-20, -7, 7, 20].forEach((da, i) => { const len = [55, 70, 62, 40][i]; const b = 260 + da;
+    const st = mesh(new THREE.PlaneGeometry(1.2, len), film, 'film'); st.rotation.x = -Math.PI / 2; st.rotation.z = -b * D2R; const [sx, , sz] = P(b, 2 + len / 2); st.position.set(sx, 0.03, sz); st.userData.noEdges = true; grp.add(st);
+    const pts = []; for (let k = 0; k <= len; k += 3) { const [ax, , az] = P(b, 2 + k); const [px, , pz] = P(b + 90, 0.6); pts.push(ax - px, 0.05, az - pz, ax + px, 0.05, az + pz); }
+    const [e0x, , e0z] = P(b, 2), [e1x, , e1z] = P(b, 2 + len), [qx, , qz] = P(b + 90, 0.6);
+    pts.push(e0x - qx, 0.05, e0z - qz, e1x - qx, 0.05, e1z - qz, e0x + qx, 0.05, e0z + qz, e1x + qx, 0.05, e1z + qz); grp.add(lines(pts));
+    const roll = mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.25, 12), mat(C.metal)); roll.rotation.z = Math.PI / 2; roll.rotation.y = -b * D2R; const [rx, , rz] = P(b, 2 + len); roll.position.set(rx, 0.12, rz); grp.add(roll); });
+  const kenji = mannequin('sit', C.suit, true); kenji.position.set(3.0, 0, -2.2); kenji.rotation.y = 2.0; grp.add(kenji);
+  grp.userData.base = new THREE.Vector3(x, y, z); return grp;
+}
+
 // ------------------------------------------------------------------ assemble
 export function buildScene(state) {
   const scene = new THREE.Scene();
+  if (state.space === 'capsule') {
+    const cap = capsuleInterior(); scene.add(cap);
+    const moon = mesh(new THREE.SphereGeometry(1, 32, 16), mat(0xbdbab2), 'moon'); moon.userData.noEdges = true; scene.add(moon);
+    const edgeM2 = lineMat(); const add2 = [];
+    scene.traverse((o) => { if (o.isMesh && !o.userData.noEdges && !o.userData.glass) { const e = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 28), edgeM2); e.userData.isLine = true; add2.push([o, e]); } });
+    for (const [o, e] of add2) o.add(e);
+    const earthM = earth(); earthM.visible = false; scene.add(earthM);
+    scene.userData.parts = { earth: earthM, moon, capsule: cap }; return scene;
+  }
   const padW = state.compress ? L.compressed.pad : L.pad, reacW = state.compress ? L.compressed.reactor : L.reactor;
   const parts = {};
   if (state.compress) { const fg = mesh(new THREE.CircleGeometry(4000, 64), mat(C.ground), 'terrain'); fg.rotation.x = -Math.PI / 2; fg.userData.noEdges = true; parts.terrain = fg; }
@@ -636,7 +726,10 @@ export function buildScene(state) {
     if (md) { const [x, , z] = P(md.bearing, md.r); pr.position.set(x, 0, z); pr.rotation.y = -md.bearing * D2R + Math.PI / 2; } else { pr.position.set(...P(110, 64)); pr.scale.setScalar(0.8); }
     scene.add(pr); }
   if (state.rovers !== false) { const r1 = rover(); r1.position.set(...P(100, 50)); r1.rotation.y = -0.4; scene.add(r1); const r2 = rover(); r2.position.set(...P(160, 40)); r2.rotation.y = 1.1; scene.add(r2); }
-  if (state.interior === 'galley' || state.interior === 'galleyScreen') scene.add(galleyInterior(8, state.interior === 'galley' ? 'table' : 'screen'));
+  if (state.interior === 'galley' || state.interior === 'galleyScreen' || state.interior === 'galleyCall') scene.add(galleyInterior(8, { galley: 'table', galleyScreen: 'screen', galleyCall: 'call' }[state.interior]));
+  if (state.interior === 'greenhouse') scene.add(greenhouseInterior());
+  if (state.radioArray) scene.add(radioArray());
+  if (state.jadeAt) { const j = mannequin('stand', C.suit, true); const [x, , z] = P(state.jadeAt.bearing, state.jadeAt.r); j.position.set(x, height(x, z), z); j.rotation.y = Math.PI / 2 - state.jadeAt.facing * D2R; scene.add(j); }
   if (state.interior === 'isru') scene.add(isruInterior());
   if (state.interior === 'l2') scene.add(hubL2Interior());
   if (state.crewCupola) {

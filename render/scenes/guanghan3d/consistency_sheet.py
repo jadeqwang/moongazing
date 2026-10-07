@@ -9,22 +9,27 @@ TW, TH, TXT = 640, 360, 760
 
 # (frame or None, guide, verdict, notes)
 ROWS = [
-    ("K_1.5", "1.5_line", "PASS", "NEW. 6 tall masts outside the mounds; 6 mounds; ONE squat hub with its cupola (codex flagged a doubled, oversized tower; fixed). Warm portholes on the tunnels and the S node. Earth composited at G-N (000, +1.5°, 1.9°), gibbous, lit from the left (Sun 250°). Minor: the mounds read lit grey, not fully in terrain shadow."),
-    ("K_5.2", "5.2_line", "PASS", "NEW. Cross of 4 tunnels, hub at the crossing, 6 mounds, 6 masts on the r 55 ring with panels on the upper half (fixed after review), comms tower with dish NNW, roads E (pad) and S (reactor). The masts are drawn standing (jiehua convention)."),
-    ("K_6.2ii", "6.2_line", "FAIL", "NOT TOUCHED (per brief). Correct: the base is behind-left of camera, so none in frame. WRONG: Earth is ~150 px (6.2ii) / ~165 px (6.2i) across, vs ~92 px for 1.9° at the guide's 55° HFOV, so 1.6–1.8× too big. Recomposite at d≈92 px. 6.2iii (visor) passes."),
-    ("K_7.A", "7.A_line", "MINOR", "User-approved master; v2 is an edit (original kept as K_7.A_v1). Mast ring (6), pad upper-left, reactor + ridge upper-right are canonical; panels raised to the upper half on 5 of 6 masts. Still differs: the front mast panel is long, the tower is drawn beside the tunnel crossing, and there is no comms tower."),
-    ("K_7.A1", "7.A1_line", "PASS", "NEW. Stage 1: graded footprints (cross + 6 ovals), masts M2/M3 up, 4 tripod feet, printer, cargo lander far left, reactor stakes far right (codex: PASS)."),
-    ("K_7.A2", "7.A2_line", "MINOR", "NEW. Stage 2: vessels + tunnels landed, shells at mixed heights, gantry printer, shuttered dome, folded fins, no pad; humans replaced by robots and the duplicate reactor removed after review. Minor: 5–6 masts already full height (spec: M4/M6 telescoping)."),
-    ("K_7.A3", "7.A3_line", "PASS", "NEW. Stage 3: 6 hatched mounds, 6 masts, crew lander far left, parked printer, single reactor ridge; fins re-edited to half open and the dome to shutters after review."),
-    ("K_7.A4", "7.A4_line", "PASS", "NEW. Stage 4: pad half-glazed with laser rover, fins fully open, cupola open, 6 masts, 6 mounds. The 'dog' codex saw is a Yutu rabbit robot. Grade all stages to K_7.A's indigo in post (A2/A3 paper is more violet)."),
-    ("K_7.B1", "7.B1_line", "PASS", "Untouched. PSR crater floor 700 m SW; the guide confirms the crater wall hides the base."),
-    ("K_7.B2", "7.B2_line", "MINOR", "NEW (edit of v1). ISRU hall = printed barrel vault with layer courses, strip light, hopper + conveyor, O₂ tanks; suit gloves fit an unpressurised hall. The ceiling/pipe-wall join was softened after review but still reads as a horizontal break."),
-    ("K_7.C4", "7.C4_line", "PASS", "NEW (room redrawn on the 8-crew v2). Horizontal ribbed cylinder, ring frames, ceiling strip, ROUND hub hatch behind the group; table for 8 (codex: PASS)."),
-    ("K_7.E1", "7.E1_line", "PASS", "NEW. Cupola looking north: N tunnel → N node (hatch now faces away, fixed), NE/NW mounds, masts M6/M1 with two wings, comms tower left, low Malapert range, Earth composited at G-N, near-full (Sun 200°). Note: the real sill would hide most of the N tunnel; kept for readability."),
-    (None, "7.C6_flat", "GUIDE", "No keyframe yet. Hub deck 2 north window: N tunnel + N node below, Earth above; tea cup on the sill."),
-    (None, "7.D2_flat", "GUIDE", "No keyframe yet. Galley outer end: Jade at the wall screen; table between camera and screen."),
-    (None, "7.B6_flat", "GUIDE", "No keyframe yet. Lights coming on: base in terrain shadow, mast panels above 10 m still sunlit."),
-    (None, "7.E2b_flat", "GUIDE", "Pull-back step 2 (JS): pad 2 km E, reactor 1 km S, PSR crater 700 m SW, Shackleton rim to the E."),
+    ("K_1.5", "1.5_line", "PASS", "r2: base now in deep terrain shadow; 6 tall masts outside the mounds; one squat hub + cupola; warm portholes; mast panels and dome top sunlit. Earth at G-N, 1.9°, gibbous (Sun 250°)."),
+    ("K_4.7", "4.7_line", "PASS", "NEW. Orion-class cabin after TLI: Jade from behind, ponytail floating, toasts the small Moon in the side window; toy Earth floats. Minor: Moon a little larger than 0.5°."),
+    ("K_5.2", "5.2_line", "PASS", "Plan: cross, hub at the crossing, 6 mounds, 6 masts (panels on the upper half), comms NNW, roads E/S."),
+    ("K_5.4", "5.4_line", "PASS", "NEW. Jade (back) at the S lip of the plateau 460 m SE of the hub; base small at left (stage-3 look); Earth composited at G-N on the horizon at right; shadow points away (Sun behind)."),
+    ("K_6.2i", "6.2_line", "PASS", "r2: Earth recomposited at 1.9° (~95 px; was 166 px): dark disc, faint night side, slightly thicker blue-white lower crescent. Base behind camera, correctly absent."),
+    ("K_6.2ii", "6.2_line", "PASS", "r2: Earth at 1.9° (~92 px; was 150). Base correctly absent."),
+    ("K_7.A", "7.A_line", "PASS", "r2: tower now ON the tunnel crossing, comms tower NNW added, graded to K_7.A_v1 indigo (original kept as K_7.A_v1). Minor: one mast panel still long."),
+    ("K_7.A1", "7.A1_line", "PASS", "Stage 1: footprints, 2 masts + 4 feet, printer, cargo lander, reactor stakes. Graded."),
+    ("K_7.A2", "7.A2_line", "PASS", "r2: two masts telescoping/half-folded; shells printing; folded fins; no pad; robots only. Graded."),
+    ("K_7.A3", "7.A3_line", "PASS", "Stage 3: 6 mounds, 6 masts, half-open fins, crew lander. Graded."),
+    ("K_7.A4", "7.A4_line", "PASS", "Stage 4: pad half-glazed, fins open, cupola open. Graded."),
+    ("K_7.B1", "7.B1_line", "PASS", "PSR crater floor; base hidden by the crater wall."),
+    ("K_7.B2", "7.B2_line", "PASS", "r2: regenerated as one continuous printed vault (no seam): gloves on the valve, ember port, tanks, hopper/conveyor beyond."),
+    ("K_7.B3", "7.B3_line", "PASS", "NEW. Greenhouse = SW module (cylinder, tiered trays, glove-port chamber); Lúcia (pink collar stripe); rosette is the only green."),
+    ("K_7.B4", "7.B4_line", "MINOR", "NEW. Shackleton floor, rover lamp only, rim lit far above, no Sun/Earth. Minor: film strips curve instead of running straight."),
+    ("K_7.B6", "7.B6_line", "MINOR", "NEW. Base in shadow, windows lighting up, panels sunlit. Minor: mounds read as smooth domes; mast count ~6 (2 overlap)."),
+    ("K_7.C1_moon", "7.C1m_line", "PASS", "NEW. Galley (NE cylinder), Jade from behind at the table; laptop shows M and T as in K_7.C1_earth."),
+    ("K_7.C4", "7.C4_line", "PASS", "Galley cylinder, round hub hatch, 8 crew."),
+    ("K_7.C6", "7.C6_line", "PASS", "NEW. Hub L2 arched north window: N tunnel + node below, Earth composited above the far range; celadon cup on the sill; Jade lost profile only."),
+    ("K_7.D2_room", "7.D2_line", "PASS", "NEW. Galley outer end: lockers, ring frames, wall screen with the livestream; Jade (back) touching it — matches the module and J_7.D2's screen."),
+    ("K_7.E1", "7.E1_line", "PASS", "Cupola north view: N tunnel → node, NE/NW mounds, M6/M1, comms, Earth over Malapert."),
 ]
 COL = {"PASS": (60, 140, 80), "MINOR": (200, 140, 30), "FAIL": (190, 50, 40), "GUIDE": (90, 90, 90)}
 
@@ -42,7 +47,7 @@ def thumb(path):
 def main(rows=ROWS, out=os.path.join(ROOT, "media/guanghan/CONSISTENCY_SHEET.jpg")):
     W = TW * 2 + TXT + 40; RH = TH + 20; H = 90 + RH * len(rows)
     sheet = Image.new("RGB", (W, H), "white"); d = ImageDraw.Draw(sheet)
-    d.text((14, 12), "Guanghan Station — consistency sheet (guide | keyframe | verdict).  Canon: docs/guanghan_layout.md", fill="black", font=font(30))
+    d.text((14, 12), "Guanghan Station — consistency sheet v2 (guide | keyframe | verdict).  Canon: docs/guanghan_layout.md", fill="black", font=font(30))
     d.text((14, 52), "Count check: 6 masts (2 wings, outside the mounds) · 6 mounds · hub+cupola at the crossing · 4 tunnels · N/S nodes · comms tower NNW · Earth at G-N", fill=(80, 80, 80), font=font(20))
     f, fb = font(21), font(30)
     for i, (frame, guide, verdict, note) in enumerate(rows):

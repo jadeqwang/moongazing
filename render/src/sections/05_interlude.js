@@ -11,6 +11,14 @@ export const CREW = [ // order of the cells in K_7.C4_grid (row 1, row 2)
   ['LAYLA AL-MANSOORI', 'UAE', 'PILOT', 'AL AIN'], ['JADE WANG', 'USA', 'ISRU · HABITAT', 'AUSTIN'],
 ];
 // one crew cell of K_7.C4_grid (2 rows × 4 columns of 16:9 cells)
+export const CELLS = ['c1_chen', 'c2_anastasia', 'c3_adaeze', 'c4_arjun', 'c5_lucia', 'c6_kenji', 'c7_layla', 'c8_jade'];
+// a crew portrait: its own keyframe K_7.C4_cN_name if delivered, else the cell of the grid
+export function crewCell(X, i, z0 = 1.0, z1 = 1.08, o = {}) {
+  const k = `K_7.C4_${CELLS[i]}`;
+  if (X.has(k)) return { name: 'plate', params: { img: k, grade: 'native', from: { x: 0.5, y: 0.5, zoom: z0 }, to: { x: 0.5, y: 0.5, zoom: z1 }, ...o } };
+  if (X.has('K_7.C4_grid')) return { name: 'plate', params: { img: 'K_7.C4_grid', grade: 'native', from: cell(i, 2 * z0), to: cell(i, 2 * z1), ...o } };
+  return null;
+}
 export const cell = (i, zoom = 2.0) => ({ x: ((i % 4) + 0.5) / 4, y: (Math.floor(i / 4) + 0.5) / 2, zoom });
 
 export default function shots(B, X, L) {
@@ -20,13 +28,13 @@ export default function shots(B, X, L) {
   const stabs = [bar(58, 3), (bar(58, 3) + bar(58, 4)) / 2, bar(58, 4), (bar(58, 4) + bar(59)) / 2, bar(59), (bar(59) + bar(59, 2)) / 2, bar(59, 2), (bar(59, 2) + bar(59, 3)) / 2];
   return [
     // 5.1 — +6 h · EGRESS: first steps; long, long shadows (Sun at 1°); the crew lopes in 1/6 g
-    { id: '5.1', t0: S51, t1: S52, paper: 'xuan', grain: 51,
-      scene: [X.has('K_5.1') ? kf('K_5.1', { from: { x: 0.45, y: 0.5, zoom: 1.06 }, to: { x: 0.58, y: 0.5, zoom: 1.12 }, par: [0.02, 0], dolly: 0.05,
-        masks: { base: [0.0, 0.6], polys: [{ pts: [[0.4, 0.3], [0.95, 0.3], [0.95, 0.75], [0.4, 0.75]], depth: 0.7, blur: 14 }] } }) : ph('First steps; long shadows; the crew lopes in 1/6 g', 'K_5.1')],
+    { id: '5.1', t0: S51, t1: S52, paper: 'xuan', grain: 51, focus: [1100, 560],
+      scene: [X.has('K_5.1') ? { type: 'roto', clip: 'K_5.1/take_1', paper: 'ink', lock: 0.4, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.54, y: 0.5, zoom: 1.1 } }
+        : ph('First steps; long shadows; the crew lopes in 1/6 g', 'K_5.1')],
       type(ctx, t) { hud(ctx, '+6 H  ·  EGRESS  ·  SUN 1.0°', 64, 72, { size: 15, rgb: '30,30,32', a: 0.9 }, 1, 'ink'); } },
     // 5.2 — IMPACT: the 廣寒 seal slams onto the ink landscape; the plan of the base is drawn in beneath it
     { id: '5.2', t0: S52, t1: S53, paper: X.has('K_5.2') ? 'xuan' : 'indigo', grain: 52, flash: true, post: (t, lt) => bump(lt, 0.014),
-      scene: [X.has('K_5.2') ? kf('K_5.2', { reveal: (t, lt) => smooth(0.1, 2.0, lt) * 1.4 })
+      scene: [X.has('K_5.2') ? kf('K_5.2', { from: { x: 0.5, y: 0.5, zoom: 1.0 }, to: { x: 0.5, y: 0.5, zoom: 1.06 }, reveal: (t, lt) => smooth(0.04, 0.9, lt) * 1.5 })
         : { name: 'plate', params: { img: 'K_7.A', grade: 'native', from: { x: 0.5, y: 0.5, zoom: 1.0 }, to: { x: 0.5, y: 0.5, zoom: 1.06 }, reveal: (t, lt) => smooth(0.1, 2.2, lt) * 1.4 } },
         { name: 'stamp', params: { stamp: { seal: 'seal_guanghan', x: 330, y: 300, size: 230, tLand: S52, rot: -0.04 } } }],
       type(ctx, t) {
@@ -37,7 +45,7 @@ export default function shots(B, X, L) {
     // 5.3 — the stop-start stabs: one crew name card per stab
     ...stabs.map((a, i) => ({
       id: `5.3${'abcdefgh'[i]}`, t0: a, t1: i < 7 ? stabs[i + 1] : S54, paper: 'indigo', grain: 530 + i, grid: 'half', // stabs fall on half-beats
-      scene: [X.has('K_7.C4_grid') ? { name: 'plate', params: { img: 'K_7.C4_grid', grade: 'native', from: cell(i, 2.0), to: cell(i, 2.08) } } : ph(CREW[i][0], 'K_7.C4_grid')],
+      scene: [crewCell(X, i, 1.0, 1.08) || ph(CREW[i][0], 'K_7.C4_grid')],
       type(ctx, t) {
         const [name, nat, role, home] = CREW[i];
         ctx.pipe.layer((g) => {
@@ -51,6 +59,6 @@ export default function shots(B, X, L) {
       },
     })),
     // 5.4 — the dip: Jade alone, back to camera, at the edge of the ridge. Everything ink.
-    { id: '5.4', t0: S54, t1: END, paper: 'xuan', grain: 54, scene: [ph('Jade alone, back to camera, at the edge of the ridge; everything ink', 'K_5.4')] },
+    { id: '5.4', t0: S54, t1: END, paper: 'xuan', grain: 54, focus: [960, 560], scene: [X.has('K_5.4') ? kf('K_5.4', { from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.5, y: 0.52, zoom: 1.12 }, dolly: 0.08, reveal: (t, lt) => 0.42 + smooth(0, 0.5, lt) * 1.2, masks: { base: [0.0, 0.9], polys: [{ pts: [[0, 0], [1, 0], [1, 0.42], [0, 0.42]], depth: 0.0, blur: 20 }] } }) : ph('Jade alone, back to camera, at the edge of the ridge; everything ink', 'K_5.4')] },
   ];
 }

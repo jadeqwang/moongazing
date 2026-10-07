@@ -87,6 +87,7 @@ function renderAt(t) {
     }
     if (shot.type && !qs.has('notype')) shot.type(ctx, t, lt);
     const post = { grainSeed: shot.grain ?? idx + 1, ...(shot.post ? shot.post(t, lt, ctx) : {}), ...(ctx.postExtra || {}) };
+    if (shot.focus) { post.focus = shot.focus; post.vignette = post.vignette ?? shot.vignette ?? 0.32; }
     if (shot.flash) { const k = Math.floor(lt * 24 + 1e-6); post.flash = k === 0 ? 1 : k === 1 ? 0.55 : 0; }
     ctx.pipe.post(post);
     const hud = document.getElementById('hud');
@@ -101,7 +102,7 @@ window.renderAt = renderAt;
 window.__ready = boot().then(async () => {
   if (qs.get('t')) await renderAt(Number(qs.get('t')));
   if (qs.get('play')) {
-    const el = new Audio('/inputs/moongazing.mp3');
+    const el = new Audio('/' + ((state.ctx && state.ctx.audioInfo && state.ctx.audioInfo.file) || 'inputs/moongazing.mp3'));
     el.currentTime = Number(qs.get('from') || 0);
     document.body.addEventListener('click', () => el.play(), { once: true });
     const loop = async () => { await renderAt(el.currentTime || 0); requestAnimationFrame(loop); };
