@@ -1,27 +1,85 @@
-# 望明月 · Moongazing — Handoff (end of day, Oct 7 2026)
+# 望明月 · Moongazing — Handoff (Oct 8 2026)
 
-## UPDATE, Oct 8: second revision round, cut v5 (read this first)
-Jade watched v4 and gave twelve more notes; all are carried out in `render/out/fullcut_v5_540p.mp4` except the sung
-close-up at 1:22, which is made but waits for her choice. Her words, the shot each maps to and the outcome are in the
-second half of `docs/REVISION_NOTES_OCT7.md`; one report per job in `docs/reviews/rev2_*_report.md`.
-- **Decisions page** (same link, rebuilt for this round, before/now clips by timestamp):
-  https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp. Her answers: ArtifactData, collection `decisions` (ids `r2_*` are
-  this round). Page source and its build script: `release/review/` (`build_page.sh` cuts the clips and stills).
-- **Rendering is now verified.** Use `render/tools/render_verified.sh` for any full render (every frame twice, compared),
-  and `node tools/order_check.mjs …` after touching the engine. The faults behind the flashing words are listed in the
-  revision notes ("Render faults"). `render.mjs` launches Chrome with `--disable-accelerated-2d-canvas`: do not remove it.
-- **New in the engine:** `scenes/buildsite.js` (the 7.A build, drawn live from `guanghan3d/layout.js`),
-  `tools/ddr_screen.py` (the game screen in 7.C2), `tools/ls_sung_prep.py` (sung close-up prep; not `roto_prep.py`
-  alone), `tools/roto_prep_rubbing.py --black-floor`, `tools/sync/viseme_check.py`.
-- **Open with Jade:** the seven `r2_*` cards on the page (teahouse hold and her face in the turn; sung close-up or not;
-  face shot and subtitles at 1:56; montage direction; single mat vs two pads; the lost clink; helmet over the hair
-  knot), then the cards still open from round one.
-- **Still to do after her answers:** an end-to-end watch at speed, then 1080p (codex: `render_verified.sh` at scale 1,
-  x264 two-pass + a master). Not yet checked at 1080p: 6.2d (plays the take's pixels), the sung close-up's teeth.
-- **Working with codex across the tmux wall** (pane `moongazing:0.1`): paste the job with `tmux load-buffer` /
-  `paste-buffer -p`, then watch for its approval prompts; it asks before network (video relay) and before deleting.
-- **Private, never commit or upload:** `inputs/rare_earth_ddr_sample.mp4` (family video; git-ignored since Oct 8). The
-  repository is public.
+## UPDATE, Oct 8 (written at hand-over): second revision round, cut v5 — read this first
+
+### Where things stand
+- **Cut v5** `render/out/fullcut_v5_540p.mp4` (frames `render/out/frames_v5_540/`, sheet `fullcut_v5_sheet.jpg`) holds
+  every note from both rounds except the sung close-up at 1:22, which is made but not wired. v5 was rendered twice and
+  all 5,305 frames matched. **Nobody has watched v5 at speed with sound**: every judgement so far is from frames and
+  contact sheets. Jade is reviewing it now.
+- **Jade's notes of Oct 8**, verbatim, with the shot and the outcome of each: second half of
+  `docs/REVISION_NOTES_OCT7.md`. One report per job, each ending with what still falls short:
+  `docs/reviews/rev2_{tea,toast,build,brk,ls,c2,hair,7B}_report.md`.
+- **Git:** everything is committed on branch `round2-v5` and pushed; pull request #5 is open and mergeable. The
+  session could not merge it (the merge was refused on the assistant's side), so Jade merges it. The working tree is
+  still on `round2-v5`. After she merges: `git checkout main && git pull`. The repository is **public**.
+- **Decisions page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp (private to Jade). Seven cards for this round
+  (ids `r2_tea, r2_sung, r2_brk, r2_build, r2_ddr, r2_toast, r2_hair`), then the fourteen still open from round one.
+  Read her answers with ArtifactData: `action: list`, collection `decisions` (empty when this was written). In round
+  one she answered in the chat instead of on the page, so check both. Source: `release/review/decisions.html`; clips
+  and stills are cut by `release/review/build_page.sh` into `render/out/rev_page/v5/` and published as `clips5/*` and
+  `img/*` (the page's older `clips/part_N.mp4` are the v4 parts and serve as "before").
+
+### What to do with each answer
+| Card | If she chooses… | Then |
+|---|---|---|
+| `r2_tea` 0:45 | shorter hold | Retime only: the `rate`/`time` values in the 3.1 block of `03_verse2.js` (kiss lands 46.9, released 48.9 now). No new take needed. |
+| | face further away / different movement | New take from `media/keyframes/jade/J_3.1.png` (v3). Takes 7 and 8 exist but their lean-in is too slow. Going back to `take_3` needs `J_3.1_v2.png` restored and roto prep + keep re-run. |
+| `r2_sung` 1:22 | use the sung close-up | Paste `docs/reviews/rev2_ls_block_4.3_sung.js` over the 4.3 block of `04_hook.js` (`CLIP` = `LS3c/take_7m`, anchors in `rev2_ls_report.md` §6). To rebuild the roto folder use `tools/ls_sung_prep.py LS3c/take_7`, never `roto_prep.py` alone. Check the teeth at 1080p before calling it done. |
+| | try once more | The method that worked: `pruna/p-video-avatar` on a 1.3× crop of the painted portrait with the isolated stem; measure with `tools/sync/viseme_check.py`. Seedance 2.5 does not sync to the file (it re-sings it). |
+| `r2_brk` 1:56 | no face | `const FACE = false` at the top of `06_breakdown.js` (already rendered as `render/out/rev2_brk/breakdown_after_noface.mp4`). |
+| | subtitles too | `release/subs/make_subs.py` line 54 (`L14b`), then regenerate; ask whether 举头 keeps "I raise my head". Her line breaks in the English follow the rhyme: do not reflow them. |
+| `r2_build` 2:03 | richer drawing | `render/src/scenes/buildsite.js`: mounds, rabbits and landers are drawn by rule; the 7.A0 plate (slate, orange line) and the live scene (deep indigo, yellow gold) differ in paper. |
+| | old montage back | The old A block is in git at commit `dee5b25` (`render/src/sections/07_drop.js`). |
+| `r2_ddr` 2:28 | two real pads | New K_7.C2 keyframe (two hard white platforms as in her video) and take; submit through `tools/vgen_rev2_c2.py`, because the prompts in `tools/vgen.py` / `vgen_calls.py` still describe the toy dog. |
+| | single mode on screen | `tools/ddr_screen.py` (`parse_chart('dance-double', …)` → the single chart), rebuild `SCR_ddr_c2`. |
+| `r2_toast` 2:59 | wants the clink | Needs a side-on or front angle: two inner hands seen from behind cannot touch rims. Blockout with articulated hands: `render/scenes/blockouts/7.E1/toast.js`. |
+| `r2_hair` 0:24 | lower the helmet | Edit `K_1.4b` so the thrown-back helmet sits behind her shoulders; new take. The emblem tool rebuilds `K_1.4a.jpg` from `K_1.4a_v3.jpg`: do not point it back at v1. |
+
+After any change: lint, render the shot, look at it, then a full `render_verified.sh` pass and rebuild the page.
+
+### Next, in order
+1. Her answers (page and chat), then the fixes above.
+2. A watch of the whole cut at speed, by a person or with a tool that can judge motion; the known soft spots are in
+   each report's last section. The ones most likely to be noticed: the 1.6 s held kiss (0:47–0:49); four cuts in 3.2 s
+   in the breakdown; 6.2c still for its last 5–6 frames; the 7.A2c tower cut is plain and 7.A3 holds on the landed
+   lander; the fog in 7.B3 forms on the wrong port; the 7.C2 cut-in is under the old ink flash.
+3. 1080p: hand it to codex. `render/tools/render_verified.sh 0 221.04 out/frames_v5_1080 1 3`, then encode (x264
+   two-pass plus a high-quality master, AAC from `media/audio/moongazing_master.wav`). Before that, run the order
+   check at full scale (the script is written for 0.5: change the viewport and `?scale=`). Not yet looked at in 1080p:
+   6.2d (plays the take's 720p pixels), the sung close-up's teeth, the new montage's thinnest lines.
+4. Release extras still not made: thumbnails, a 15 s social cut, upload copies (see "Known issues" further down).
+
+### Rendering: what changed and what must not be undone
+- v4's flashing words were frames saved with every 2D layer missing. Chasing it found that frames also depended on
+  what the browser page had drawn before them. All fixed; the causes and the three checks are in the revision notes
+  under "Render faults". In short: `render/tools/chrome_args.mjs` carries `--disable-accelerated-2d-canvas` (do not
+  remove it); `Pipeline.layer` in `core.js` uses a CPU-backed canvas, commits its clear and wraps each layer in
+  `save()`/`restore()`.
+- Consequence for scene code: **a 2D layer no longer inherits any context state** from the layer before it. Set
+  everything you need inside the layer's own draw function.
+- The drop's HUD shadow is now scaled with the render size (`16 * ctx.S`), so 1080p matches 540p.
+- Never `--resume` over frames from a run that logged errors; `render_verified.sh` starts clean on purpose.
+- Use at most 4 workers at 540p; fewer at 1080p.
+
+### Working method that held up this round
+- **Codex across the tmux wall** (Jade's instruction: mechanical work goes to codex). Pane `moongazing:0.1`. Paste a
+  self-contained job (`tmux load-buffer -b cx file; tmux paste-buffer -p -b cx -t moongazing:0.1; tmux send-keys -t
+  moongazing:0.1 Enter`), ask it to append a `…_DONE` line to `render/out/v5_render.log`, and wait on that with a
+  background loop that also ends when the pane shows "Would you like to run". It asks before network use (the video
+  relay), before deleting and before launching Chrome. This session read each command and approved them singly, and
+  allowed `node tools/render.mjs`, `node tools/order_check.mjs` and `bash tools/render_verified.sh` for codex's
+  session; Jade was told. Codex also did the 7.B image edits and takes well (it has a free image tool).
+- **Four Claude subagents plus one codex job at a time** ran for hours without reaching a usage limit. One agent per
+  shot group, each owning named blocks of a section file, each writing its own report as it went.
+- Subagents share the session's scratchpad directory and will overwrite files there: keep your own in a subfolder.
+- `tools/ffcheck.py` rescores old takes against a changed keyframe; agents wrote the original scores back by hand.
+- `docs/production_tracker.md` is generated and is stale for 7.A and 7.C2.
+
+### Spend and private material
+- About 22 USD of video and image generation this round (logged in `media/gen/spend.jsonl`; its video log stands at about 271 of the 380 cap).
+- Never commit or upload: `inputs/rare_earth_ddr_sample.mp4` (Jade's family video; ignored since Oct 8),
+  `release/audio/`, `media/`, `render/out/` (which holds `rev2_c2/ddr_screen_comparison.jpg`, a frame of that video).
 
 
 ## UPDATE, Oct 7 evening: revision round after v3 (read this before the older notes below)
