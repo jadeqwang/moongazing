@@ -15,3 +15,9 @@ render/fonts/*.otf
 inputs/*.png
 inputs/*.MOV
 inputs/*.mov
+inputs/*.mp4
+release/audio/
+docs/reviews/glitch_sweep_v3/
+render/scenes/blockouts/**/*.png
+render/scenes/blockouts/**/*.jpg
+render/scenes/blockouts/**/*.bak

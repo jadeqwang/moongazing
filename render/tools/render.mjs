@@ -12,6 +12,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { serve } from './serve.mjs';
+import { CHROME_ARGS } from './chrome_args.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(ROOT, '..');
@@ -38,11 +39,7 @@ async function withBrowsers(n, scale, fn) {
   const server = await serve(port);
   const browsers = [];
   try {
-    for (let j = 0; j < n; j++) browsers.push(await chromium.launch({
-      executablePath: CHROME,
-      args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist',
-        '--disable-gpu-sandbox', '--force-color-profile=srgb', '--disable-background-timer-throttling'],
-    }));
+    for (let j = 0; j < n; j++) browsers.push(await chromium.launch({ executablePath: CHROME, args: CHROME_ARGS }));
     const W = Math.round(1920 * scale), H = Math.round(1080 * scale);
     const pages = await Promise.all(browsers.map(async (b) => {
       const page = await b.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });

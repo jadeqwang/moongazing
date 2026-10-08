@@ -72,7 +72,7 @@ export default function shots(B, X, L) {
     // 0.3 — Chang'e rises past the Moon: K_0.3/take_1 redrawn on silk (the painting holds; her figure and ribbons are
     //       redrawn on twos from the h3 motion base). The take's head exits top at ~3 s; the shot is 2.35 s.
     { id: '0.3', t0: S03, t1: S04, paper: 'silk', grain: 3, focus: [560, 420],
-      scene: [{ type: 'roto', clip: 'K_0.3/take_1', paper: 'silk', lock: 0.35, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.49, y: 0.47, zoom: 1.10 } }],
+      scene: [{ type: 'roto', clip: 'K_0.3/take_1', paper: 'silk', offset: 0.5, rate: 0.75, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.49, y: 0.47, zoom: 1.10 } }],
       needs: ['K04'],
       type(ctx, t) {
         inkBleed(ctx, 'K04', P04, t, S04 - 0.6, S04);
@@ -81,8 +81,11 @@ export default function shots(B, X, L) {
           size: 104, x: 1840, y: 826, align: 'right', color: INK }, t, S03 + 0.3, S04 - 0.02);
       } },
 
-    // 0.4 — she could never come home (K_0.4 plate + Earth on its own layer, drifting)
-    { id: '0.4', t0: S04, t1: S05, paper: 'xuan', grain: 4, scene: 'plate',
+    // 0.4 — she could never come home. rev Oct 7 (glitch sweep): K_0.4/take_1 (h3) through the ink roto when picked and
+    //       prepped: Chang'e breathes and tilts her head to the Earth, her robe and ribbons follow, the rabbit turns its head.
+    //       Fallback: the K_0.4 plate with the Earth on its own drifting layer (params below).
+    { id: '0.4', t0: S04, t1: S05, paper: 'xuan', grain: 4,
+      scene: X.pick('K_0.4') ? [{ type: 'roto', clip: X.pick('K_0.4').clip, paper: 'silk', style: { lineA: 0, snapAmt: 0, gran: 0 }, offset: 0.6, lock: 0, from: { x: 0.52, y: 0.5, zoom: 1.03 }, to: { x: 0.5, y: 0.49, zoom: 1.09 } }] : 'plate',
       params: { img: 'K04', grade: 'native', from: { x: 0.52, y: 0.5, zoom: 1.03 }, to: { x: 0.5, y: 0.49, zoom: 1.09 }, par: [-0.014, 0.004], dolly: 0.05,
         over: { img: 'K04earth', from: [0.004, -0.004], to: [-0.006, 0.003] },
         masks: { base: [0.1, 0.35], polys: [
@@ -98,7 +101,7 @@ export default function shots(B, X, L) {
     // 0.5 — every Mid-Autumn, a billion people… (K_0.5)
     //       K_0.5/take_1 (h3: lantern light and mist drifting over the roofs) redrawn on silk
     { id: '0.5', t0: S05, t1: S06, paper: 'silk', grain: 5, focus: [900, 420],
-      scene: [{ type: 'roto', clip: 'K_0.5/take_1', paper: 'silk', offset: 0.6, lock: 0.3, from: { x: 0.5, y: 0.52, zoom: 1.05 }, to: { x: 0.47, y: 0.5, zoom: 1.13 } }],
+      scene: [{ type: 'roto', clip: 'K_0.5/take_1', paper: 'silk', offset: 0.6, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.52, zoom: 1.05 }, to: { x: 0.47, y: 0.5, zoom: 1.13 } }],
       type(ctx, t) {
         // Li Bai, 静夜思 — traditionally dated 726 CE (开元十四年), Yangzhou
         card(ctx, 'c05', { lines: [[{ t: 'In 726, Li Bai looked up at the ' }, { t: 'Moon', size: 112 }], [{ t: 'and wrote about ' }, { t: 'missing home.', size: 112 }]],
@@ -108,22 +111,11 @@ export default function shots(B, X, L) {
 
     // 0.6 — the roof-deck shot. The keyframe is read live; if the new Shanghai/Pudong take has landed (K_0.6.txt says so)
     // use a generic city split (sky far, skyline mid, deck near, lights alive); else the Mei/mother split.
-    SHANGHAI
-      // K_0.6/take_3 (Seedance): M lifts the toy Moon against the real one and it catches the light; 1.1 continues it
-      ? { id: '0.6', t0: S06, t1: LIFT, paper: 'silk', grain: 6, focus: [1150, 470],
-        scene: [{ type: 'roto', clip: 'K_0.6/take_3', paper: 'silk', offset: K06_OFF, lock: 0.3, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: K06_END },
-          // the night starts to flood indigo over the deck in the last bar before the lift (1.1 finishes it)
-          { name: 'paperfade', params: { paperTo: 'indigo', fade: (t) => 0.5 * smooth(LIFT - 0.7, LIFT, t) } }],
-        }
-      : { id: '0.6', t0: S06, t1: LIFT, paper: 'silk', grain: 6, scene: 'plate',
-      params: { img: 'K06', grade: 'native', from: { x: 0.56, y: 0.5, zoom: 1.04 }, to: { x: 0.66, y: 0.42, zoom: 1.24 }, par: [-0.012, 0.004], dolly: 0.08,
-        masks: { base: [0.05, 0.5], polys: [
-          { pts: [[0.77, 0.24], [0.88, 0.18], [0.96, 0.36], [1, 1], [0.64, 1], [0.64, 0.8], [0.77, 0.74]], depth: 0.9, blur: 6 },
-          { pts: [[0.84, 0.22], [0.91, 0.22], [0.92, 0.62], [0.85, 0.62]], flutter: 0.5, blur: 10 },
-          { pts: [[0.785, 0.3], [0.835, 0.3], [0.84, 0.45], [0.79, 0.45]], flutter: 0.4, blur: 8 },
-          { pts: [[0.0, 0.42], [1, 0.42], [1, 0.52], [0, 0.52]], water: 1, blur: 10 },
-        ] },
-        flutter: [2.2, 2.8], shimmer: 1.4, flicker: 0.8, mist: { color: [0.36, 0.42, 0.55], amount: 0.3, y0: 380, y1: 560, speed: 10 } } },
+    { id: '0.6', t0: S06, t1: LIFT, paper: 'silk', grain: 6, focus: [1150, 470],
+      // Continue the same drawing clock through 1.1; 0.55 + 0.75 * 4.44 stays inside the four-second take.
+      scene: [{ type: 'roto', clip: 'K_0.6/take_3', paper: 'silk', offset: 0.55, rate: 0.75, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: K06_END },
+        { name: 'paperfade', params: { paperTo: 'indigo', fade: (t) => 0.5 * smooth(LIFT - 0.7, LIFT, t) } }],
+    },
 
   ];
 }

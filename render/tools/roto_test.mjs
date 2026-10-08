@@ -3,6 +3,7 @@
 //        --out out/roto_tests/K_5.1/frames [--scale 0.5] [--workers 6] [--times 0.5,1.2]
 // Frames are named by global frame index round(t*24) like tools/render.mjs, so --encode-style muxing works.
 import { chromium } from 'playwright-core';
+import { CHROME_ARGS } from './chrome_args.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -27,7 +28,7 @@ const browsers = [];
 const T0 = Date.now();
 try {
   for (let j = 0; j < nW; j++) browsers.push(await chromium.launch({ executablePath: CHROME,
-    args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-sandbox', '--force-color-profile=srgb'] }));
+    args: CHROME_ARGS }));
   const W = Math.round(1920 * scale), H = Math.round(1080 * scale);
   let next = 0;
   await Promise.all(browsers.map(async (b) => {

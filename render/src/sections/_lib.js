@@ -66,7 +66,7 @@ export function hud(ctx, text, x, y, o = {}, alpha = 1, mode = 'over') {
   // stacked labels keep their rhythm: distances from the nearest frame edge scale with the type
   const yy = !drop ? y : y > 540 ? 1080 - (1080 - y) * k + (k - 1) * 18 : 40 + (y - 40) * k;
   ctx.pipe.layer((g) => {
-    if (drop) { g.shadowColor = 'rgba(0,0,0,0.7)'; g.shadowBlur = 8; g.shadowOffsetY = 1; }
+    if (drop) { g.shadowColor = 'rgba(0,0,0,0.7)'; g.shadowBlur = 16 * ctx.S; g.shadowOffsetY = 2 * ctx.S; }   // canvas shadows are in device px: scaled so 1080p matches 540p
     ctx.type.hud(g, text, x, yy, { tracking: 0.16, ...o, size, color: o.rgb ? `rgba(${o.rgb},${(alpha * a).toFixed(3)})` : (o.color || `rgba(240,232,214,${(alpha * a).toFixed(3)})`) });
   }, { mode, seed: 46 });
 }

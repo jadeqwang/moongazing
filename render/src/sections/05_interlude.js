@@ -1,6 +1,7 @@
 // SECTION 5 · INTERLUDE — 101.33–111.95 (erhu; riser; IMPACT 104.92; stop-start stabs; dip 109.5). INK paper.
 // The 廣寒 station seal slams on the impact; the crew name cards flash one per half-beat stab.
 import { hud, card, kf, ph, bump, INK, PALE, smooth } from './_lib.js';
+import { earthView, EARTH_KEYS } from '../scenes/earthview.js';
 
 export const range = [101.33, 111.95];
 
@@ -26,10 +27,15 @@ export default function shots(B, X, L) {
   const S51 = bar(55), S52 = bar(57), S53 = bar(58, 3), S54 = 109.5, END = L.L14a.start;
   // eight stabs between 107.60 and 109.5: on beats and half-beats
   const stabs = [bar(58, 3), (bar(58, 3) + bar(58, 4)) / 2, bar(58, 4), (bar(58, 4) + bar(59)) / 2, bar(59), (bar(59) + bar(59, 2)) / 2, bar(59, 2), (bar(59, 2) + bar(59, 3)) / 2];
+  // 5.4: the push on the take, and the Earth in keyframe uv [x, y, radius / width] (no Earth is painted in K_5.4_rev_sys2)
+  const V54 = { from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.52, y: 0.5, zoom: 1.12 } }, E54 = [0.845, 0.388, 0.0126];
   return [
     // 5.1 — +6 h · EGRESS: first steps; long, long shadows (Sun at 1°); the crew lopes in 1/6 g
     { id: '5.1', t0: S51, t1: S52, paper: 'xuan', grain: 51, focus: [1100, 560],
-      scene: [X.has('K_5.1') ? { type: 'roto', clip: 'K_5.1/take_1', paper: 'ink', lock: 0.4, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.54, y: 0.5, zoom: 1.1 } }
+      // K_5.1/take_2 (h3, rev Oct 7): cut in 1.5 s into the take, as the nearest astronaut comes down from her first hop;
+      // she lands (clip 1.8 s), takes two steps, pushes off (3.6 s) and lands again (5.4 s) just before the cut (rate 1.14).
+      // Whole subjects and their shadows are redrawn (take_1 left her painted in mid-air over a painted shadow).
+      scene: [X.has('K_5.1') ? { type: 'roto', clip: 'K_5.1/take_2', paper: 'ink', offset: 1.45, rate: 1.14, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.54, y: 0.5, zoom: 1.1 } }
         : ph('First steps; long shadows; the crew lopes in 1/6 g', 'K_5.1')],
       type(ctx, t) { hud(ctx, '+6 H  ·  EGRESS  ·  SUN 1.0°', 64, 72, { size: 15, rgb: '30,30,32', a: 0.9 }, 1, 'ink'); } },
     // 5.2 — IMPACT: the 廣寒 seal slams onto the ink landscape; the plan of the base is drawn in beneath it
@@ -59,6 +65,14 @@ export default function shots(B, X, L) {
       },
     })),
     // 5.4 — the dip: Jade alone, back to camera, at the edge of the ridge. Everything ink.
-    { id: '5.4', t0: S54, t1: END, paper: 'xuan', grain: 54, focus: [960, 560], scene: [X.has('K_5.4') ? kf('K_5.4', { from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.5, y: 0.52, zoom: 1.12 }, dolly: 0.08, reveal: (t, lt) => 0.42 + smooth(0, 0.5, lt) * 1.2, masks: { base: [0.0, 0.9], polys: [{ pts: [[0, 0], [1, 0], [1, 0.42], [0, 0.42]], depth: 0.0, blur: 20 }] } }) : ph('Jade alone, back to camera, at the edge of the ridge; everything ink', 'K_5.4')] },
+    // rev Oct 7 (glitch sweep): K_5.4/take_4 (h3, from K_5.4_rev_sys2): she shifts her weight and lifts her helmet a little;
+    //       ONE shadow, running from her boots toward the Earth's azimuth (the Sun is on the horizon behind her, as in
+    //       the breakdown that follows: technical_accuracy_notes §4b); no painted Earth: scenes/earthview.js draws the
+    //       breakdown's sky (full, south-up, 2.05° drawn 1.2×, 4.8° above the horizon over the end of her shadow).
+    { id: '5.4', t0: S54, t1: END, paper: 'xuan', grain: 54, focus: [960, 560], ...(X.pick('K_5.4') ? { needs: [...EARTH_KEYS],
+      type(ctx, t, lt) { const u = 0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, Math.max(0, lt / (END - S54)))), z = V54.from.zoom + (V54.to.zoom - V54.from.zoom) * u, h = 0.5 / z;
+        const cx = Math.min(1 - h, Math.max(h, V54.from.x + (V54.to.x - V54.from.x) * u)), cy = Math.min(1 - h, Math.max(h, V54.from.y + (V54.to.y - V54.from.y) * u));
+        earthView(ctx, { x: ((E54[0] - cx) * z + 0.5) * 1920, y: ((E54[1] - cy) * z + 0.5) * 1080, r: E54[2] * z * 1920, subLat: 6.6, subLon: 147.7, north: 131.3, phase: 6.2, sunPA: 25.8 }); } } : {}),
+      scene: [X.pick('K_5.4') ? { type: 'roto', clip: X.pick('K_5.4').clip, paper: 'ink', offset: 0.5, lock: 0, ...V54 } : X.has('K_5.4') ? kf('K_5.4', { from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.5, y: 0.52, zoom: 1.12 }, dolly: 0.08, reveal: (t, lt) => 0.42 + smooth(0, 0.5, lt) * 1.2, masks: { base: [0.0, 0.9], polys: [{ pts: [[0, 0], [1, 0], [1, 0.42], [0, 0.42]], depth: 0.0, blur: 20 }] } }) : ph('Jade alone, back to camera, at the edge of the ridge; everything ink', 'K_5.4')] },
   ];
 }

@@ -1,0 +1,24 @@
+{
+ "id": "toy_dog_rear",
+ "title": "M’s toy robot dog, reared up to dance (headless Go2 miniature)",
+ "people": {},
+ "screens": {},
+ "cameras": {
+  "c2": {
+   "people": {},
+   "screens": {}
+  },
+  "side": {
+   "people": {},
+   "screens": {}
+  },
+  "front": {
+   "people": {},
+   "screens": {}
+  },
+  "top": {
+   "people": {},
+   "screens": {}
+  }
+ }
+}

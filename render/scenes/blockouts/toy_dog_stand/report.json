@@ -1,0 +1,24 @@
+{
+ "id": "toy_dog_stand",
+ "title": "M’s toy robot dog, standing (30 cm long, 20 cm at the back)",
+ "people": {},
+ "screens": {},
+ "cameras": {
+  "c2": {
+   "people": {},
+   "screens": {}
+  },
+  "side": {
+   "people": {},
+   "screens": {}
+  },
+  "front": {
+   "people": {},
+   "screens": {}
+  },
+  "top": {
+   "people": {},
+   "screens": {}
+  }
+ }
+}

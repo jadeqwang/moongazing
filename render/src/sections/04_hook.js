@@ -176,7 +176,9 @@ function tear(ctx, t, lt) {
   const S = tearState(lt);
   ctx.pipe.apply(ctx.gl.program(TEAR_FS, 'hook-tear'), {
     uImg: ctx.tex['K_4.2'], uXf: S.xf, uSag: S.sag, uSy: S.sy, uRel: S.rel, uT: t, uFall: S.fall,
-    uLow: [0.0, 0.47, 1 / 1920, 1 / 1072],
+    // the upper part of K_4.2 (v5 staging: the family large on the left): the rip runs through the sky above their heads,
+    // never through them; rows above the picture's top repeat its sky
+    uLow: [0.0, -0.035, 1 / 1920, 1 / 1072],
   });
   // flecks of paper and loose fibres tumbling after the falling sheet
   const tau = Math.max(0, lt - XF1);
@@ -269,23 +271,23 @@ export default function shots(B, X, L) {
         hud(ctx, 'T+00:00:0' + Math.max(0, Math.floor(t - 76.17)), 64, 1030, { size: 18, rgb: '255,255,255' }, 1);
         gl(ctx, 'g41', 'The moon wanes,', t, 77.4, S42 + 0.05, PALE, 1040, 1380);
       } },
-    // 4.2 — the viewing crowd at the fence, long lens (Larsen framing): Kenton holds M, T holds his hand; the rocket
-    //       rises far off; 酒寒 (寒 held) in the sky's 留白 at the right, by the crescent
-    { id: '4.2', t0: S42, t1: S43, paper: 'silk', grain: 42, focus: [1000, 520], post: (t, lt) => punch(t, lt),
-      scene: [X.has('K_4.2') ? { type: 'roto', clip: 'K_4.2/take_6', paper: 'silk', lock: 0.45, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.48, y: 0.48, zoom: 1.1 } }
+    // 4.2 — the same spot as 1.6, a few minutes later (restaged Oct 7): the rocket climbs at the right; M (left arm
+    //       round Kenton's neck) points up at it with her right arm, T holds Kenton's left hand, all three heads follow
+    //       it. K_4.2/take_9 (h3), 0.5–3.0 s of the take (the rocket leaves the top of the frame at 3.3 s).
+    //       酒寒 (寒 held) stands in the empty sky right of the exhaust column, above the crescent; the gloss under it.
+    { id: '4.2', t0: S42, t1: S43, paper: 'silk', grain: 42, focus: [1150, 380], post: (t, lt) => punch(t, lt),
+      scene: [X.has('K_4.2') ? { type: 'roto', clip: 'K_4.2/take_9', paper: 'silk', offset: 0.5, lock: 0, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.5, y: 0.47, zoom: 1.07 } }
         : ph('The crowd at the fence; Kenton holds M; the rocket rises', 'K_4.2')],
       type(ctx, t) {
-        lyricZH(ctx, L.L10, { from: 2, to: 4, size: 250, x: 1880, y: 40, color: PALEC, seed: 102, until: S43 + 0.05, key: 'b', halo: 12 }, t, 'over');
-        gl(ctx, 'g42', 'the wine is cold —', t, 79.0, S43 + 0.05);
+        lyricZH(ctx, L.L10, { from: 2, to: 4, size: 190, x: 1700, y: 28, color: PALEC, seed: 102, until: S43 + 0.05, key: 'b', halo: 12 }, t, 'over');
+        gl(ctx, 'g42', 'the wine is cold —', t, 79.0, S43 + 0.05, PALE, 474, 1608);
       } },
-    // 4.3 — in the capsule under g-load: 我思念. The painted J_LS3 holds (parallax + a fine g-load tremor); only the
-    //       mouth is drawn, from the vocal stem, in sparse gold line — no redrawn face.
+    // 4.3 — 我思念 is carried by the calligraphy over Jade braced under g-load, thinking of home. The sung LS3 takes
+    //       fail the mouth/jaw/teeth audit. J_4.3/take_1 is a verified non-singing performance from J_LS3: breathing,
+    //       a blink and small head motion; its lips stay at rest. Preserve the moving eyes and draw on every frame.
     { id: '4.3', t0: S43, t1: S43b, paper: 'indigo', grain: 43, post: (t, lt) => punch(t, lt), focus: [1300, 480],
-      scene: [X.has('J_LS3') ? { name: 'singer', params: { img: 'J_LS3', grade: 'native', from: { x: 0.52, y: 0.5, zoom: 1.04 }, to: { x: 0.56, y: 0.47, zoom: 1.12 }, par: [-0.01, 0], dolly: 0.05,
-          masks: { base: [0.2, 0.4], polys: [{ pts: [[0.5, 0.0], [0.92, 0.0], [0.95, 1], [0.48, 1]], depth: 0.85, blur: 14 }] }, shake: 2.2,
-          mouth: { cL: [0.643, 0.600], cR: [0.724, 0.600], up: [0.683, 0.594] }, erase: [0.058, 0.04], eraseAt: [0.683, 0.668], lead: 0.03,
-          style: { lip: '212,168,75', lipLo: '212,168,75', fillA: 0.14, inside: '10,14,30', outline: '228,188,112', line: '236,196,120', lineW: 0.8, alpha: 0.85, soft: 0.6 } } }
-        : ph('LS3 — Jade under g-load', 'J_LS3')],
+      scene: [{ type: 'roto', clip: 'J_4.3/take_1', paper: 'gold', offset: 0.55, lock: 0, mouth: false,
+        eyelock: false, redrawAll: 1, twos: false, from: { x: 0.52, y: 0.5, zoom: 1.04 }, to: { x: 0.54, y: 0.49, zoom: 1.06 } }],
       type(ctx, t) {
         lyricZH(ctx, L.L10, { from: 5, to: 8, size: 200, x: 330, y: 150, color: WHITE, seed: 103, until: S43b + 0.05, key: 'c', halo: 12 }, t, 'gold');
         hud(ctx, 'MAX-Q  ·  3.2 G', 64, 1030, { size: 15, rgb: '255,255,255' }, 1);
@@ -294,7 +296,7 @@ export default function shots(B, X, L) {
     //        painting blooms out of the silk like water; one enormous 你, held, the ink creeping into the paper.
     ...[['4.3b', S43b, X.has('K_4.3b_close') ? bar(46) : S44, 'K_4.3b'], ...(X.has('K_4.3b_close') ? [['4.3c', bar(46), S44, 'K_4.3b_close']] : [])].map(([id, a, b, img], i) => ({
       id, t0: a, t1: b, paper: 'silk', grain: 431 + i, focus: i ? [1150, 470] : [760, 560],
-      scene: [i === 0 && X.has(img) ? { type: 'roto', clip: 'K_4.3b/take_2', paper: 'silk', lock: 0.5, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.52, y: 0.48, zoom: 1.1 } }
+      scene: [X.has(img) ? { type: 'roto', clip: i ? 'K_4.3b_close/take_2' : 'K_4.3b/take_2', paper: 'silk', offset: i ? 2.45 : 0.6, lock: 0, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: i ? 0.73 : 0.5, y: i ? 0.53 : 0.5, zoom: i ? 1.62 : 1.04 }, to: { x: i ? 0.73 : 0.52, y: i ? 0.60 : 0.48, zoom: i ? 1.62 : 1.1 } }
         : X.has(img) ? kf(img, { from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.52, y: 0.48, zoom: 1.12 }, dolly: 0.06,
         mist: { color: [0.97, 0.97, 0.96], amount: 0.16, y0: 300, y1: 1000, speed: 26 }, ...(i === 0 ? { reveal: (t, lt) => 0.25 + smooth(0, 0.42, lt) * 1.4 } : {}) })
         : ph('Summer at an Austin splash park: M runs through the water arcs; T grins in the spray', img)],
@@ -318,7 +320,7 @@ export default function shots(B, X, L) {
       } },
     // 4.5 — the kids in the mission family room at Wenchang, faces lit by the big screen
     { id: '4.5', t0: S45, t1: S46, paper: 'silk', grain: 45,
-      scene: [X.has('K_4.5') ? { type: 'roto', clip: 'K_4.5/take_2', paper: 'silk', lock: 0.4, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.49, zoom: 1.1 } }
+      scene: [X.has('K_4.5') ? { type: 'roto', clip: 'K_4.5/take_2', paper: 'silk', offset: 0.6, lock: 0, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.49, zoom: 1.1 } }
         : ph('The kids in the family viewing room, faces lit by the big screen; T’s hand on the glass', 'K_4.5')],
       type(ctx, t) { lyricEN(ctx, L.L11, { ...huge, key: 'b', size: 120, x: 1860, y: 850, align: 'right', color: PALE, w0: 4, hold: 1.2, panel: 'dark' }, t, 'over'); } },
     // 4.6 — orbit: Earth fills the frame for the first time — a 青绿 painting
@@ -327,7 +329,7 @@ export default function shots(B, X, L) {
       type(ctx, t) { hud(ctx, 'ORBIT  ·  200 KM  ·  7.8 KM/S', 64, 1030, { size: 15, rgb: '255,255,255' }, 1); } },
     // 4.7 — after TLI: in free fall Jade lifts a drink pouch toward the Moon — 举杯; the calligraphy floats too
     { id: '4.7', t0: S47, t1: S48, paper: 'indigo', grain: 47,
-      scene: [X.has('K_4.7') ? { type: 'roto', clip: 'K_4.7/take_2', paper: 'silk', lock: 0.5, from: { x: 0.47, y: 0.5, zoom: 1.03 }, to: { x: 0.44, y: 0.47, zoom: 1.12 } }
+      scene: [X.has('K_4.7') ? { type: 'roto', clip: 'K_4.7/take_4', paper: 'silk', offset: 0.6, lock: 0, from: { x: 0.47, y: 0.5, zoom: 1.03 }, to: { x: 0.44, y: 0.47, zoom: 1.12 } }
         : ph('After TLI: in free fall Jade lifts a drink pouch toward the Moon; the toy Earth floats beside her', 'K_4.7', { dark: true })], focus: [520, 420],
       type(ctx, t) {
         lyricZH(ctx, L.L12, { size: 128, x: 1880, y: 110, color: WHITE, seed: 104, dy: (tt) => -26 * Math.sin((tt - 92.2) * 1.3) }, t, 'gold');
@@ -347,7 +349,7 @@ export default function shots(B, X, L) {
     // 4.9 — drums re-hit: DAY 4 · DESCENT. The lander's plume blasts regolith in flat radial sheets that stop the
     //       instant the engine cuts (K_4.9 take_2 redrawn in ink)
     { id: '4.9', t0: S49, t1: END, paper: 'xuan', grain: 49, flash: true, post: (t, lt) => bump(lt, 0.012),
-      scene: [X.has('K_4.9') ? { type: 'roto', clip: 'K_4.9/take_2', paper: 'ink', lock: 0.35, from: { x: 0.52, y: 0.46, zoom: 1.12 }, to: { x: 0.52, y: 0.5, zoom: 1.03 } }
+      scene: [X.has('K_4.9') ? { type: 'roto', clip: 'K_4.9/take_2', paper: 'ink', offset: 0.55, lock: 0, subject: false, maskGain: 8, from: { x: 0.52, y: 0.46, zoom: 1.12 }, to: { x: 0.52, y: 0.5, zoom: 1.03 } }
         : ph('Descent: the lander’s plume blasts regolith flat', 'K_4.9')],
       type(ctx, t) { hud(ctx, 'DAY 4  ·  DESCENT', 64, 72, { size: 15, rgb: '30,30,32', a: 0.9 }, 1, 'ink'); hud(ctx, `ALT ${Math.max(0, Math.round(120 * (1 - (t - 97.73) / 2.5))).toString().padStart(3, '0')} M`, 64, 98, { size: 13, rgb: '30,30,32', a: 0.8 }, 1, 'ink'); } },
   ];

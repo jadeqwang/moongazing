@@ -1,0 +1,28 @@
+{
+  "id": "4.3c",
+  "t0": 85.134,
+  "t1": 86.62,
+  "frames": 35,
+  "roi_output_px": [
+    300,
+    90,
+    830,
+    525
+  ],
+  "mad_start_2frame": 6.282449513673782,
+  "mad_rest_2frame": 7.927383086260627,
+  "frozen_start_ratio": 0.7924998004148724,
+  "registered_start": 5.512913888403233,
+  "registered_rest": 7.38300221007837,
+  "registered_ratio": 0.746703540312866,
+  "raw_adjacent_mean": 3.748262929565766,
+  "registered_mean": 6.476292720781333,
+  "numeric_whole_static": false,
+  "numeric_low_subject_motion": false,
+  "pops": [],
+  "colour_events": [],
+  "colour_peak_edge_pixels": 6,
+  "colour_peak_transient": 1,
+  "input": "half-scale renderer JPEG frames; same numeric.py process and ROIs; no cut-crossing pairs",
+  "source_sha256": "a5883b394b29ae90b45b7db74fddc6a65f7902392facdb619b721cea465d2c00"
+}

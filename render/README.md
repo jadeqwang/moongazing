@@ -61,6 +61,8 @@ It lists the shots still on placeholders.
 
 Use 5–6 workers. At 10 or more, SwiftShader pages run short of memory, images fail to decode and 2D layers can silently drop out of a frame, so `render.mjs` caps workers at 6 unless you pass `--force-workers`.
 
+**Verify every full render.** A frame can be saved with a layer missing and no error (fullcut v4: the type flashed in and out, because frames from an overloaded 6-worker pass were kept by `--resume`). The 2D layer canvas is CPU-backed since Oct 8 so that it cannot be lost under memory pressure, but the check stays: renders are byte-deterministic, so `tools/render_verified.sh` renders a range twice in fresh 10 s chunks, compares the passes frame by frame and re-renders any frame that differs. `tools/flicker_check.py` then looks for anything that drops out and comes back over a still background. Never `--resume` over frames from a run that logged errors.
+
 `--frames` keeps going if a frame fails (for example a browser crash or a broken shader mid-edit). It reports the frames that failed and exits non-zero; rerun with `--resume` to fill them in.
 
 **Type rules:**
@@ -77,6 +79,16 @@ Use 5–6 workers. At 10 or more, SwiftShader pages run short of memory, images 
 - **Identity:** `media/chars/identity/` (the 望月 and 廣寒 seals and the emblem).
 - **Fonts:** `fonts/`, OFL.
 - **Moon:** `assets/moon/`, NASA SVS 4720, public domain.
+
+## The speed-build (`src/scenes/buildsite.js`, shots 7.A1–7.A5)
+
+Guanghan Station drawn live as gold line, from `scenes/guanghan3d/layout.js` and the stage plates' own camera; no plates.
+In a section file: `{ name: 'buildsite', params: { cut: 'shell' } }`. The storyboard is the `CUTS` table at the end of the
+file: for each cut a framing (`view`: centre in the 1920×1080 guide's px, zoom), a window of days and a `state(u)` that
+says how far each thing is built at `u` = 0..1 through the cut. The Sun's bearing is `sunBearing(day)`, so the HUD's day
+counter (`buildDay`), the shadows, the mast panels and the mounds' hatching all agree. Three layers per frame: shadows
+(ink), line (gold, with hidden lines erased as it is drawn), light (screen). It resets the canvas shadow state the
+drop's HUD leaves on the shared 2D layer context (see `docs/reviews/rev2_build_report.md`).
 
 ## Roto: redrawing generated clips (`src/roto/`)
 

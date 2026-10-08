@@ -1,0 +1,341 @@
+<title>Moongazing Decisions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+SC:wght@500&display=swap">
+<style>
+/* Layout: one reading column of decision cards (picture left, choice right, stacking on phones), then a clip shelf. */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --ink: #151b2e; --muted: #5b6478; --line: #d6dbe6;
+  --accent: #2f5f8f; --accent-ink: #ffffff; --chosen: #e6eef7; --ok: #2c7a5b; --warn: #9a6a12;
+  --display: "Newsreader", Georgia, "Times New Roman", serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --zh: "Noto Serif SC", "Songti SC", "SimSun", serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1424; --surface: #161e33; --ink: #e9ecf4; --muted: #9aa4bb; --line: #2a3552;
+  --accent: #d2b26a; --accent-ink: #141a2c; --chosen: #232d49; --ok: #6fc7a2; --warn: #e0b765; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1424; --surface: #161e33; --ink: #e9ecf4; --muted: #9aa4bb; --line: #2a3552;
+  --accent: #d2b26a; --accent-ink: #141a2c; --chosen: #232d49; --ok: #6fc7a2; --warn: #e0b765; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; padding-inline: 16px; padding-block: 28px 64px }
+.wrap { max-width: 1080px; margin-inline: auto; display: flex; flex-direction: column; gap: 28px }
+h1 { font-family: var(--display); font-weight: 600; font-size: clamp(30px, 5vw, 44px); line-height: 1.1; margin: 0; text-wrap: balance }
+h2 { font-family: var(--display); font-weight: 600; font-size: 26px; margin: 0; text-wrap: balance }
+h3 { font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1.2; margin: 0; text-wrap: balance }
+p { margin: 0; max-width: 68ch }
+.lede { color: var(--muted); font-size: 17px }
+.head { display: flex; flex-direction: column; gap: 10px }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); padding-block: 10px; display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; font-size: 14px }
+.bar strong { font-family: var(--mono); font-weight: 500 }
+.bar .state { color: var(--muted) }
+.bar .state.ok { color: var(--ok) } .bar .state.warn { color: var(--warn) }
+.jump { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto }
+.jump a { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--line); border-radius: 4px; padding: 2px 6px }
+.jump a.done { color: var(--accent-ink); background: var(--accent); border-color: var(--accent) }
+.jump .sep { width: 1px; background: var(--line); align-self: stretch }
+.jump a:focus-visible, button:focus-visible, label:focus-within, textarea:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.cards { display: flex; flex-direction: column; gap: 22px }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 22px; scroll-margin-top: 70px }
+.card > * { min-width: 0 }
+@media (max-width: 760px) { .card { grid-template-columns: minmax(0, 1fr) } }
+.media { display: flex; flex-direction: column; gap: 10px }
+.media figure { margin: 0; display: flex; flex-direction: column; gap: 4px }
+.media img, .media video { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; background: #05070d; border-radius: 3px; display: block }
+figcaption { font-size: 13px; color: var(--muted) }
+figcaption b { font-family: var(--mono); font-weight: 500; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); margin-right: 6px }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
+.what { display: flex; flex-direction: column; gap: 12px }
+.when { font-family: var(--mono); font-size: 13px; color: var(--muted); letter-spacing: 0.02em }
+.q { font-weight: 600 }
+.opts { display: flex; flex-direction: column; gap: 6px; border: 0; padding: 0; margin: 0 }
+.opts legend { padding: 0; margin-bottom: 6px; font-size: 13px; color: var(--muted) }
+.opt { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; cursor: pointer }
+.opt input { margin-top: 4px; accent-color: var(--accent) }
+.opt.on { background: var(--chosen); border-color: var(--accent) }
+.opt small { display: block; color: var(--muted); font-size: 13px }
+textarea { width: 100%; min-height: 56px; font: inherit; font-size: 15px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; resize: vertical }
+.saved { font-size: 12px; color: var(--muted); font-family: var(--mono); min-height: 18px }
+.zh { font-family: var(--zh); font-size: 1.1em }
+.settled { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px 24px; padding: 0; margin: 0; list-style: none }
+.settled li { border-top: 1px solid var(--line); padding-top: 8px; font-size: 15px }
+.settled b { display: block }
+.settled .t { font-family: var(--mono); font-size: 12px; color: var(--muted); display: block }
+.shelf { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px }
+.shelf figure { margin: 0; display: flex; flex-direction: column; gap: 6px; min-width: 0 }
+.shelf video { width: 100%; aspect-ratio: 16 / 9; background: #05070d; border-radius: 3px }
+.shelf b { font-weight: 600 }
+.note { font-size: 14px; color: var(--muted) }
+section { display: flex; flex-direction: column; gap: 14px }
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <h1>Moongazing: your notes of 8 October, before and now</h1>
+    <p class="lede">The first seven cards are this round: each plays the passage as it is now beside the cut you watched, and asks the one thing that is yours to decide. Below them are the choices still open from the last round. Pick an option, add a note if you like; answers are saved here and Claude reads them back. Times are the same as in the cut you watched.</p>
+  </header>
+
+  <div class="bar" id="bar">
+    <span><strong id="count">0 / 0</strong> answered</span>
+    <span class="state" id="state">Connecting…</span>
+    <nav class="jump" id="jump" aria-label="Jump to a decision"></nav>
+  </div>
+
+  <section>
+    <h2>This round: yours to decide</h2>
+    <div class="cards" id="cards-new"></div>
+  </section>
+
+  <section>
+    <h2>Done this round, nothing to decide</h2>
+    <ul class="settled">
+      <li><span class="t">Whole film</span><b>Words flashing in and out.</b> The cut you watched had kept frames in which the whole text layer had dropped out. Three faults in the renderer were found and fixed, and every frame of the new cut was rendered twice and the two compared.</li>
+      <li><span class="t">0:19</span><b><span class="zh">月球基地</span>, not <span class="zh">月宫</span>.</b> The card reads <span class="zh">这一次，全世界共建一座月球基地</span>, in four columns so it clears the launch pad.</li>
+      <li><span class="t">2:13 – 2:18</span><b>True sizes.</b> The oxygen pipe is finger-thick and the wheel fits one glove; the cups and the rosette are at their real size.</li>
+      <li><span class="t">2:58</span><b>Adaeze's cup hand.</b> A left hand on her left arm, fingers across the front of the cup.</li>
+      <li><span class="t">3:02 – 3:07</span><b>The scale label in the pull-back.</b> It showed two overlapping numbers for a frame each time the scale stepped. It now shows one.</li>
+      <li><span class="t">1:41, 2:13, 2:17</span><b>The pale blue dot.</b> Now also on the suits at first steps, in the drill shot and on Lúcia's polo.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Still open from the last round</h2>
+    <p class="note">These have not changed since you last saw them, except where a card says so. Their clips play the new cut.</p>
+    <div class="cards" id="cards-old"></div>
+  </section>
+
+  <section>
+    <h2>Already settled</h2>
+    <ul class="settled">
+      <li><b>The Earth hangs south-up.</b> Kept as seen from the lunar south pole (Australia upper left).</li>
+      <li><b>On 乡 the picture returns to the suited figure facing the Earth</b> and pushes into the Earth, not your face.</li>
+      <li><b>0:27 and 1:19 staging.</b> The rocket sits to the right of the family so M's pointing arm is clear against the sky.</li>
+      <li><b>Full Earth at 1:56.</b> It is the real sky of 9 Sept 2037, fifteen days before Mid-Autumn; on Mid-Autumn night the Earth is below the station's horizon.</li>
+      <li><b>The push at 2:01 enters the whole Earth.</b> No zoom toward any one country; it dissolves to you and M at the museum globe.</li>
+      <li><b>One subject per shot.</b> Applied to the toast, the crew scenes and the walkout.</li>
+      <li><b>The rover's solar ears at 2:13</b> stay upright: you approved the pipe, wheel, cup and rosette fixes and left this one.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The whole new cut, in parts</h2>
+    <p class="note">Cut v5 in eleven parts, half size, with the song. Every fix from both rounds is in it except the sung close-up at 1:22, which waits for your answer above.</p>
+    <div class="shelf" id="shelf"></div>
+  </section>
+</div>
+
+<script>
+const CLIPS = [
+  { n: 1, t0: 0, t1: 17.54, name: "0:00 – 0:17", what: "Opening: the ink Moon, Chang'e, the rooftops, the Shanghai roof deck" },
+  { n: 2, t0: 17.54, t1: 32.42, name: "0:17 – 0:32", what: "Rocket card with 月球基地, the two crew shots, the family at the shore, the title" },
+  { n: 3, t0: 32.42, t1: 46.82, name: "0:32 – 0:47", what: "West Lake, the ribbons, the boat from behind, the silk, the teahouse begins" },
+  { n: 4, t0: 46.82, t1: 61.65, name: "0:47 – 1:02", what: "Teahouse (the kiss, the pour, the spoon, the reading finger), the lesson, the envelope" },
+  { n: 5, t0: 61.65, t1: 76.11, name: "1:02 – 1:16", what: "Training, the desk, the museum, strapping in" },
+  { n: 6, t0: 76.11, t1: 101.33, name: "1:16 – 1:41", what: "Ignition, the shore, the capsule, splash park, the tear, orbit, the pouch toast, landing" },
+  { n: 7, t0: 101.33, t1: 122.77, name: "1:41 – 2:03", what: "First steps, the station seal, name cards, the ridge, the rooftop, the crew looking up, 乡 and home" },
+  { n: 8, t0: 122.77, t1: 147.64, name: "2:03 – 2:28", what: "Building the base (new), the drill, the oxygen valve, the rosette, the radio array, the dust kick, lights on" },
+  { n: 9, t0: 147.64, t1: 161.77, name: "2:28 – 2:42", what: "Playroom with the cat and the real game, sofa and Rare Earth, the crew and their families, the call" },
+  { n: 10, t0: 161.77, t1: 189.86, name: "2:42 – 3:10", what: "The play, the crew watching, the bow, the toast, the pull-back to the pale blue dot" },
+  { n: 11, t0: 189.86, t1: 221.04, name: "3:10 – 3:41", what: "Splashdown, the reunion, the rooftop, the tea cup, credits" },
+];
+// r2: this round. before: also play the cut Jade watched (v4) from the same time. extra: [file, poster, caption] clips of their own.
+const D = [
+  { r2: true, id: "r2_tea", when: "0:45", title: "The teahouse kiss",
+    img: [["r2_tea", "You kiss M on the forehead; your mother watches the pour"]], at: 45.29, before: true,
+    body: "You asked for natural movement from a video model. You now turn and kiss M on the forehead while your mother keeps her eyes on the tea she pours. Two things to check. The kiss is held almost still for about a second and a half (0:47 to 0:49). And while your head is turned, your face is the video model's drawing with your glasses, not the face painted from your photos.",
+    q: "Keep this take?",
+    opts: [["keep", "Keep it"], ["shorter", "Keep it, but draw back sooner so the hold is shorter"], ["away", "Turn my face further away during the kiss", "New take; your face would be mostly hair and glasses."], ["other", "A different movement", "Say what in the note."]] },
+  { r2: true, id: "r2_sung", when: "1:22", title: "A sung close-up, lip-synced by a video model",
+    img: [["r2_sung_now", "In the cut now: not singing"]], at: 80.6,
+    extra: [["sung_4.3", "r2_sung", "The new sung close-up (1:20 – 1:24). Not in the cut yet."]],
+    body: "A different model this time: it animates the painted portrait to the isolated vocal, and its mouth is redrawn in gold line with no invented shapes. Checked frame by frame, <span class='zh'>我</span>, <span class='zh'>思</span> and <span class='zh'>念</span> each land within about a frame of the voice. What may bother you: at full size the teeth read as a pale band during <span class='zh'>思</span>; the lower face is the model's (fuller lips, and the chin narrows as the jaw drops); the head tilts a few degrees; and the framing is tighter than the current shot.",
+    q: "Which goes in the cut?",
+    opts: [["sung", "Use the sung close-up"], ["keep", "Keep the non-singing shot"], ["again", "Try once more", "Say what to change in the note."]] },
+  { r2: true, id: "r2_brk", when: "1:56", title: "“I think of home”, a shorter face, two crew looking up",
+    img: [["r2_brk", "Adaeze looks up from a power connector"], ["r2_brk_layla", "Layla stops mid-carry by the lander"], ["r2_brk_home", "乡 arrives with “home” under it"]], at: 115.2, before: true,
+    extra: [["brk_noface", "r2_brk_layla", "The same passage with no face shot (1:51 – 2:03)"]],
+    body: "The English is now “I think of home”, and <span class='zh'>乡</span> arrives with “home” under it. Your face is on screen for half a second; it was a second and a half. In the freed time Adaeze looks up from a power connector and Layla stops mid-carry by the lander, visors down, both turned to the Earth. That makes four cuts in three seconds in the quietest bars, so judge it at speed. A version with no face shot is rendered too.",
+    q: "Tick what you want (leave unticked to keep it as it is).", multi: true,
+    opts: [["noface", "Take my face out of this passage entirely"], ["one", "One crew shot instead of two, held longer"], ["subs", "Change the subtitle files to “I think of home” as well", "They still say “I lower my head and think of home.”"]] },
+  { r2: true, id: "r2_build", when: "2:03", title: "The build montage, redrawn so every cut builds something",
+    img: [["r2_build", "The printer lays the shell, one course a day"], ["r2_build_fins", "The radiator fins fan open"], ["r2_build_pad", "The laser sinters the pad, pass by pass"]], at: 122.77, before: true,
+    body: "Before, twelve cuts moved across four still drawings and the captions did the telling. Now the station is drawn live from the layout's own numbers: the survey is ruled out, a mast telescopes up, the modules dock, the printer lays a course a day, the tower rises, the crew lander comes down, the fins fan open, the cable is laid, the cupola opens, the pad is sintered, the lights come on. The Sun goes round the horizon with the day counter, so the long shadows sweep. What it costs: the mounds and machines are plainer than the hand-drawn plates, and the paper changes from slate to deep indigo after the first hit. Captions were corrected to the layout (masts 20 m, pad 50 m, shell 2.5 m).",
+    q: "Which direction?",
+    opts: [["new", "Keep the new montage"], ["richer", "Keep it, and make the drawing richer", "Hand-drawn mounds and machines, and one paper throughout."], ["mix", "Mix: the old plates for the wide cuts, the new action for the close ones"], ["old", "Go back to the old montage"]] },
+  { r2: true, id: "r2_ddr", when: "2:28", title: "The cat, and the real game on the TV",
+    img: [["r2_ddr", "The cat bats at the hem of M's dress"], ["r2_ddr_tv", "The TV, enlarged: eight targets, arrows on the beat, PERFECT, combo, score"]], at: 147.64, before: true,
+    body: "The toy dog is gone. The cat sits beside M and bats at the swinging hem of her dress. The TV now shows the game as it really looks, redrawn from your own step pack: two groups of four targets, arrows arriving on the film's beats, PERFECT, combo, score. One mismatch: the screen is the two-pad layout, and the painting still has one soft mat with four arrows, where your video shows two hard white pads.",
+    q: "What about the mat?",
+    opts: [["leave", "Leave the single mat"], ["pads", "Paint the two real pads", "New keyframe and take."], ["single", "Show single-pad mode on the screen instead"]] },
+  { r2: true, id: "r2_toast", when: "2:59", title: "The two cups no longer clink",
+    img: [["r2_toast", "Each arm comes from its owner's shoulder; the cups rise either side of the Earth"]], at: 176.4, before: true,
+    body: "In the two-cup shot each arm now comes from its owner's shoulder and you see the backs of the hands. Two inner hands seen from behind cannot touch rims (the knuckles meet first), so the cups rise apart on either side of the Earth and do not touch. Lúcia's hair also reads more like a plait than loose tied curls as her head tips back.",
+    q: "Is losing the clink all right?",
+    opts: [["fine", "Yes, rising apart is fine"], ["clink", "I want the clink", "Needs a side-on or front angle."]] },
+  { r2: true, id: "r2_hair", when: "0:24", title: "Hair inside the suit",
+    img: [["r2_hair", "Your tail goes down inside the collar"], ["r2_hair_head", "Before and now, enlarged"]], at: 22.3, before: true,
+    body: "Your tail now goes down inside the collar, as you suggested; Anastasia's braid and Lúcia's loose tail are low buns. Nothing crosses a neck ring. Every helmeted shot in the film was checked and these were the only ones. What is left: the thrown-back helmet hangs between the camera and the back of your head, so the hair knot is seen through the clear visor.",
+    q: "Good enough?",
+    opts: [["ok", "Yes"], ["lower", "Lower the helmet behind my shoulders so the knot is in the clear", "New keyframe and take."]] },
+
+  { id: "crew24", when: "0:24", title: "The look of the two crew shots",
+    img: [["r2_crew_a", "Walkout: Adaeze leads Anastasia, Arjun and Lúcia"], ["r2_hair", "Chen Yu looks up; Layla, Kenji and you (from behind) beside him"]], at: 22.75,
+    body: "Both shots were taken again this round for the hair, and the walkout now really advances. Still open: both are flat illustration on indigo, not the gold-line look of the rocket shot just before them.",
+    q: "What should happen to these two shots?",
+    opts: [["keep", "Keep both as they are"], ["gold", "Redraw both in gold line to match the rocket shot"], ["one", "Drop the walkout; hold on Chen Yu looking up for the whole slot"]] },
+  { id: "chopsticks", when: "0:51", title: "The chopsticks are gone from the tangyuan shot",
+    img: [["spoon", "The spoon hand now lifts and turns the bitten tangyuan"]], at: 50.49,
+    body: "Your note was about the frozen left hand. The take that fixed it has no chopsticks; no take had both a live spoon hand and a believable chopstick action.",
+    q: "Do the chopsticks matter?",
+    opts: [["fine", "Fine without them"], ["back", "Bring them back", "Needs a new keyframe with the chopsticks already held, and new takes."]] },
+  { id: "moonsize", when: "0:54", title: "The toy Moon is a third the size of the toy Earth",
+    img: [["lesson_side", "The Moon's shadow lands as a round spot on the globe"]], at: 54.09,
+    body: "The character bible says the two toys are the same size. A Moon as big as the Earth would shade the whole globe, so the eclipse spot you asked for would be impossible. One third is close to the true ratio and matches the small Moon M holds in the opening.",
+    q: "Which wins?",
+    opts: [["small", "Keep the small Moon and correct the bible"], ["match", "Make the toys match", "The dark spot on the globe goes away."]] },
+  { id: "tclose", when: "0:57", title: "T's face is fairly large in the third lesson view",
+    img: [["lesson_close", "The view along the beam: T grins at his sister"]], at: 56.21,
+    body: "Your rule for the kids is stylized and not close-up. This is stylized, but closer than the other shots of them.",
+    q: "Is this framing all right?",
+    opts: [["ok", "Fine as it is"], ["wider", "Pull back so his face is smaller"], ["hands", "Show only the hands, the Moon and the globe"]] },
+  { id: "envelope", when: "0:58", title: "The envelope: front, then the flap and the memo",
+    img: [["env_front", "Front"], ["env_seal", "The flap lifts across the seal (soft for about eight frames)"], ["env_letter", "The memo comes part-way out"]], at: 57.85,
+    body: "Three rough edges. As the flap lifts, the seal under your thumb is a pale smudge for about eight frames. The second take plays at 1.6× to fit, so the hands are brisk. And the cut from front to back implies you turned the envelope over between shots. The Chinese paragraph in the memo also needs one read by you.",
+    q: "How far should this go?",
+    opts: [["fine", "Good enough; leave it"], ["polish", "Fix the seal frames and slow the hands", "Probably means starting the second shot with the flap already lifting."], ["one", "One shot only: the front, with the flap opening from below"]] },
+  { id: "hudred", when: "1:14", title: "“HARNESS · LOCKED” is still drawn in red",
+    img: [["buckle", "The buckle seats on the click; the label appears lower left"]], at: 71.14,
+    body: "No red is left on suits or emblems. The on-screen labels in the training and launch passages have always been red and white.",
+    q: "Does the no-red rule cover on-screen labels too?",
+    opts: [["keep", "Labels may stay red"], ["nored", "No red in labels either", "I would switch them to white or pale gold throughout."]] },
+  { id: "rooftop", when: "1:52", title: "The rooftop is a moonless-night rehearsal",
+    img: [["roof_a", "M holds her toy Moon up where the Moon should be"], ["roof_b", "T's flashlight finds it on 月"]], at: 111.95,
+    body: "This follows your rehearsal idea, with one addition of mine: T lights the toy Moon with the flashlight from the Copernican lesson, so the children make their own bright Moon. Kenton is in three-quarter profile lifting M (the bible prefers his back), she is near the railing, and the frame is dark with a small lit Moon.",
+    q: "Keep this staging?",
+    opts: [["keep", "Keep it as it is"], ["tune", "Keep the idea; make the lit Moon brighter and turn Kenton further away"], ["noflash", "Keep the moonless night but drop the flashlight"], ["fullmoon", "Go back to a real full Moon over the roof", "Then the Earth cannot honestly be full at 1:56."]] },
+  { id: "push", when: "1:52 and 1:56", title: "Two small sky labels",
+    img: [["push_a", "2:01: the push goes into the Earth as a whole, south-up"], ["push_b", "…and dissolves to you and M over the museum globe"]], at: 118.8,
+    body: "Two quiet labels were added so reviewers see the phase logic is deliberate: “AUSTIN · NEW MOON · 15 DAYS TO MID-AUTUMN” at 1:52 and “GUANGHAN · FULL EARTH · 4.8° ABOVE THE HORIZON” at 1:56.",
+    q: "Keep the labels?",
+    opts: [["keep", "Keep both labels"], ["drop", "Remove both"], ["earthonly", "Keep only the full-Earth label"]] },
+  { id: "crewscenes", when: "2:32 – 2:38 and 2:52", title: "Three calls in the crew scenes",
+    img: [["falcon", "Layla shows you her father's falcon (you are on the right)"], ["stripe", "Chen Yu's collar stripe, muted to cinnabar-brown, still reads dull red"], ["tear", "2:52: Arjun, with a visible tear"]], at: 151.18,
+    body: "You appear in one sharing scene, from behind, which reverses an earlier note that you are not in these shots. Chen Yu's accent colour on the crew sheet is vermilion, which collides with no red on uniforms. And Arjun's tear may read as sentimental.",
+    q: "Tick what you want changed (leave unticked to keep).", multi: true,
+    opts: [["swapme", "Swap me out of the falcon scene for another crew member"], ["stripe_new", "Give Chen Yu a different accent colour", "Say which in the note; otherwise I'll propose one."], ["stripe_red", "Collar accents are exempt: let Chen Yu keep true vermilion"], ["notear", "No tear on Arjun"]] },
+  { id: "toast", when: "2:56", title: "The toast: the Adaeze close-up and the day label",
+    img: [["r2_toast_wide", "The wide, with its “DAY 388” label"], ["r2_toast_adaeze", "Adaeze: a fully painted, realistic face (her hand is now fixed)"]], at: 175.85,
+    body: "The hands are fixed this round. Still open: the middle shot is more realistic than its neighbours and is the frame most likely to read as an AI illustration, and there is a small continuity slip (Adaeze sips in the wide and holds her cup by her head in the close).",
+    q: "Tick what you want changed (leave unticked to keep).", multi: true,
+    opts: [["adaeze", "Restyle or replace the Adaeze close-up"], ["cont", "Fix the continuity slip between the views"], ["day", "Remove the “DAY 388” label"]] },
+  { id: "emblemstyle", when: "Every uniform", title: "What the pale blue dot looks like on a uniform",
+    img: [["emb_polo", "Enlarged: the patch on Adaeze's polo at 2:32"], ["emb_wide", "The same frame at normal size"]], at: -1,
+    body: "The patch on every polo and suit is the emblem from the identity sheet: a small navy roundel with a gold rim, the sunbeam across it and the pale blue dot inside the beam. At normal size it reads as a dark disc with a slash; the dot itself is tiny.",
+    q: "Is the roundel what you meant?",
+    opts: [["roundel", "Yes, keep the roundel"], ["bigdot", "Keep the roundel but make the dot larger and brighter"], ["dotonly", "A bare pale blue dot, no roundel", "One change in one file, re-run across all the shots."]] },
+  { id: "reunion", when: "3:13", title: "The reunion is one held hug",
+    img: [["reunion_a", "M runs in while the torn halves of the scroll rejoin"], ["reunion_b", "T kneels in; the three of you hold"], ["reunion_c", "The closer view (a 2× punch-in, soft at full size)"]], at: 193.41,
+    body: "The old version was stills. It is now one continuous take. Three things changed with it. The bowl-over onto the rug is gone, because no take of it was clean. Kenton stands still in the doorway in the take, so the camera pushes past him after about two seconds. And the closing tear crosses the children's faces for about a second.",
+    q: "Tick what you want changed (leave unticked to accept).", multi: true,
+    opts: [["bowl", "Bring back M bowling you over", "Needs a new keyframe and takes."], ["kenton", "Keep Kenton in the picture, moving"], ["tearpath", "Move the rejoining tear so it does not cross the children's faces"], ["closer", "Make a proper close painting of the hug instead of the punch-in"]] },
+  { id: "chute", when: "3:10", title: "The parachutes are orange-red and white",
+    img: [["chute", "Splashdown under three parachutes"]], at: 189.86,
+    body: "Real capsule parachutes are orange-red and white. It is the one remaining red on a vehicle.",
+    q: "Does the no-red rule reach the parachutes?",
+    opts: [["keep", "Keep them as they are"], ["recolour", "Recolour them", "For example white with pale blue or gold gores."]] },
+  { id: "calendar", when: "Whole film", title: "The mission calendar and two crews of four",
+    img: [], at: -1,
+    body: "Two facts were fixed so the letter, the launch sky and the Earth agree. The real capsule seats far fewer than eight, so Expedition 1 flies as two launches of four (you with Chen Yu, Layla and Kenji), and no launch-day frame shows more than four people. The calendar is: assignment memo 9 June 2036; launch about 8 August 2037 under a thin waning crescent; landing about 11 August; the full-Earth night 9–10 September; Mid-Autumn 24 September 2037; the toast 30 August 2038; home for Mid-Autumn 13 September 2038.",
+    q: "Confirm?",
+    opts: [["yes", "Confirmed"], ["change", "Something should change", "Say what in the note."]] },
+];
+
+const $ = (s, el = document) => el.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) { if (k === "class") e.className = v; else if (k === "html") e.innerHTML = v; else e.setAttribute(k, v); }
+  for (const k of kids) e.append(k); return e; };
+const answers = {};   // id -> { choice: string | string[], note: string }
+let db = null;
+
+const partAt = (at) => CLIPS.find((x) => at >= x.t0 && at < x.t1);
+function video(dir, at, poster) {
+  const c = partAt(at); if (!c) return null;
+  const start = Math.max(0, at - c.t0);
+  const v = el("video", { controls: "", preload: "none", playsinline: "", src: `${dir}/part_${c.n}.mp4#t=${start.toFixed(1)}` });
+  if (poster) v.setAttribute("poster", `img/${poster}.jpg`);
+  return v;
+}
+const fig = (node, label, cap) => el("figure", {}, node, el("figcaption", {}, ...(label ? [el("b", {}, label)] : []), cap));
+function render() {
+  const jump = $("#jump"); let n = 0, sepDone = false;
+  D.forEach((d) => {
+    const media = el("div", { class: "media" });
+    const from = `from ${d.when.split(" ")[0]}`;
+    const now = d.at >= 0 ? video("clips5", d.at, d.img[0] && d.img[0][0]) : null;
+    if (now) media.append(fig(now, d.r2 ? "Now" : "", `Play ${from}${d.img[0] ? " · " + d.img[0][1] : ""}`));
+    (d.extra || []).forEach(([file, poster, cap]) => media.append(fig(el("video", { controls: "", preload: "none", playsinline: "", src: `clips5/${file}.mp4`, poster: `img/${poster}.jpg` }), "New", cap)));
+    if (d.before) { const b = video("clips", d.at); if (b) media.append(fig(b, "Before", `The cut you watched, ${from}`)); }
+    const rest = now ? d.img.slice(1) : d.img;
+    if (rest.length) { const p = el("div", { class: rest.length > 1 ? "pair" : "" });
+      rest.forEach(([f, cap]) => p.append(el("figure", {}, el("img", { src: `img/${f}.jpg`, alt: cap, loading: "lazy" }), el("figcaption", {}, cap))));
+      media.append(p); }
+    const fs = el("fieldset", { class: "opts" }, el("legend", {}, d.q));
+    d.opts.forEach(([val, label, hint]) => {
+      const inp = el("input", { type: d.multi ? "checkbox" : "radio", name: `o-${d.id}`, value: val, id: `o-${d.id}-${val}` });
+      const lab = el("label", { class: "opt", for: inp.id }, inp, el("span", {}, label, ...(hint ? [el("small", {}, hint)] : [])));
+      inp.addEventListener("change", () => { collect(d); save(d); });
+      fs.append(lab);
+    });
+    const ta = el("textarea", { id: `n-${d.id}`, placeholder: "Note (optional)", "aria-label": `Note for: ${d.title}` });
+    let timer; ta.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => { collect(d); save(d); }, 900); });
+    const what = el("div", { class: "what" }, el("div", { class: "when" }, `${String(++n).padStart(2, "0")} · ${d.when}`), el("h3", {}, d.title),
+      el("p", { html: d.body }), fs, ta, el("div", { class: "saved", id: `s-${d.id}` }));
+    const card = el("article", { class: "card", id: d.id }, media, what);
+    if (!media.childNodes.length) { card.style.gridTemplateColumns = "minmax(0, 1fr)"; media.remove(); }
+    $(d.r2 ? "#cards-new" : "#cards-old").append(card);
+    if (!d.r2 && !sepDone) { jump.append(el("span", { class: "sep", "aria-hidden": "true" })); sepDone = true; }
+    jump.append(el("a", { href: `#${d.id}`, id: `j-${d.id}`, title: d.title }, d.when.split(" ")[0]));
+  });
+  const shelf = $("#shelf");
+  CLIPS.forEach((c) => shelf.append(el("figure", {}, el("video", { controls: "", preload: "none", playsinline: "", src: `clips5/part_${c.n}.mp4`, poster: `img/v5_part_${c.n}.jpg` }),
+    el("figcaption", {}, el("b", {}, c.name), ` ${c.what}`))));
+}
+function collect(d) {
+  const picked = [...document.querySelectorAll(`input[name="o-${d.id}"]:checked`)].map((i) => i.value);
+  answers[d.id] = { choice: d.multi ? picked : (picked[0] || ""), note: $(`#n-${d.id}`).value, touched: true };
+  paint(d);
+}
+function paint(d) {
+  const a = answers[d.id] || {};
+  document.querySelectorAll(`input[name="o-${d.id}"]`).forEach((i) => {
+    const on = d.multi ? (a.choice || []).includes(i.value) : a.choice === i.value;
+    i.checked = on; i.closest(".opt").classList.toggle("on", on); });
+  const done = !!a.touched && (d.multi ? true : !!a.choice || !!(a.note && a.note.trim()));
+  $(`#j-${d.id}`).classList.toggle("done", done);
+  $("#count").textContent = `${D.filter((x) => $(`#j-${x.id}`).classList.contains("done")).length} / ${D.length}`;
+}
+async function save(d) {
+  const a = answers[d.id], s = $(`#s-${d.id}`);
+  try { localStorage.setItem("mg-decisions-r2", JSON.stringify(answers)); } catch (e) { /* private window */ }
+  if (!db) { s.textContent = "Kept in this browser only"; return; }
+  s.textContent = "Saving…";
+  try { await db.doc(`decisions/${d.id}`).set({ choice: a.choice, note: a.note, title: d.title, when: d.when, at: new Date().toISOString() }); s.textContent = "Saved"; }
+  catch (e) { s.textContent = "Could not save here; tell Claude in the chat instead"; }
+}
+function apply(id, data) {
+  const d = D.find((x) => x.id === id); if (!d || !data) return;
+  answers[id] = { choice: data.choice ?? (d.multi ? [] : ""), note: data.note || "", touched: true };
+  const ta = $(`#n-${id}`); if (document.activeElement !== ta) ta.value = answers[id].note;
+  paint(d);
+}
+render();
+try { const local = JSON.parse(localStorage.getItem("mg-decisions-r2") || "{}"); for (const [id, a] of Object.entries(local)) apply(id, a); } catch (e) { /* none */ }
+D.forEach(paint);
+(async () => {
+  const state = $("#state");
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { state.textContent = "Answers stay in this browser; tell Claude your choices in the chat"; state.classList.add("warn"); return; }
+  state.textContent = "Answers save here; Claude can read them"; state.classList.add("ok");
+  db.collection("decisions").onSnapshot((snap) => snap.docs.forEach((doc) => apply(doc.id, doc.data())),
+    () => { state.textContent = "Lost the connection; answers stay in this browser"; state.className = "state warn"; });
+})();
+</script>

@@ -1,0 +1,288 @@
+{
+ "id": "K_7.C5c",
+ "title": "greenhouse: Kenji shows Lúcia Haruto and the dog",
+ "people": {
+  "kenji": {
+   "headTurnDeg": 13,
+   "headPitchDeg": -26,
+   "arms": {
+    "R": {
+     "reach": 0.89,
+     "handBehind": -0.47,
+     "elbowBehind": -0.14,
+     "target": "tablet:BR"
+    },
+    "L": {
+     "reach": 0.86,
+     "handBehind": -0.4,
+     "elbowBehind": -0.12,
+     "target": "tablet:BL"
+    }
+   },
+   "eye": [
+    0.22,
+    1.59,
+    0.14
+   ]
+  },
+  "lucia": {
+   "headTurnDeg": 37,
+   "headPitchDeg": -19,
+   "arms": {
+    "R": {
+     "reach": 0.5,
+     "handBehind": -0.12,
+     "elbowBehind": 0.02,
+     "target": "heart"
+    },
+    "L": {
+     "reach": 0.61,
+     "handBehind": -0.32,
+     "elbowBehind": -0.09,
+     "target": "point"
+    }
+   },
+   "eye": [
+    -0.26,
+    1.51,
+    0.22
+   ]
+  }
+ },
+ "screens": {
+  "tablet": {
+   "kenji": {
+    "distM": 0.55,
+    "obliquityDeg": 24,
+    "seesFront": true,
+    "visibleFrac": 0.92,
+    "blockedBy": [
+     "kenji.handL",
+     "kenji.handR"
+    ],
+    "gazeOffDeg": 4,
+    "verdict": "sees it"
+   },
+   "lucia": {
+    "distM": 0.54,
+    "obliquityDeg": 34,
+    "seesFront": true,
+    "visibleFrac": 0.92,
+    "blockedBy": [
+     "kenji.handL",
+     "kenji.forearmR"
+    ],
+    "gazeOffDeg": 3,
+    "verdict": "sees it"
+   }
+  }
+ },
+ "cameras": {
+  "hero": {
+   "people": {
+    "kenji": {
+     "faceAngleDeg": 48,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1397.6,
+      144.7
+     ],
+     "inFrame": true
+    },
+    "lucia": {
+     "faceAngleDeg": 24,
+     "view": "front",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      514.8,
+      294
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 129,
+     "shows": "back of the device",
+     "visibleFrac": 0,
+     "cornersPx": [
+      [
+       968.6,
+       799.2
+      ],
+      [
+       533,
+       778.5
+      ],
+      [
+       621.7,
+       1006.9
+      ],
+      [
+       1037.8,
+       1035.8
+      ]
+     ]
+    }
+   }
+  },
+  "rear": {
+   "people": {
+    "kenji": {
+     "faceAngleDeg": 139,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      411.5,
+      318.9
+     ],
+     "inFrame": true
+    },
+    "lucia": {
+     "faceAngleDeg": 128,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1532.2,
+      467.3
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 4,
+     "shows": "screen",
+     "visibleFrac": 0.88,
+     "cornersPx": [
+      [
+       752.1,
+       428
+      ],
+      [
+       1080.7,
+       433.7
+      ],
+      [
+       1076.4,
+       671.9
+      ],
+      [
+       746.3,
+       665.2
+      ]
+     ]
+    }
+   }
+  },
+  "top": {
+   "people": {
+    "kenji": {
+     "faceAngleDeg": 112,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1145.8,
+      436.7
+     ],
+     "inFrame": true
+    },
+    "lucia": {
+     "faceAngleDeg": 104,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      724.7,
+      515.4
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 47,
+     "shows": "screen",
+     "visibleFrac": 0.92,
+     "cornersPx": [
+      [
+       1097.8,
+       756.2
+      ],
+      [
+       936.7,
+       780.3
+      ],
+      [
+       927.5,
+       702.5
+      ],
+      [
+       1081.7,
+       679.4
+      ]
+     ]
+    }
+   }
+  },
+  "side": {
+   "people": {
+    "kenji": {
+     "faceAngleDeg": 70,
+     "view": "profile",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "lucia.hair"
+     ],
+     "headPx": [
+      756.9,
+      71.1
+     ],
+     "inFrame": true
+    },
+    "lucia": {
+     "faceAngleDeg": 140,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      925.9,
+      222.8
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 70,
+     "shows": "screen",
+     "visibleFrac": 0.52,
+     "cornersPx": [
+      [
+       1393.4,
+       548.3
+      ],
+      [
+       1506.9,
+       594.1
+      ],
+      [
+       1348.1,
+       808.3
+      ],
+      [
+       1249,
+       742.9
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

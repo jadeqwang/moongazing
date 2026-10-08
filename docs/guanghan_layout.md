@@ -59,6 +59,10 @@ Sources:
   - Earth is drawn south-up.
 - **Sun:**
   - Any bearing; it circles once per 29.5 days. Its elevation is −1.5° to +1.5°.
+  - **Sense:** the Moon turns the same way as the Earth, so at the south pole the Sun moves **right to left** along the
+    horizon: its bearing *decreases*, by 360° / 29.53 d = 12.2° per day (anticlockwise on the plan, and anticlockwise in
+    the 7.A jiehua view). Shadows are 1 / tan(elevation) times the caster's height: 38× at 1.5°, 48× at 1.2°. The 7.A
+    speed-build (`render/src/scenes/buildsite.js`, `SUN`) uses bearing = 200° − 12.19° × day and 1.2°.
   - **Earth's phase follows from the Sun's bearing.**
     - Sun behind the viewer looking at Earth: full Earth.
     - Sun near Earth's bearing: new Earth (this is 6.2, Mid-Autumn).

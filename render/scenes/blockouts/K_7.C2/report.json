@@ -1,0 +1,198 @@
+{
+ "id": "K_7.C2",
+ "title": "playroom: Kenton teaches T DDR; M dances with her toy robot dog",
+ "people": {
+  "T": {
+   "headTurnDeg": 0,
+   "headPitchDeg": 0,
+   "arms": {
+    "R": {
+     "reach": 0.71,
+     "handBehind": -0.28,
+     "elbowBehind": -0.05,
+     "target": "point"
+    },
+    "L": {
+     "reach": 0.71,
+     "handBehind": -0.28,
+     "elbowBehind": -0.05,
+     "target": "point"
+    }
+   },
+   "eye": [
+    0,
+    1.19,
+    0.21
+   ]
+  },
+  "kenton": {
+   "headTurnDeg": 0,
+   "headPitchDeg": -31,
+   "arms": {
+    "R": {
+     "reach": 1.01,
+     "handBehind": -0.48,
+     "elbowBehind": -0.21,
+     "target": "point"
+    },
+    "L": {
+     "reach": 1.01,
+     "handBehind": -0.48,
+     "elbowBehind": -0.21,
+     "target": "point"
+    }
+   },
+   "eye": [
+    0,
+    1.6,
+    0.01
+   ]
+  },
+  "M": {
+   "headTurnDeg": 0,
+   "headPitchDeg": -36,
+   "arms": {
+    "R": {
+     "reach": 1.16,
+     "handBehind": -0.1,
+     "elbowBehind": -0.05,
+     "target": "point"
+    },
+    "L": {
+     "reach": 1.25,
+     "handBehind": -0.12,
+     "elbowBehind": -0.06,
+     "target": "point"
+    }
+   },
+   "eye": [
+    -0.34,
+    0.91,
+    -0.98
+   ]
+  }
+ },
+ "screens": {},
+ "cameras": {
+  "hero": {
+   "people": {
+    "T": {
+     "faceAngleDeg": 136,
+     "view": "three-quarter back",
+     "headVisibleFrac": 0.8,
+     "blockedBy": [
+      "kenton.torso"
+     ],
+     "headPx": [
+      746.5,
+      404.4
+     ],
+     "inFrame": true
+    },
+    "kenton": {
+     "faceAngleDeg": 122,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      816.1,
+      163.7
+     ],
+     "inFrame": true
+    },
+    "M": {
+     "faceAngleDeg": 39,
+     "view": "three-quarter",
+     "headVisibleFrac": 0.86,
+     "blockedBy": [
+      "M.upperarmL"
+     ],
+     "headPx": [
+      1307.6,
+      528.2
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {}
+  },
+  "top": {
+   "people": {
+    "T": {
+     "faceAngleDeg": 95,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      668.2,
+      722.1
+     ],
+     "inFrame": true
+    },
+    "kenton": {
+     "faceAngleDeg": 122,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      623.9,
+      615.9
+     ],
+     "inFrame": true
+    },
+    "M": {
+     "faceAngleDeg": 118,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      472.1,
+      126.3
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {}
+  },
+  "front": {
+   "people": {
+    "T": {
+     "faceAngleDeg": 7,
+     "view": "front",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      667.6,
+      284.2
+     ],
+     "inFrame": true
+    },
+    "kenton": {
+     "faceAngleDeg": 22,
+     "view": "front",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      676.5,
+      -48.7
+     ],
+     "inFrame": false
+    },
+    "M": {
+     "faceAngleDeg": 103,
+     "view": "profile",
+     "headVisibleFrac": 0.4,
+     "blockedBy": [
+      "T.upperarmR"
+     ],
+     "headPx": [
+      544.4,
+      393.5
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {}
+  }
+ }
+}

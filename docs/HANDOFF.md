@@ -1,5 +1,59 @@
 # 望明月 · Moongazing — Handoff (end of day, Oct 7 2026)
 
+## UPDATE, Oct 8: second revision round, cut v5 (read this first)
+Jade watched v4 and gave twelve more notes; all are carried out in `render/out/fullcut_v5_540p.mp4` except the sung
+close-up at 1:22, which is made but waits for her choice. Her words, the shot each maps to and the outcome are in the
+second half of `docs/REVISION_NOTES_OCT7.md`; one report per job in `docs/reviews/rev2_*_report.md`.
+- **Decisions page** (same link, rebuilt for this round, before/now clips by timestamp):
+  https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp. Her answers: ArtifactData, collection `decisions` (ids `r2_*` are
+  this round). Page source and its build script: `release/review/` (`build_page.sh` cuts the clips and stills).
+- **Rendering is now verified.** Use `render/tools/render_verified.sh` for any full render (every frame twice, compared),
+  and `node tools/order_check.mjs …` after touching the engine. The faults behind the flashing words are listed in the
+  revision notes ("Render faults"). `render.mjs` launches Chrome with `--disable-accelerated-2d-canvas`: do not remove it.
+- **New in the engine:** `scenes/buildsite.js` (the 7.A build, drawn live from `guanghan3d/layout.js`),
+  `tools/ddr_screen.py` (the game screen in 7.C2), `tools/ls_sung_prep.py` (sung close-up prep; not `roto_prep.py`
+  alone), `tools/roto_prep_rubbing.py --black-floor`, `tools/sync/viseme_check.py`.
+- **Open with Jade:** the seven `r2_*` cards on the page (teahouse hold and her face in the turn; sung close-up or not;
+  face shot and subtitles at 1:56; montage direction; single mat vs two pads; the lost clink; helmet over the hair
+  knot), then the cards still open from round one.
+- **Still to do after her answers:** an end-to-end watch at speed, then 1080p (codex: `render_verified.sh` at scale 1,
+  x264 two-pass + a master). Not yet checked at 1080p: 6.2d (plays the take's pixels), the sung close-up's teeth.
+- **Working with codex across the tmux wall** (pane `moongazing:0.1`): paste the job with `tmux load-buffer` /
+  `paste-buffer -p`, then watch for its approval prompts; it asks before network (video relay) and before deleting.
+- **Private, never commit or upload:** `inputs/rare_earth_ddr_sample.mp4` (family video; git-ignored since Oct 8). The
+  repository is public.
+
+
+## UPDATE, Oct 7 evening: revision round after v3 (read this before the older notes below)
+Jade watched v3 and gave about thirty timestamped notes. They, the quality bar and the rules for the round are in
+`docs/REVISION_NOTES_OCT7.md`. Reports: `docs/reviews/glitch_sweep_v3.md` (frame-by-frame sweep of v3, with a
+"Systemic causes" section), `rev_7B_report.md`, `rev_lipsync_report.md`, `rev_sys_report.md`. Research written this
+round: `docs/companion_isru.md`, `docs/companion_moon_experiments.md` §13–14, `docs/research_mission_assignment.md`,
+`docs/research_capsule_interior.md`, `docs/technical_accuracy_notes.md` §4b (Earth from Guanghan).
+- **Jade's open choices** are on a page with frames and clips: https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp
+  (her answers: ArtifactData, collection `decisions`). Rebuild its clips with `render/out/rev_page/build.sh`.
+- **Cut:** `render/out/fullcut_v4_540p.mp4` (frames `render/out/frames_v4_540/`) is the first full render with the
+  round's fixes. Nothing from the round is committed to git.
+- **Facts fixed this round:** the Earth in every Moon shot is drawn by `render/src/scenes/earthview.js` (never an
+  image model), full and south-up on the real sky of 2037-Sep-10 02:30 UT (breakdown) and 2038-Aug-30 08:00 UT
+  (toast); on Mid-Autumn night the Earth is below the station's horizon, so the breakdown is fifteen days earlier and
+  the rooftop is a moonless-night rehearsal. Launch about 8 Aug 2037; two crews of four; the capsule has no fairing.
+  LS2 is retired; neither remaining sung close-up passed, so 4.3 is a non-singing reaction and 2.3 a rear view.
+- **Engine additions:** roto `keep` (painted faces carried: `tools/roto_keep.py`), carried emblem patches
+  (`tools/emblem_patch.py` + `.json`), `rate`/`time`/`rect`/`fill`/`tear` roto parameters, `papertype` scene
+  (text on tracked paper, 3.5), `tools/roto_prep_rubbing.py` (takes on rubbing paper). **Re-running
+  `tools/roto_prep.py` on a take wipes keep/emblem/paper data written into its roto folder: re-run those tools after.**
+  A keyframe newer than its roto folder silently drops the shot back to a still. `vgen.submit(over={'image': …})`
+  records the wrong keyframe in the sidecar: check `keySource` in the roto `meta.json`.
+- **Still to do:** emblem patch for 7.B1, 7.B3 and 5.1 (one entry each in `tools/emblem_patch.json`); whatever Jade
+  decides on the page; an end-to-end watch of v4 at speed (agents judged from frames and contact sheets only); then
+  1080p. Known soft spots are listed per shot in the reports and on the page.
+- **Limits:** thirteen Claude subagents at once exhausted the session limit in an hour; three codex jobs at once
+  exhausted codex in 25 minutes. Keep to 3–4 subagents and 1–2 codex jobs.
+
+---
+(Notes from before the revision round follow. "First thing tomorrow" below is superseded by the update above.)
+
 Read this first when resuming. Then: `docs/script.md` (v1.2 + revision notes at the top), `render/README.md`
 (engine, sections, lint, render commands, "State at end of day"), `docs/production_tracker.md` (every shot → keyframe,
 method, chosen take, lag), `media/gen/picks.json` (video picks).

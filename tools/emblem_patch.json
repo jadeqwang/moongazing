@@ -1,0 +1,302 @@
+{
+ "_doc": "Agency emblem placements per keyframe (keyframe px) for tools/emblem_patch.py. Polo: wearer's left chest, about 0.19 x head height across (4-5 cm). Optional white: lighting reference for dark cloth (default 246).",
+ "K_7.C4_c1_chen": {
+  "take": "take_2",
+  "emblems": [
+   {
+    "x": 2012,
+    "y": 894,
+    "d": 88,
+    "sq": 0.78,
+    "ax": 90
+   }
+  ],
+  "_orig": "K_7.C4_c1_chen_v2.jpg"
+ },
+ "K_7.C4_c2_anastasia": {
+  "take": "take_2",
+  "emblems": [
+   {
+    "x": 1296,
+    "y": 820,
+    "d": 84,
+    "sq": 0.74,
+    "ax": 90
+   }
+  ],
+  "_orig": "K_7.C4_c2_anastasia_v1.jpg"
+ },
+ "K_7.C4_c3_adaeze": {
+  "take": "take_2",
+  "emblems": [
+   {
+    "x": 2162,
+    "y": 991,
+    "d": 88,
+    "sq": 0.8,
+    "ax": 75,
+    "rot": -16
+   }
+  ],
+  "_orig": "K_7.C4_c3_adaeze_v1.jpg"
+ },
+ "K_7.C4_c4_arjun": {
+  "take": "take_3",
+  "emblems": [
+   {
+    "x": 2245,
+    "y": 785,
+    "d": 84
+   }
+  ],
+  "_orig": "K_7.C4_c4_arjun_v1.jpg"
+ },
+ "K_7.C4_c5_lucia": {
+  "take": "take_2",
+  "emblems": [
+   {
+    "x": 2150,
+    "y": 781,
+    "d": 82,
+    "sq": 0.85,
+    "ax": 90
+   }
+  ],
+  "_orig": "K_7.C4_c5_lucia_v1.jpg"
+ },
+ "K_7.C4_c6_kenji": {
+  "take": "take_2",
+  "emblems": [
+   {
+    "x": 1952,
+    "y": 861,
+    "d": 94
+   }
+  ],
+  "_orig": "K_7.C4_c6_kenji_v1.jpg"
+ },
+ "K_7.C4_c7_layla": {
+  "take": "take_3",
+  "emblems": [
+   {
+    "x": 1969,
+    "y": 955,
+    "mode": "replace",
+    "search": 80
+   }
+  ],
+  "_orig": "K_7.C4_c7_layla_v2.jpg"
+ },
+ "K_7.C5a": {
+  "take": "take_1",
+  "emblems": [
+   {
+    "x": 1017,
+    "y": 930,
+    "d": 128
+   }
+  ],
+  "_orig": "K_7.C5a_v1.jpg"
+ },
+ "K_7.C5c": {
+  "take": "take_1",
+  "emblems": [
+   {
+    "x": 1911,
+    "y": 855,
+    "d": 106
+   }
+  ],
+  "_orig": "K_7.C5c_v1.jpg"
+ },
+ "K_7.D3e": {
+  "take": "take_2",
+  "emblems": [
+   {
+    "x": 2436,
+    "y": 1340,
+    "d": 146
+   }
+  ],
+  "_orig": "K_7.D3e_v1.jpg"
+ },
+ "K_7.E1b": {
+  "take": "take_3",
+  "emblems": [
+   {
+    "x": 1071,
+    "y": 849,
+    "mode": "replace",
+    "search": 60,
+    "d": 68
+   },
+   {
+    "x": 362,
+    "y": 677,
+    "d": 66
+   }
+  ],
+  "_orig": "K_7.E1b_v3.png"
+ },
+ "K_1.4a": {
+  "take": "take_6",
+  "emblems": [
+   {
+    "x": 1799,
+    "y": 436,
+    "mode": "replace",
+    "search": 55
+   },
+   {
+    "x": 1244,
+    "y": 575,
+    "mode": "replace",
+    "search": 40
+   },
+   {
+    "x": 918,
+    "y": 668,
+    "mode": "replace",
+    "search": 30,
+    "old": [
+     918,
+     668,
+     28,
+     0.85,
+     90
+    ]
+   },
+   {
+    "x": 680,
+    "y": 737,
+    "mode": "replace",
+    "search": 22
+   }
+  ],
+  "_orig": "K_1.4a_v3.jpg",
+  "_note": "rev2_hair Oct 8: _orig is K_1.4a_v3.jpg = the hair-fixed painting without emblem patches (v1 = old hair, braid over the neck ring)"
+ },
+ "K_1.4b": {
+  "take": "take_3",
+  "emblems": [
+   {
+    "x": 1947,
+    "y": 791,
+    "mode": "carry",
+    "search": 60
+   },
+   {
+    "x": 1412,
+    "y": 912,
+    "mode": "carry",
+    "search": 50
+   }
+  ]
+ },
+ "K_3.8d_harness": {
+  "take": "take_2",
+  "emblems": [
+   {
+    "x": 925,
+    "y": 124,
+    "mode": "replace",
+    "search": 75,
+    "old": [
+     925.5,
+     124.4,
+     84,
+     0.93,
+     127
+    ]
+   }
+  ],
+  "_orig": "K_3.8d_harness_v1.jpg"
+ },
+ "K_7.B1": {
+  "take": "take_10",
+  "emblems": [
+   {
+    "x": 1264,
+    "y": 490,
+    "d": 24,
+    "sq": 0.86,
+    "ax": 90,
+    "mode": "replace",
+    "search": 25,
+    "old": [
+     1264,
+     490,
+     18,
+     0.88,
+     90
+    ],
+    "fixed": true
+   }
+  ],
+  "_orig": "K_7.B1_v4.jpg"
+ },
+ "K_7.B3": {
+  "take": "take_11",
+  "emblems": [
+   {
+    "x": 1426,
+    "y": 285,
+    "d": 42,
+    "sq": 0.75,
+    "ax": 90,
+    "rot": -10,
+    "mode": "add",
+    "track": [
+     [
+      1370,
+      250
+     ],
+     [
+      1500,
+      258
+     ],
+     [
+      1500,
+      298
+     ],
+     [
+      1370,
+      301
+     ]
+    ],
+    "white": 70
+   }
+  ],
+  "_orig": "K_7.B3_v4.jpg"
+ },
+ "K_5.1": {
+  "take": "take_2",
+  "emblems": [
+   {
+    "x": 1462,
+    "y": 588,
+    "d": 20,
+    "sq": 0.8,
+    "ax": 90,
+    "rot": -10
+   },
+   {
+    "x": 1983,
+    "y": 738,
+    "d": 16,
+    "sq": 0.58,
+    "ax": 90,
+    "rot": 12
+   },
+   {
+    "x": 2322,
+    "y": 757,
+    "d": 15,
+    "sq": 0.48,
+    "ax": 90,
+    "rot": 10
+   }
+  ],
+  "_orig": "K_5.1_v1.jpg"
+ }
+}

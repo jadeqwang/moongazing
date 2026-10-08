@@ -44,7 +44,8 @@ and more olive, around #C9B184. The sheets sit on clean #E9DCC0 so the character
 | 7a | Yutu v2 wheel-legged rovers | `media/chars/robots/SHEET_yutu_v2.jpg` | `robots/yutu_v2_gpt_v2.jpg` | gpt v1, then gpt edit (wire-mesh wheels, paler panels) |
 | 7a-old | Yutu v1 walking rovers (retired) | `media/chars/robots/SHEET.jpg` | `robots/rovers_gpt_v1.jpg` | gpt |
 | 7b | Regolith printer + humanoid helper | `media/chars/robots/SHEET_printer.jpg` | `robots/printer_grok_v2.png` | grok edit of gpt v1 (helmet fix) |
-| 7c | M's toy robot dog (Go2-like) + family cat | `media/chars/robots/SHEET_pets.jpg` | `robots/pets_gpt_v1.jpg` | gpt (ref: cat crop `media/refs/lanparty/cat_ref_sitting.jpg`) |
+| 7c | Family cat (the toy dog drawn on this sheet is **retired**: it has a head, a neck and a neckerchief) | `media/chars/robots/SHEET_pets.jpg` | `robots/pets_gpt_v1.jpg` | gpt (ref: cat crop `media/refs/lanparty/cat_ref_sitting.jpg`) |
+| 7c-toy | **M's toy robot dog: headless Go2 miniature** (standing, side, front, top, reared up). **In no shot since Oct 8** (7.C2 now has the cat) | `media/chars/robots/SHEET_toydog.jpg` | 3D model `render/scenes/blockouts/toy_dog.js` (scenes `toy_dog_stand`, `toy_dog_rear`) | Three.js, after `media/refs/robot_dog/` (image models add a head every time) |
 | 7c-old | Beagle robot dog (retired) | `media/chars/robots/SHEET_dog.jpg` | `robots/dog_gpt_v1.jpg` | gpt |
 | 8 | Agency emblem + seals | `media/chars/identity/` (`emblem_final*.{svg,png}`, `seal_wangyue.*`, `seal_guanghan*.*`, `IDENTITY_BOARD.jpg`) | procedural | `tools/seal.py`; see `docs/identity.md` |
 | 8-old | Old dot seal (retired: reads as Japan's flag) | `media/chars/seal/` | PIL + fontTools | — |
@@ -118,7 +119,7 @@ percentile), but real 4-year-old proportions (head about 1/5 of height, little r
 Slightly stylized gongbi child, sweet, never doll-like.
 - **Alt shoes (for practical scenes):** small brown leather ankle boots.
 - **Signature move:** runs at Jade full tilt when Jade kneels for a hug and bowls her over (K_8.2).
-- **Plays with:** her toy robot dog and the family cat (`robots/SHEET_pets.jpg`).
+- **Plays with:** the family cat (`robots/SHEET_pets.jpg`): in 7.C2 it bats at the hem of her dress while she bounces, in 7.C3 it lies against her on the sofa. Her toy robot dog (`robots/SHEET_toydog.jpg`: headless) is still her toy, but it is in no shot since Oct 8 (Jade on 7.C2: "change it to the cat").
 - **Variant, Chang'e costume:** white silk children's hanfu with a cross collar and wide sleeves, ankle-length white
   skirt, pale azurite sash, two very long white silk ribbons (飘带) edged in thin azurite and malachite, a small white
   flower in her hair, white cloth shoes. Ribbons stream like a Dunhuang Flying Apsara when she "flies".
@@ -270,6 +271,7 @@ wool coat with a high collar; soft malachite-green knitted scarf; dark trousers;
 
 **Under the helmet:** everyone wears a black-and-white fabric comms cap ("snoopy cap"). Layla's is a comms cap, not a
 headscarf.
+**Hair in any suit (rule, Oct 8):** no hair ever crosses a helmet rim or neck ring; for walkout, strap-in, launch and EVA long hair is gathered low at the nape (Layla, Anastasia, Lúcia: a low bun; Jade: tied low and the tail tucked down inside the collar); only coasting with the helmet open may it be out (4.7's floating ponytail) (`docs/reviews/rev2_hair_report.md`).
 
 **Galley clothes:**
 - soft-white short-sleeved polo with a collar stripe in the person's colour and the round emblem patch on the left chest;
@@ -297,7 +299,7 @@ colour = home), so on the GOLD-paper station the little screens are the only col
 | **Arjun Raman** | His newborn daughter, his wife **Meera** and his mother-in-law, in Chennai | Midday, shutters half closed. The baby sleeps in a *thottil*, a sari slung from a ceiling spring, which her grandmother rocks with one hand. Meera, jasmine in her loose hair, leans to the cradle. A kolam at the door. | His daughter was born on mission day ~200. Her naming ceremony happened with Arjun on the video link. He has never held her. He holds the tablet the way you hold a baby. |
 | **Lúcia Ferreira** | Her grandmother **Avó Rosa** (85), in the Minho, northern Portugal | In the *quintal* under a grapevine pergola on granite posts, with couve-galega kale, staked tomatoes, a lemon tree, a band of azulejos and a cat on the step, Avó holds up a folded paper packet of seeds she saved and taps it. | The seeds are for Lúcia's growth chamber on the Moon (7.B3). The botanist learned it all in this garden. |
 | **Kenji Mori** | His husband **Haruto** and their old rescue dog **Daizu** (brown, greying, one ear up), in Kamakura | On the engawa of their small wooden house at dusk, among Kamakura's June hydrangeas, Haruto lifts Daizu's paw to wave. Sandals on the stepping stone, a water bowl, shiso in a planter, the shoji warm behind them. | The robotics engineer who builds the rabbit rovers misses the least engineered creature alive. He laughs and wipes his eye under his glasses. |
-| **Layla Al-Mansoori** | Her father **Saeed** (68), a falconer, outside Al Ain | At dawn on a dune, in a white kandura and ghutra, he lifts the leather hood (*burqa*) off his saker falcon on his gloved fist, and the falcon looks straight into the camera. A pickup truck, a mat with a brass *dallah* and cups. Jebel Hafeet on the horizon. | The pilot's father, who taught her to read wind by watching a bird fly. Falconry is shared heritage (UNESCO) across the Gulf, and personal here. She raises the tablet like a toast. |
+| **Layla Al-Mansoori** | Her father **Saeed** (68), a falconer, outside Al Ain | At dawn on a dune, in a white kandura and ghutra, he lifts the leather hood (*burqa*) off his saker falcon on his gloved fist, and the falcon looks straight into the camera. A pickup truck, a mat with a brass *dallah* and cups. Jebel Hafeet on the horizon. | The pilot's father, who taught her to read wind by watching a bird fly. Falconry is shared heritage (UNESCO) across the Gulf, and personal here. She watches it knees-up in her bunk, chin lifted, the way he taught her to face the wind (v1 had her raise the tablet "like a toast": at arm's length for no reason; retired Oct 7). |
 | **Jade Wang** | M (4), T (7) and Kenton, in Austin | M and T waving (covered by 7.C1/7.C5). | Jade's cell is the last one, from behind, with the screen visible. |
 
 **Rules for these clips:**
@@ -325,7 +327,35 @@ colour = home), so on the GOLD-paper station the little screens are the only col
 
   Files: `K_7.C4.jpg` (= a) and the sheet `K_7.C4_v5_SHEET.jpg`. The galley-table pairs are kept as `*_v4`, and the
   rejected eight-person group frame as `K_7.C4_v3.jpg`. Jade is not in these shots; her beat is the call home.
-- **Edit idea.** Solitary grid cells first, then the pairs: from alone to together, one focal point at a time.
+- **Edit idea (v5, superseded).** Solitary grid cells first, then the pairs: from alone to together, one focal point at a time.
+
+**K_7.C5a–d: the sharing scenes, v6 (Oct 7 revision; the v5 frames `K_7.C4a–d` are retired).** Jade: "make sure each
+scene socially makes sense and if one person is showing something to another person, the scene should be laid out so
+that the other person can actually see the screen ... no one's arm should be sticking out behind them."
+- **The rule for any shared screen:** two people sit or stand shoulder to shoulder; the tablet is in front of BOTH,
+  held by its owner in a relaxed two-hand grip; the friend leans in; both pairs of eyes are on the screen; nobody is
+  doing a second task; every hand is accounted for. Stage it in `render/scenes/blockouts/scenes.js` and read the
+  report (`render_blockouts.mjs` prints, for each person, how far off the screen's normal they sit, whether anything
+  blocks their view, head turn, and any hand behind the body).
+- **Why two layouts.** A face that looks at a screen and the screen itself cannot both face one camera (their normals
+  are opposed). So a shot shows EITHER the faces in the screen's glow with the tablet from its back (FRONT), OR the
+  picture with the two heads from behind (REAR). Each shot has one focal point.
+
+  | Shot | Room | Owner → friend | Clip | Layout, focal point | Behaviour |
+  |---|---|---|---|---|---|
+  | `K_7.C5a` | galley bench | Adaeze → Anastasia | the twins' first lost tooth | FRONT: Anastasia's laugh | the laugh arrives, fingertips to her lips, she rocks against Adaeze's shoulder |
+  | `K_7.C5b` | crew quarters, Arjun's bunk edge | Arjun → Chen Yu | the newborn in the *thottil* | REAR: the picture, cradled in Arjun's hands | Chen Yu's arm round his back, the hand pats his far shoulder |
+  | `K_7.C5c` | greenhouse, hips against the bench | Kenji → Lúcia | Haruto waving Daizu's paw | FRONT: Lúcia's face | hand on her heart, a tiny wave back at the dog |
+  | `K_7.C5d` | airlock suit bench | Layla → Jade (from behind only) | Saeed and the falcon | REAR: the picture | Jade tips her head onto Layla's shoulder |
+
+- **Edit (v6):** alone, alone, together — four times. Each sharing scene follows the two singles of the people in it
+  (Adaeze, Anastasia → a; Arjun, Chen Yu → b; Kenji, Lúcia → c; Layla → d → Jade alone, waving back at her children),
+  and Jade's single leads into the call home (7.C1). The faces are seen in the singles; the REAR shots can then give
+  the picture.
+- **Chen Yu** is 48: grey at the temples, a few fine lines at the eyes (he read too young in the v5 frames).
+- **Skin tones:** Adaeze's skin in `K_7.C5a` was deepened locally after generation (face mean RGB 108/69/42).
+- The home pictures are keyed into flat-green screens with `media/keyframes/work/rev_calls/comp_screen.py`
+  (line-fitted corners; `tools/screen_comp.py` goes wrong when thumbs cover a corner).
 
 ### ROBOTS
 
@@ -356,7 +386,8 @@ dogs.
 - ears turned sideways toward a low Sun;
 - **transport fold**: legs tucked, ears folded flat along the back;
 - hauling a regolith sledge;
-- sitting on its haunches like a resting rabbit, with the belly drill down and the camera mast up.
+- sitting on its haunches like a resting rabbit, with the short belly sampling auger down and the camera mast up
+  (the sheet draws this auger too long: it is hand-drill size, 10–20 cm, see Payloads).
 
 #### How Yutu works (engineering notes for animators and prompts)
 
@@ -387,8 +418,12 @@ dogs.
 
 **Payloads**
 - **Regolith sledge** on a tow bar, carrying feedstock for the regolith printer and ISRU reactor.
-- **Belly drill** (about 1 m auger) for ice cores in permanently shadowed craters with Arjun. To drill, Yutu sits on its
-  haunches, which makes a stable three-point stance.
+- **Belly sampling auger: short, hand-drill size (10–20 cm), for surface scoops only.** Yutu sits on its haunches to
+  use it, which makes a stable three-point stance. **Yutu does not carry the 1 m ice drill and nothing rigid ever joins
+  Yutu to it.** A 70 kg robot weighs 113 N on the Moon; the TRIDENT-class drill needs 100–500 N pressed on the bit and
+  must not shift by millimetres for an hour (`docs/companion_moon_experiments.md` §14c). In the shadowed crater with
+  Arjun (7.B1) the drill stands on its own braced, ballasted frame; Yutu tows that frame out folded on its sledge, then
+  stands 3–4 m off as work light, power supply (one slack cable on the ground), sample-canister carrier and radio relay.
 - **Telescoping camera mast** between the ears: stereo pan-tilt camera plus lidar.
 - **Back rack** with a sealed sample box.
 
@@ -409,7 +444,7 @@ dogs.
 
 **Behaviour cues**
 - Ears up and turned means charging or listening.
-- Sitting on its haunches means drilling or waiting.
+- Sitting on its haunches means sampling or waiting.
 - Folded means asleep or in transport.
 - Yutu-A and -B usually work as a pair.
 
@@ -423,10 +458,27 @@ dogs.
 - three-fingered hands, light-grey joints, malachite trim;
 - carries a blue-green tool case.
 
-**M's toy robot dog (current): `robots/SHEET_pets.jpg`.** A toy-sized (~30 cm, knee-high to M) replica of a Unitree
-Go2-style quadruped: low flat light-grey/white body, rounded head unit with a dark visor face and a small sensor dome,
-four thin legs with backward-bending knees, small round feet, a tiny vermilion collar ribbon. No logos. Same sheet: the
-family cat, a long-haired brown mackerel tabby with a fluffy ruff and plumed tail.
+**M's toy robot dog (design of the Oct 7 revision; in no shot since Oct 8, when Jade had 7.C2's toy changed to the cat): `robots/SHEET_toydog.jpg`, model `render/scenes/blockouts/toy_dog.js`.**
+The toy M actually owns is a toy company's miniature copy of the Unitree Go2, and like the Go2 **it has no head**
+(Jade, Oct 7). References and their sources: `media/refs/robot_dog/SOURCES.md` (best: `toyA_grey_q28_hero.jpg`).
+- **Size:** 30 cm long, 11.5 cm wide, 20 cm tall at the back when standing: mid-shin on M. Reared up on its hind legs
+  it reaches her knee. It is a chunky mass-produced plastic toy, never a real robot.
+- **Body:** ONE flat, rounded box. **No head, neck, face, eyes, ears, snout, tail, collar or scarf.** The front end is a
+  blunt end-cap with a recessed dark glossy visor window lit pale blue.
+- **Legs:** four identical thin legs on round hubs at the corners; all four knees point backward; slim shins; small
+  dark rounded nub feet.
+- **Colour:** matte light silver-grey, mid-grey joints, a thin blue light stripe on each flank. No logos.
+- **How it moves:** a slow, stiff, shuffling trot with the body rocking. Its "dance" is on the spot: bobbing push-ups,
+  weight shifting left and right, one front leg lifted and waved, then rearing up on its hind legs with the front legs
+  pawing. No head turn, no tail wag; slightly jerky with short pauses. It cannot hop or jump.
+- **Image models give it a head every time** (two sprite attempts and two full-frame attempts in
+  `media/keyframes/work/rev_calls/`). Do not ask a model to draw it: render the 3D model from the shot's camera
+  (`cd render && node scenes/blockouts/render_blockouts.mjs --scenes toy_dog_rear,toy_dog_stand`) and composite it at
+  true scale, as in `K_7.C2_v5`. The same sheet's family cat is unchanged: a long-haired brown mackerel tabby with a fluffy
+  ruff and plumed tail (`robots/SHEET_pets.jpg`; the dog drawn on that sheet is retired).
+- **The cat in shots:** `K_7.C2` v6 (seated beside M, batting at her hem; ear tips 47 cm above the carpet at M's depth,
+  head with ruff 15 cm: a big long-haired cat, its shoulder just above M's bent knee) and `K_7.C3` (curled against her on
+  the sofa). It behaves as a cat: it sits, watches, bats, flicks its tail; it does not dance.
 
 **Robot dog (retired v1, beagle-style; dances with M).** Beagle-sized consumer quadruped, smooth rounded white shell with soft grey legs:
 - big dark face mask with two round dark eyes, grey floppy ear flaps, stubby tail;
