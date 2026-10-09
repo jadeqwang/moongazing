@@ -87,6 +87,31 @@ Frames 0-143, 376-421 and 2243-2311 were re-rendered twice and compared (no diff
 media rebuilt. `ranges_verified.sh` no longer passes a negative start time for a range beginning at frame 0. The page
 builder waits for the render log to END with `V8_DONE`: after a range re-render, append a line ending in ` V8_DONE`.
 
+## Morning: her round-five answers, M's hair at 1:17, and the 1080p
+Jade, 7:30 AM, in the chat: "one minor fix in artifact (M's hair during launch), please commit, including new mp3, and
+make codex start on the 1080p. thank you!" and then "but fix M's hair first, and then do the 1080p".
+
+Her answers on the seven cards (`r5_*`): all "ok" (sync, ending, desk: "much better, especially because I also blink,
+which reads as natural", gold visor, masts, toast, reunion). One note, on the visor card: "at 1:17-1:19, something
+about the way M's head relative to her head is off. Maybe have a video model help with this, as it looks like a still
+image moving on another still image and reads as unnatural."
+
+- **1:17 to 1:20, shot 4.2 (fixed).** Since round three M's hair there was the painting's, carried as a rigid cut-out
+  on the take (`roto_keep`), because the redraw had lost her braid. Kenton lifts her about 80 px and her head tilts
+  back, which a flat cut-out cannot follow: a sticker, with stray strands at its edge. The take itself (MiniMax h3,
+  `K_4.2/take_9`) has the braid; what lost it was `roto_prep.py`'s mean-shift flattening of the colour guide. New
+  opt-in flag `roto_prep.py --detail` (bilateral only, as for gold line art); `K_4.2/take_9d` is the same take
+  prepared with it, shown in the take's own tones (`style: { snapAmt: 0, shade: 0, gran: 0, lineA: 0 }`), nothing
+  carried, `keepOcc` gone. No new generation, no spend. Tests: `render/out/rev5_hair/` (`styles2.jpg`: now / take_9d
+  own tones / take_9d redrawn / the steadier Seedance take_10d both ways; `head_every_drawing_now.jpg`). Frames
+  1866-1930 re-rendered twice, no differences. Short of the painting: the braid is softer at the top of the lift
+  (the take is 768p). 1.6 (0:27) still carries the painted hair. Card `r5_hair` on the page.
+- **The new recording is in the repository** (`inputs/Moongazing - 2 semitones down.mp3`, commit 9679d9c).
+- **1080p.** Frames: `render/out/retime/run_v8_1080.sh` from the main session's shell (codex's sandbox cannot run the
+  renderer), into `render/out/frames_v8_1080`, log `render/out/v8_1080_render.log` (ends with `V8_1080_FRAMES_DONE`).
+  Codex has `render/out/retime/brief_1080.md`: `release/encode_1080.sh`, the upload copy, the master, a copy with soft
+  subtitles, checks, report in `render/out/release_1080/REPORT.md`, `V8_1080_ENCODE_DONE` in `jobs.log`.
+
 ## Things learned
 - `/tmp` is a 16 GB tmpfs and was full (other projects' caches): Chrome then crashes at start with more than one
   worker ("Target crashed", "source image cannot be decoded"). `TMPDIR=<folder on disk>` in front of the render fixes

@@ -36,6 +36,47 @@
  },
  "cards": [
   {
+   "id": "r5_hair",
+   "when": "1:17",
+   "title": "M’s hair as the rocket climbs",
+   "at": 77.88,
+   "clips": [
+    [
+     "hair",
+     "Now",
+     "1:17 – 1:21",
+     77.0,
+     81.0,
+     1900
+    ]
+   ],
+   "before": [
+    [
+     "clips7/hair_before.mp4",
+     "Before, from 1:18"
+    ]
+   ],
+   "asked": "at 1:17-1:19, something about the way M's head relative to her head is off. Maybe have a video model help with this, as it looks like a still image moving on another still image and reads as unnatural.",
+   "body": "That is exactly what it was. Since round three her hair in this shot was the painting’s own hair, cut out and slid along on top of the moving take, because my redrawing had turned her braid into a plain brown mass. A flat cut-out cannot follow her head while Kenton lifts her and she tilts back, so it moved like a sticker. Now nothing is pasted. The movement here was already a video model’s take, and that take has her braid in it; it was my preparation step that smoothed it away. I prepared the take again without that smoothing, and the film now shows the take’s own hair: braid, pink elastic and curly tail move with her head as one.",
+   "short": "Her braid is a little softer than the painted one, most of all at the top of the lift around 1:19, because the take is smaller than the painting. The whole family is now drawn in the take’s own colours, so the strawberries on her dress are slightly redder. The shot at 0:27 on the same shore still carries the painted hair; say so if it reads the same way there.",
+   "q": "Does her hair sit right on her head now?",
+   "opts": [
+    [
+     "ok",
+     "It is right now"
+    ],
+    [
+     "soft",
+     "Right, but the braid is too soft"
+    ],
+    [
+     "off",
+     "Something is off",
+     "Say what in the note."
+    ]
+   ]
+  },
+  {
    "id": "r5_sync",
    "when": "Whole film",
    "title": "Does the picture land on the new recording?",

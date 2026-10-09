@@ -34,6 +34,14 @@ answers call for; render a small version of the whole film and commit.
   `inputs/Moongazing - 2 semitones down.mp3` (the first recording IS in the public repository as `inputs/moongazing.mp3`,
   but publishing the new recording is Jade's call: ask her).
 
+### Oct 9, morning: answers in, one more fix, 1080p started
+Jade answered all seven cards "ok" and asked for one fix (M's hair at 1:17, done: shot 4.2 now plays `K_4.2/take_9d`,
+the take's own braid, nothing carried; card `r5_hair` on the page awaits her), for the new mp3 to be committed (done)
+and for the 1080p. The 1080p frames render from `render/out/retime/run_v8_1080.sh` (log
+`render/out/v8_1080_render.log`); codex encodes and checks them per `render/out/retime/brief_1080.md` into
+`render/out/release_1080/`. Details: "Morning" in `docs/REVISION_NOTES_OCT9.md`. Still true: nobody but Jade has
+watched the cut at speed with sound, and nothing has been looked at in 1080p yet.
+
 ### What each answer on the page leads to
 | Card | If she chooses… | Then |
 |---|---|---|

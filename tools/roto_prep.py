@@ -4,7 +4,7 @@
 The base clip is never shown. This tool only measures it; every visible mark is drawn by the shader.
 
     MPY=/home/jade/Documents/orbital-sunrise-video/video/out/.venv/bin/python   # cv2-contrib + mediapipe
-    $MPY tools/roto_prep.py K_5.1/take_1 [J_7.D2/take_2 ...] [--force] [--k 10]
+    $MPY tools/roto_prep.py K_5.1/take_1 [J_7.D2/take_2 ...] [--force] [--k 10] [--detail]
 
 Inputs   media/gen/<shot>/<take>.mp4 and <take>.json (its first_frame = the painted keyframe)
 Outputs  media/gen/<shot>/frames/<take>/f_%04d.jpg      raw 24 fps frames (ffmpeg)
@@ -288,7 +288,7 @@ def flow_warp(img, flow):
     return cv2.remap(img, gx + flow[..., 0], gy + flow[..., 1], cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
 
 
-def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyelock=None, sub_thr=10.0):
+def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyelock=None, sub_thr=10.0, detail=False):
     shot, take = clip.split("/")
     if remouth is None:
         remouth = shot.startswith("LS")
@@ -432,7 +432,9 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
         prev_g = grays[i]
         base = np.clip(acc, 0, 255).astype(np.uint8)
         # edge-preserving smoothing toward flat fills (mean shift flattens, bilateral cleans the seams)
-        if dark_ground:   # gold line art: keep every strand (the flow filter already stabilised it); no flattening
+        # --detail (Oct 9, M's braid at 1:17): the same for a take that is shown in its own tones and must keep fine
+        # painted detail the mean shift would flatten away (a braid becomes a brown mass)
+        if dark_ground or detail:   # gold line art: keep every strand (the flow filter already stabilised it); no flattening
             sm = cv2.bilateralFilter(base, 5, 18, 3)
         else:
             sm = cv2.pyrMeanShiftFiltering(base, 7, 16, maxLevel=1)
@@ -594,7 +596,7 @@ def prep(clip, k=10, force=False, alpha=0.38, motion_thr=0.8, remouth=None, eyel
         "T": [np.round(t[:2].ravel(), 6).tolist() for t in T],
         "Ti": [np.round(np.linalg.inv(t)[:2].ravel(), 6).tolist() for t in T],
         "palette": pal, "paletteShare": share, "inkLevels": levels,
-        "faceFrames": face_frames, "face": face_track, "remouth": remouth, "eyelock": eyelock, "mask": "mask.png", "darkGround": dark_ground, "maskCoverage": round(cover, 4),
+        "faceFrames": face_frames, "face": face_track, "remouth": remouth, "eyelock": eyelock, "mask": "mask.png", "darkGround": dark_ground, "detail": bool(detail), "maskCoverage": round(cover, 4),
         "made": time.strftime("%Y-%m-%d %H:%M"),
     }
     json.dump(meta, open(os.path.join(odir, "meta.json"), "w"), indent=1)
@@ -606,6 +608,7 @@ if __name__ == "__main__":
     ap.add_argument("clips", nargs="+")
     ap.add_argument("--k", type=int, default=10)
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--detail", action="store_true", help="colour guide without the mean-shift flattening (keeps fine painted detail)")
     a = ap.parse_args()
     for c in a.clips:
-        prep(c, a.k, a.force)
+        prep(c, a.k, a.force, detail=a.detail)

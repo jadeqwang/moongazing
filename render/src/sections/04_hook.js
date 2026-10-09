@@ -364,9 +364,12 @@ export default function shots(B, X, L) {
     //       it. K_4.2/take_9 (h3), 0.5–3.0 s of the take (the rocket leaves the top of the frame at 3.3 s).
     //       酒寒 (寒 held) stands in the empty sky right of the exhaust column, above the crescent; the gloss under it.
     { id: '4.2', t0: S42, t1: S43, paper: 'silk', grain: 42, focus: [1150, 380], post: (t, lt) => punch(t, lt),
-      // rev3 KIDS (Oct 8, "M hair consistency"): her hair in the take lost its braid in the redraw; it
-      // is now the PAINTING's (side braid, pink elastic, curly tail), carried on the take (tools/roto_keep.py), as in 1.6.
-      scene: [X.has('K_4.2') ? { type: 'roto', clip: 'K_4.2/take_9', paper: 'silk', offset: 0.5, lock: 0, keepOcc: false, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.5, y: 0.47, zoom: 1.07 } }
+      // rev5 (Oct 9, Jade: "it looks like a still image moving on another still image"): since rev3 M's hair was the
+      // PAINTING's, carried on the take as a rigid cut-out while her father lifts her and her head tilts back. Now nothing
+      // is carried: take_9d is take_9 prepared with `roto_prep.py --detail` (no mean-shift flattening, which was what
+      // turned the take's own braid into a brown mass), shown in the take's own tones, so her braid, elastic and tail
+      // are the video's and move with her head. 1.6 still carries the painting (she hardly moves there).
+      scene: [X.has('K_4.2') ? { type: 'roto', clip: 'K_4.2/take_9d', paper: 'silk', style: { snapAmt: 0, shade: 0, gran: 0, lineA: 0 }, offset: 0.5, lock: 0, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.5, y: 0.47, zoom: 1.07 } }
         : ph('The crowd at the fence; Kenton holds M; the rocket rises', 'K_4.2')],
       type(ctx, t) {
         lyricZH(ctx, L.L10, { from: 2, to: 4, size: 190, x: 1700, y: 28, color: PALEC, seed: 102, until: S43 + 0.05, key: 'b', halo: 12 }, t, 'over');
