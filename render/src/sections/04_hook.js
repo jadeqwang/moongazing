@@ -10,7 +10,7 @@
 import { lyricEN, lyricZH, card, hud, kf, ph, bump, INK, INKC, PALE, PALEC, WHITE, smooth, clamp } from './_lib.js';
 import { PAPER_GLSL } from '../paper.js';
 
-export const range = [76.11, 101.33];
+export const range = [75.08, 99.83];
 
 // ---- LIFT ---------------------------------------------------------------------------------------------------------
 const LIFT_FS = `${PAPER_GLSL}
@@ -356,8 +356,8 @@ export default function shots(B, X, L) {
         const u = smooth(0, S42 - S41, lt);
         lift(ctx, t, lt, { cx: 0.515 - 0.008 * u, cy: 0.42 - 0.03 * u, z: 1.13 + 0.06 * u, D: D41(lt), shake: 1 + 2 * Math.exp(-lt / 0.4), live: true });
         lyricZH(ctx, L.L10, { to: 2, size: 330, x: 690, y: 120, color: WHITE, seed: 101, until: S42 + 0.4, halo: 16 }, t, 'gold');
-        hud(ctx, 'T+00:00:0' + Math.max(0, Math.floor(t - 76.17)), 64, 1030, { size: 18, rgb: '255,255,255' }, 1);
-        gl(ctx, 'g41', 'The moon wanes,', t, 77.4, S42 + 0.05, PALE, 1040, 1380);
+        hud(ctx, 'T+00:00:0' + Math.max(0, Math.floor(t - 75.16)), 64, 1030, { size: 18, rgb: '255,255,255' }, 1);
+        gl(ctx, 'g41', 'The moon wanes,', t, 76.70, S42 + 0.05, PALE, 1040, 1380);
       } },
     // 4.2 — the same spot as 1.6, a few minutes later (restaged Oct 7): the rocket climbs at the right; M (left arm
     //       round Kenton's neck) points up at it with her right arm, T holds Kenton's left hand, all three heads follow
@@ -370,7 +370,7 @@ export default function shots(B, X, L) {
         : ph('The crowd at the fence; Kenton holds M; the rocket rises', 'K_4.2')],
       type(ctx, t) {
         lyricZH(ctx, L.L10, { from: 2, to: 4, size: 190, x: 1700, y: 28, color: PALEC, seed: 102, until: S43 + 0.05, key: 'b', halo: 12 }, t, 'over');
-        gl(ctx, 'g42', 'the wine is cold —', t, 79.0, S43 + 0.05, PALE, 474, 1608);
+        gl(ctx, 'g42', 'the wine is cold —', t, 77.93, S43 + 0.05, PALE, 474, 1608);
       } },
     // 4.3 — 我思念, NOT sung (rev4 PHOTO, Oct 8 night; Jade: "a shot of me looking longingly at a picture of the kids
     //       without singing"): the sequel of 3.8f, close. From behind her left shoulder in the capsule seat, visor down
@@ -381,8 +381,13 @@ export default function shots(B, X, L) {
     //       Only she is redrawn (tools/roto_only.py); the cabin and the snapshot are the painting in every frame.
     //       Rebuild order: take_steady.py, roto_prep.py J_4.3p/take_1s, roto_only.py (commands in media/gen/picks.json).
     //       Earlier versions of this shot: sung LS3c/take_7pm (v6), non-singing portrait J_4.3/take_1.
+    //       rev5 VISOR (Oct 9; Jade ticked "This works" and "Make the visor gold as at 1:15, so my face is hidden"):
+    //       the visor is opaque gold, the helmet of 3.8f. J_4.3p/take_1g = the same video as take_1s; its roto key plate
+    //       has the gold visor of media/keyframes/jade/J_4.3p_gold.png laid in (media/keyframes/work/rev5_visor/
+    //       visor_gold.py key), and the whole visor with its outline is that painting carried on the tracked motion of
+    //       the helmet's frame strip and ear cup, so the gold cannot slide or shimmer. Clear visor again: clip 'J_4.3p/take_1s'.
     { id: '4.3', t0: S43, t1: S43b, paper: 'indigo', grain: 43, post: (t, lt) => punch(t, lt), focus: [1560, 630], vignette: 0.2,
-      scene: [{ type: 'roto', clip: 'J_4.3p/take_1s', paper: 'silk', style: { ink: [0.80, 0.66, 0.38], lineA: 0.8 }, offset: 0.5, lock: 0, mouth: false, eyelock: false, keepOcc: false /* her painted face rides on the head's tracked motion (tools/roto_keep.py) */,
+      scene: [{ type: 'roto', clip: 'J_4.3p/take_1g', paper: 'silk', style: { ink: [0.80, 0.66, 0.38], lineA: 0.8 }, offset: 0.5, lock: 0, mouth: false, eyelock: false, keepOcc: false /* the painted gold visor rides on the tracked motion of the helmet's frame strip and ear cup (tools/roto_keep.py --track) */,
         from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.515, y: 0.5, zoom: 1.05 } }],
       type(ctx, t) {
         lyricZH(ctx, L.L10, { from: 5, to: 8, size: 180, x: 290, y: 110, color: WHITE, seed: 103, until: S43b + 0.05, key: 'c', halo: 12 }, t, 'gold');
@@ -401,8 +406,8 @@ export default function shots(B, X, L) {
         if (i === 0 && lt < 0.45) ctx.pipe.apply(ctx.gl.program(BLOOM_FS, 'hook-bloom'), { uP: 0.25 + smooth(0, 0.42, lt) * 1.4, uSeed: 4.31 });
         // the held 你 sits in the 留白 away from the children: top right over the trees while M runs left (4.3b), top
         // left over the arc of water in the close (4.3c)
-        lyricZH(ctx, L.L10, { from: 8, size: 540, x: i ? 650 : 1900, y: 40, color: INKC, seed: 104, until: S44 + 0.05, key: 'd', early: 0.45, spread: (tt) => 30 * smooth(83.3, 86.1, tt) }, t, 'ink');
-        gl(ctx, 'g43', 'I miss you.', t, 83.4, S44 + 0.05, INK, 1040, 1380);
+        lyricZH(ctx, L.L10, { from: 8, size: 540, x: i ? 650 : 1900, y: 40, color: INKC, seed: 104, until: S44 + 0.05, key: 'd', early: 0.45, spread: (tt) => 30 * smooth(82.10, 84.15, tt) }, t, 'ink');
+        gl(ctx, 'g43', 'I miss you.', t, 82.20, S44 + 0.05, INK, 1040, 1380);
       },
     })),
     // 4.4 — first-stage separation = THE SCROLL TEARS: the lower sheet (the crowd, Earth, family) rips away and falls
@@ -429,7 +434,7 @@ export default function shots(B, X, L) {
       scene: [X.has('K_4.7') ? { type: 'roto', clip: 'K_4.7/take_4', paper: 'silk', offset: 0.6, lock: 0, from: { x: 0.47, y: 0.5, zoom: 1.03 }, to: { x: 0.44, y: 0.47, zoom: 1.12 } }
         : ph('After TLI: in free fall Jade lifts a drink pouch toward the Moon; the toy Earth floats beside her', 'K_4.7', { dark: true })], focus: [520, 420],
       type(ctx, t) {
-        lyricZH(ctx, L.L12, { size: 128, x: 1880, y: 110, color: WHITE, seed: 104, dy: (tt) => -26 * Math.sin((tt - 92.2) * 1.3) }, t, 'gold');
+        lyricZH(ctx, L.L12, { size: 128, x: 1880, y: 110, color: WHITE, seed: 104, dy: (tt) => -26 * Math.sin((tt - 90.87) * 1.3) }, t, 'gold');
         hud(ctx, 'TLI COMPLETE  ·  10.9 KM/S', 64, 72, { size: 15, rgb: '255,255,255' }, 1);
       } },
     // 4.8 — the Moon grows from a dot to a wall of ink: a disc of xuan inlaid in the indigo, until the ink paper is the
@@ -448,6 +453,6 @@ export default function shots(B, X, L) {
     { id: '4.9', t0: S49, t1: END, paper: 'xuan', grain: 49, flash: true, post: (t, lt) => bump(lt, 0.012),
       scene: [X.has('K_4.9') ? { type: 'roto', clip: 'K_4.9/take_2', paper: 'ink', offset: 0.55, lock: 0, subject: false, maskGain: 8, from: { x: 0.52, y: 0.46, zoom: 1.12 }, to: { x: 0.52, y: 0.5, zoom: 1.03 } }
         : ph('Descent: the lander’s plume blasts regolith flat', 'K_4.9')],
-      type(ctx, t) { hud(ctx, 'DAY 4  ·  DESCENT', 64, 72, { size: 15, rgb: '30,30,32', a: 0.9 }, 1, 'ink'); hud(ctx, `ALT ${Math.max(0, Math.round(120 * (1 - (t - 97.73) / 2.5))).toString().padStart(3, '0')} M`, 64, 98, { size: 13, rgb: '30,30,32', a: 0.8 }, 1, 'ink'); } },
+      type(ctx, t) { hud(ctx, 'DAY 4  ·  DESCENT', 64, 72, { size: 15, rgb: '30,30,32', a: 0.9 }, 1, 'ink'); hud(ctx, `ALT ${Math.max(0, Math.round(120 * (1 - (t - 96.31) / 2.5))).toString().padStart(3, '0')} M`, 64, 98, { size: 13, rgb: '30,30,32', a: 0.8 }, 1, 'ink'); } },
   ];
 }

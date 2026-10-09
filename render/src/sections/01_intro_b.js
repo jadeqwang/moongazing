@@ -1,10 +1,10 @@
 // SECTION 1 · INTRO B — 15.67–32.42 (docs/script.md §1). Taiko cuts carry a 2-frame ink flash. Owner: motion lead.
 import { card, calli, bump, hud, INK, PALE, INKC, PALEC, WHITE, smooth, easeInOutSine } from './_lib.js';
 
-export const range = [15.67, 32.42];
+export const range = [15.69, 32.23];
 export default function shots(B, X, L) {
   const bar = (n, b = 1) => B.bar(n, b);
-  const VOICE = 22.75;
+  const VOICE = 22.66;
   const TAIKO = [bar(9), bar(11), bar(13), bar(15)];
   const LIFT = bar(8), CUT = bar(16), V1 = bar(17);
   const has = (k) => X.has(k);
@@ -66,7 +66,7 @@ export default function shots(B, X, L) {
 
     // 1.5 — TAIKO: Guanghan Station at night, a tiny Earth on the horizon (K_1.5 when it lands)
     has('K15')
-      ? { id: '1.5', t0: TAIKO[2], t1: 26.87, paper: 'xuan', grain: 11, flash: true, scene: 'plate', post: (t, lt) => bump(lt), focus: [940, 450],
+      ? { id: '1.5', t0: TAIKO[2], t1: 26.73, paper: 'xuan', grain: 11, flash: true, scene: 'plate', post: (t, lt) => bump(lt), focus: [940, 450],
         // framed up on the lit station and the Earth on the horizon (the keyframe's lower half is empty regolith)
         params: { img: 'K15', grade: 'native', from: { x: 0.53, y: 0.42, zoom: 1.15 }, to: { x: 0.5, y: 0.41, zoom: 1.22 }, par: [-0.014, 0.002], dolly: 0.06,
           masks: { base: [0.0, 0.8], polys: [
@@ -75,7 +75,7 @@ export default function shots(B, X, L) {
             { pts: [[0, 0.86], [1, 0.86], [1, 1], [0, 1]], depth: 1.0, blur: 10 },
           ] },
           flicker: 1.2, mist: { color: [0.62, 0.62, 0.64], amount: 0.2, y0: 820, y1: 1080, speed: -9 } } }
-      : { id: '1.5', t0: TAIKO[2], t1: 26.87, paper: 'xuan', grain: 11, flash: true, post: (t, lt) => bump(lt),
+      : { id: '1.5', t0: TAIKO[2], t1: 26.73, paper: 'xuan', grain: 11, flash: true, post: (t, lt) => bump(lt),
         scene: [{ name: 'plate', params: { img: 'S4', grade: 'ink', from: { x: 0.52, y: 0.56, zoom: 1.12 }, to: { x: 0.49, y: 0.56, zoom: 1.18 }, par: [-0.012, 0], dolly: 0.06, sky: [0, 400, 2.4, 150], desat: 1 } },
           { name: 'earth', params: { earth: { x: 1590, y: 214, r: 15, dx: -3 } } }, 'tag'],
         params: { tag: 'STAND-IN — International Moonbase at night (K_1.5 pending)' } },
@@ -83,7 +83,7 @@ export default function shots(B, X, L) {
     // 1.6 — Wenchang, blue hour: Kenton holds M, T holds his hand; the rocket waits on its lit pad across the water (K_1.6)
     //       K_1.6/take_4 (h3), restaged Oct 7: the pad is at the right; M sits on Kenton's right hip, her left arm round
     //       his neck, her free right arm pointing at the rocket; all three look at it. Cut in with the motion under way.
-    { id: '1.6', t0: 26.87, t1: TAIKO[3], paper: 'silk', grain: 12, focus: [1150, 470],
+    { id: '1.6', t0: 26.73, t1: TAIKO[3], paper: 'silk', grain: 12, focus: [1150, 470],
       // rev3 KIDS (Oct 8): M's hair is the painting's own (the region the take redrew is replaced by the keyframe's pixels,
       // carried: tools/roto_keep.py), so it is the same braid as in 4.2 (the take had turned it into three braids).
       scene: [{ type: 'roto', clip: 'K_1.6/take_4', paper: 'silk', offset: 0.5, lock: 0, keepOcc: false, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.52, y: 0.49, zoom: 1.06 } }],

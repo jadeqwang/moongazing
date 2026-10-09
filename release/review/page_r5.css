@@ -1,0 +1,13 @@
+/* round five */
+.shelf { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)) }
+.settled { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) }
+.comparison-label { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em }
+.before-now { align-items: start }
+.older { min-width: 0 }
+#film-intro { max-width: 68ch }
+.older .older { margin-top: 20px }
+@media (max-width: 520px) {
+  .before-now { grid-template-columns: minmax(0, 1fr) }
+  .card { padding: 14px; gap: 16px }
+  .jump { margin-left: 0; width: 100% }
+}

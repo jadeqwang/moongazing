@@ -1,0 +1,2420 @@
+{
+ "events": [
+  {
+   "old": 1.78,
+   "new": 1.8,
+   "what": "Opening swell (old first audible sound)",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local mix pattern near independent beat guess; similarity 0.939, displacement -0.015 s."
+  },
+  {
+   "old": 2.43,
+   "new": 2.478,
+   "what": "Opening rolled chord attack 1",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.487, displacement +0.025 s. No unique corresponding event established; warped fallback."
+  },
+  {
+   "old": 2.49,
+   "new": 2.539,
+   "what": "Opening rolled chord attack 2",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.559, displacement +0.020 s. No unique corresponding event established; warped fallback."
+  },
+  {
+   "old": 2.55,
+   "new": 2.6,
+   "what": "Opening rolled chord attack 3",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.604, displacement +0.020 s. No unique corresponding event established; warped fallback."
+  },
+  {
+   "old": 2.62,
+   "new": 2.717,
+   "what": "Opening rolled chord peak",
+   "method": "onset match + spectral envelope",
+   "conf": "low",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.653, displacement +0.020 s."
+  },
+  {
+   "old": 2.84,
+   "new": 2.907,
+   "what": "Opening low boom/pluck accent",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local mix pattern near independent beat guess; similarity 0.885, displacement +0.015 s."
+  },
+  {
+   "old": 2.87,
+   "new": 2.961,
+   "what": "Opening following pluck",
+   "method": "onset match + spectral envelope",
+   "conf": "medium",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.739, displacement +0.025 s."
+  },
+  {
+   "old": 3.58,
+   "new": 3.64,
+   "what": "Opening resolving pluck",
+   "method": "onset match + spectral envelope",
+   "conf": "medium",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.742, displacement +0.025 s."
+  },
+  {
+   "old": 5.86,
+   "new": 5.944,
+   "what": "Strong intro guzheng pluck",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.860, displacement +0.040 s."
+  },
+  {
+   "old": 9.14,
+   "new": 9.216,
+   "what": "Bright intro pluck run",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.545, displacement +0.240 s. No unique corresponding event established; warped fallback."
+  },
+  {
+   "old": 11.47,
+   "new": 11.523,
+   "what": "Intro pluck accent",
+   "method": "onset match + spectral envelope",
+   "conf": "medium",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.774, displacement +0.010 s."
+  },
+  {
+   "old": 13.1,
+   "new": 13.148,
+   "what": "Intro pluck accent",
+   "method": "onset match + spectral envelope",
+   "conf": "medium",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.808, displacement +0.015 s."
+  },
+  {
+   "old": 15.42,
+   "new": 15.447,
+   "what": "Pluck into intro lift",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.869, displacement +0.010 s."
+  },
+  {
+   "old": 17.1,
+   "new": 17.09,
+   "what": "Bass/sub drone entrance",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local ba pattern near independent beat guess; similarity 0.758, displacement -0.005 s."
+  },
+  {
+   "old": 22.75,
+   "new": 22.663,
+   "what": "Intro open-vowel vocal bloom",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Pitch-compensated local voc pattern near independent beat guess; similarity 0.345, displacement -0.650 s. No unique corresponding event established; warped fallback."
+  },
+  {
+   "old": 26.87,
+   "new": 26.726,
+   "what": "Intro vocalise/pluck phrase point b14",
+   "method": "onset match + spectral envelope",
+   "conf": "medium",
+   "note": "Pitch-compensated local other pattern near independent beat guess; similarity 0.827, displacement +0.020 s."
+  },
+  {
+   "old": 30.57,
+   "new": 30.425,
+   "what": "Drums and bass cut for breath bar",
+   "method": "drum/bass envelope cut",
+   "conf": "high",
+   "note": "End of intro percussion/bass phrase at b16; short decays persist after the cut."
+  },
+  {
+   "old": 39.23,
+   "new": 38.915,
+   "what": "Verse 1 lead-in reference near L03",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local mix pattern near independent beat guess; similarity 0.883, displacement +0.005 s."
+  },
+  {
+   "old": 45.3,
+   "new": 44.85,
+   "what": "Verse 2 drum/fill lead-in",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.510, displacement +0.000 s. No unique corresponding event established; warped fallback."
+  },
+  {
+   "old": 47.14,
+   "new": 46.637,
+   "what": "Verse 2 kit entrance",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.850, displacement -0.005 s."
+  },
+  {
+   "old": 61.65,
+   "new": 60.906,
+   "what": "Full-band bass/kit lift",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.859, displacement +0.005 s."
+  },
+  {
+   "old": 74.4,
+   "new": 73.412,
+   "what": "Turnaround rise before hook",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local mix pattern near independent beat guess; similarity 0.929, displacement +0.010 s."
+  },
+  {
+   "old": 76.17,
+   "new": 75.157,
+   "what": "Hook impact",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.932, displacement +0.005 s."
+  },
+  {
+   "old": 77.4,
+   "new": 76.35,
+   "what": "Hook English gloss/first moon syllable display mark",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Animation/gloss/reference time, not a separately identifiable attack; musical/vocal timings are supplied separately."
+  },
+  {
+   "old": 79.0,
+   "new": 77.93,
+   "what": "Hook cold-wine gloss / \u9152\u5bd2 phrase",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local mix pattern near independent beat guess; similarity 0.936, displacement +0.010 s."
+  },
+  {
+   "old": 83.3,
+   "new": 82.123,
+   "what": "Hook \u4f60 held-note animation spread",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Animation/gloss/reference time, not a separately identifiable attack; musical/vocal timings are supplied separately."
+  },
+  {
+   "old": 83.4,
+   "new": 82.221,
+   "what": "Hook I-miss-you gloss display mark",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Animation/gloss/reference time, not a separately identifiable attack; musical/vocal timings are supplied separately."
+  },
+  {
+   "old": 86.1,
+   "new": 84.883,
+   "what": "End of hook \u4f60 held-note animation",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Animation/gloss/reference time, not a separately identifiable attack; musical/vocal timings are supplied separately."
+  },
+  {
+   "old": 92.2,
+   "new": 90.871,
+   "what": "\u4e3e\u676f\u9080\u660e\u6708 animation phase origin",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Animation/gloss/reference time, not a separately identifiable attack; musical/vocal timings are supplied separately."
+  },
+  {
+   "old": 97.73,
+   "new": 96.311,
+   "what": "Hook drums re-hit",
+   "method": "onset match + spectral envelope",
+   "conf": "medium",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.826, displacement +0.005 s."
+  },
+  {
+   "old": 104.92,
+   "new": 103.387,
+   "what": "Interlude riser impact",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.919, displacement +0.005 s."
+  },
+  {
+   "old": 109.5,
+   "new": 107.861,
+   "what": "Bass/drum dip",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local ba pattern near independent beat guess; similarity 0.964, displacement -0.015 s."
+  },
+  {
+   "old": 111.95,
+   "new": 110.283,
+   "what": "Whispered lyric entrance",
+   "method": "vocal energy + forced alignment",
+   "conf": "high",
+   "note": "Vocal-stem rise agrees with MMS."
+  },
+  {
+   "old": 115.57,
+   "new": 113.86,
+   "what": "\u4f4e\u5934\u601d\u6545\u4e61 entrance",
+   "method": "forced alignment + consonant evidence",
+   "conf": "medium",
+   "note": "MMS line and chunk alignments agree within 7 ms; legato entrance."
+  },
+  {
+   "old": 118.8,
+   "new": 117.05,
+   "what": "Sustained sung \u4e61",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local voc pattern near independent beat guess; similarity 0.859, displacement +0.015 s."
+  },
+  {
+   "old": 119.6,
+   "new": 117.823,
+   "what": "\u4e61 held-note shake reaches full amplitude",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Animation/gloss/reference time, not a separately identifiable attack; musical/vocal timings are supplied separately."
+  },
+  {
+   "old": 120.12,
+   "new": 118.317,
+   "what": "Build drum hit b65.3",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.870, displacement +0.005 s."
+  },
+  {
+   "old": 121.89,
+   "new": 120.07,
+   "what": "Build drum hit b66.3",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.884, displacement +0.005 s."
+  },
+  {
+   "old": 122.62,
+   "new": 120.807,
+   "what": "\u4e61 display/held-note cutoff",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Animation/gloss/reference time, not a separately identifiable attack; musical/vocal timings are supplied separately."
+  },
+  {
+   "old": 122.65,
+   "new": 120.48,
+   "what": "Vocal falsetto flip at drop",
+   "method": "pYIN octave change + vocal envelope",
+   "conf": "high",
+   "note": "Measured A4 (~440 Hz) -> A5 (~880 Hz) flip at 120.48, about 0.48 s before the drop, then a faint tail."
+  },
+  {
+   "old": 143.43,
+   "new": 141.363,
+   "what": "Drop kick at end of erhu phrase",
+   "method": "onset match + spectral envelope",
+   "conf": "high",
+   "note": "Pitch-compensated local dr pattern near independent beat guess; similarity 0.934, displacement -0.000 s."
+  },
+  {
+   "old": 158.5,
+   "new": 156.276,
+   "what": "Drop bass-out / erhu mini-lift",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local ba pattern near independent beat guess; similarity 0.964, displacement +0.005 s."
+  },
+  {
+   "old": 164.5,
+   "new": 162.251,
+   "what": "Held pitch in drop vocalise",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local voc pattern near independent beat guess; similarity 0.754, displacement +0.040 s."
+  },
+  {
+   "old": 167.0,
+   "new": 164.601,
+   "what": "End/change of held drop vocal note",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local voc pattern near independent beat guess; similarity 0.845, displacement -0.080 s."
+  },
+  {
+   "old": 173.0,
+   "new": 170.621,
+   "what": "Drop bass-out mini-lift",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Pitch-compensated local ba pattern near independent beat guess; similarity 0.613, displacement -0.100 s. No unique corresponding event established; warped fallback."
+  },
+  {
+   "old": 181.0,
+   "new": 178.566,
+   "what": "Late-drop bass fade",
+   "method": "spectral/envelope match",
+   "conf": "medium",
+   "note": "Pitch-compensated local ba pattern near independent beat guess; similarity 0.970, displacement +0.015 s."
+  },
+  {
+   "old": 181.11,
+   "new": 178.661,
+   "what": "Drop animation mark",
+   "method": "beat warp",
+   "conf": "medium",
+   "note": "Explicitly carried by warp only, as requested."
+  },
+  {
+   "old": 182.3,
+   "new": 179.84,
+   "what": "Drop animation mark",
+   "method": "beat warp",
+   "conf": "medium",
+   "note": "Explicitly carried by warp only, as requested."
+  },
+  {
+   "old": 183.8,
+   "new": 181.329,
+   "what": "Drop animation mark",
+   "method": "beat warp",
+   "conf": "medium",
+   "note": "Explicitly carried by warp only, as requested."
+  },
+  {
+   "old": 184.6,
+   "new": 182.121,
+   "what": "Drop animation mark",
+   "method": "beat warp",
+   "conf": "medium",
+   "note": "Explicitly carried by warp only, as requested."
+  },
+  {
+   "old": 185.3,
+   "new": 182.812,
+   "what": "Drop animation mark",
+   "method": "beat warp",
+   "conf": "medium",
+   "note": "Explicitly carried by warp only, as requested."
+  },
+  {
+   "old": 186.36,
+   "new": 183.86,
+   "what": "Drop animation mark",
+   "method": "beat warp",
+   "conf": "medium",
+   "note": "Explicitly carried by warp only, as requested."
+  },
+  {
+   "old": 187.5,
+   "new": 184.991,
+   "what": "Drop animation mark",
+   "method": "beat warp",
+   "conf": "medium",
+   "note": "Explicitly carried by warp only, as requested."
+  },
+  {
+   "old": 189.86,
+   "new": 187.325,
+   "what": "Drop cut into outro",
+   "method": "drum envelope cut + bass transition",
+   "conf": "high",
+   "note": "End of b104 groove; rapid drum-envelope fall after b105 attack."
+  },
+  {
+   "old": 193.22,
+   "new": 192.505,
+   "what": "Outro humming entrance",
+   "method": "vocal envelope entrance",
+   "conf": "high",
+   "note": "Distinct new vocal rise; about 1.66 s later than the beat-only prediction."
+  },
+  {
+   "old": 197.04,
+   "new": 194.474,
+   "what": "Outro shot split on old b109",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Animation/gloss/reference time, not a separately identifiable attack; musical/vocal timings are supplied separately."
+  },
+  {
+   "old": 200.5,
+   "new": 197.949,
+   "what": "Old near-silent outro dip",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "The old near-silent dip has no clear counterpart: new guzheng keeps articulating through 200-202 s."
+  },
+  {
+   "old": 201.6,
+   "new": 203.024,
+   "what": "Old final solo humming entrance",
+   "method": "Demucs vocal entrance + pitch/AST cross-check",
+   "conf": "medium",
+   "note": "Final G3 hum; breathy lead-in ~202.79, full audible hum starts 203.024. RoFormer attenuates it, but both stem classifiers identify humming. Ending phrase is rearranged."
+  },
+  {
+   "old": 204.5,
+   "new": 204.205,
+   "what": "Old outro low boom",
+   "method": "low-frequency envelope + spectral flux",
+   "conf": "medium",
+   "note": "Final sub/boom joins the plucked chord; strongest low-band novelty at 204.225-204.243. Old boom-then-three-plucks ordering does not survive."
+  },
+  {
+   "old": 205.7,
+   "new": 201.382,
+   "what": "Old post-boom guzheng pluck 1",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Old ordered post-boom pluck sequence is rearranged/absent. New plucks slow through 200-202.3 s before the final combined chord/boom at 204.19; no unique correspondence."
+  },
+  {
+   "old": 207.0,
+   "new": 202.223,
+   "what": "Old post-boom guzheng pluck 2",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Old ordered post-boom pluck sequence is rearranged/absent. New plucks slow through 200-202.3 s before the final combined chord/boom at 204.19; no unique correspondence."
+  },
+  {
+   "old": 208.3,
+   "new": 203.064,
+   "what": "Old post-boom guzheng pluck 3",
+   "method": "beat warp",
+   "conf": "low",
+   "note": "Old ordered post-boom pluck sequence is rearranged/absent. New plucks slow through 200-202.3 s before the final combined chord/boom at 204.19; no unique correspondence."
+  },
+  {
+   "old": 210.04,
+   "new": 204.19,
+   "what": "Last guzheng/plucked attack",
+   "method": "high-frequency spectral onset",
+   "conf": "high",
+   "note": "Principal final pluck attack; upper-mel novelty peaks at 204.196 s, distinct from the chord build beginning ~204.01. Independently agrees with the master job."
+  },
+  {
+   "old": 212.0,
+   "new": 208.36,
+   "what": "Source file end",
+   "method": "decoded sample count",
+   "conf": "high",
+   "note": "Exclusive end boundary, not an audio sample; 10,001,280 decoded samples at 48 kHz."
+  }
+ ],
+ "warp": [
+  [
+   0.0,
+   0.0
+  ],
+  [
+   2.638,
+   2.69
+  ],
+  [
+   3.102,
+   3.153
+  ],
+  [
+   3.565,
+   3.615
+  ],
+  [
+   4.027,
+   4.078
+  ],
+  [
+   4.49,
+   4.542
+  ],
+  [
+   4.954,
+   5.006
+  ],
+  [
+   5.417,
+   5.469
+  ],
+  [
+   5.881,
+   5.933
+  ],
+  [
+   6.346,
+   6.397
+  ],
+  [
+   6.81,
+   6.864
+  ],
+  [
+   7.277,
+   7.333
+  ],
+  [
+   7.746,
+   7.807
+  ],
+  [
+   8.214,
+   8.281
+  ],
+  [
+   8.681,
+   8.753
+  ],
+  [
+   9.15,
+   9.226
+  ],
+  [
+   9.619,
+   9.696
+  ],
+  [
+   10.086,
+   10.161
+  ],
+  [
+   10.552,
+   10.625
+  ],
+  [
+   11.019,
+   11.089
+  ],
+  [
+   11.486,
+   11.551
+  ],
+  [
+   11.95,
+   12.011
+  ],
+  [
+   12.414,
+   12.471
+  ],
+  [
+   12.881,
+   12.929
+  ],
+  [
+   13.346,
+   13.386
+  ],
+  [
+   13.81,
+   13.844
+  ],
+  [
+   14.274,
+   14.304
+  ],
+  [
+   14.739,
+   14.764
+  ],
+  [
+   15.206,
+   15.224
+  ],
+  [
+   15.67,
+   15.688
+  ],
+  [
+   16.137,
+   16.147
+  ],
+  [
+   16.603,
+   16.607
+  ],
+  [
+   17.07,
+   17.066
+  ],
+  [
+   17.539,
+   17.526
+  ],
+  [
+   18.008,
+   17.986
+  ],
+  [
+   18.477,
+   18.447
+  ],
+  [
+   18.948,
+   18.908
+  ],
+  [
+   19.417,
+   19.368
+  ],
+  [
+   19.886,
+   19.828
+  ],
+  [
+   20.352,
+   20.288
+  ],
+  [
+   20.819,
+   20.747
+  ],
+  [
+   21.286,
+   21.209
+  ],
+  [
+   21.75,
+   21.672
+  ],
+  [
+   22.214,
+   22.135
+  ],
+  [
+   22.681,
+   22.595
+  ],
+  [
+   23.146,
+   23.055
+  ],
+  [
+   23.61,
+   23.518
+  ],
+  [
+   24.074,
+   23.975
+  ],
+  [
+   24.541,
+   24.435
+  ],
+  [
+   25.008,
+   24.894
+  ],
+  [
+   25.472,
+   25.352
+  ],
+  [
+   25.937,
+   25.81
+  ],
+  [
+   26.403,
+   26.264
+  ],
+  [
+   26.868,
+   26.722
+  ],
+  [
+   27.332,
+   27.179
+  ],
+  [
+   27.797,
+   27.637
+  ],
+  [
+   28.261,
+   28.099
+  ],
+  [
+   28.723,
+   28.566
+  ],
+  [
+   29.186,
+   29.031
+  ],
+  [
+   29.648,
+   29.495
+  ],
+  [
+   30.11,
+   29.955
+  ],
+  [
+   30.57,
+   30.413
+  ],
+  [
+   31.03,
+   30.873
+  ],
+  [
+   31.492,
+   31.326
+  ],
+  [
+   31.954,
+   31.779
+  ],
+  [
+   32.417,
+   32.232
+  ],
+  [
+   32.879,
+   32.68
+  ],
+  [
+   33.343,
+   33.128
+  ],
+  [
+   33.808,
+   33.577
+  ],
+  [
+   34.27,
+   34.03
+  ],
+  [
+   34.734,
+   34.485
+  ],
+  [
+   35.197,
+   34.961
+  ],
+  [
+   35.657,
+   35.412
+  ],
+  [
+   36.117,
+   35.866
+  ],
+  [
+   36.577,
+   36.315
+  ],
+  [
+   37.037,
+   36.766
+  ],
+  [
+   37.494,
+   37.215
+  ],
+  [
+   37.952,
+   37.664
+  ],
+  [
+   38.412,
+   38.112
+  ],
+  [
+   38.87,
+   38.559
+  ],
+  [
+   39.33,
+   39.008
+  ],
+  [
+   39.79,
+   39.457
+  ],
+  [
+   40.248,
+   39.904
+  ],
+  [
+   40.708,
+   40.352
+  ],
+  [
+   41.166,
+   40.799
+  ],
+  [
+   41.623,
+   41.248
+  ],
+  [
+   42.081,
+   41.697
+  ],
+  [
+   42.539,
+   42.144
+  ],
+  [
+   42.997,
+   42.589
+  ],
+  [
+   43.454,
+   43.038
+  ],
+  [
+   43.912,
+   43.486
+  ],
+  [
+   44.372,
+   43.935
+  ],
+  [
+   44.83,
+   44.387
+  ],
+  [
+   45.288,
+   44.838
+  ],
+  [
+   45.746,
+   45.285
+  ],
+  [
+   46.203,
+   45.732
+  ],
+  [
+   46.661,
+   46.179
+  ],
+  [
+   47.119,
+   46.625
+  ],
+  [
+   47.574,
+   47.069
+  ],
+  [
+   48.03,
+   47.513
+  ],
+  [
+   48.486,
+   47.96
+  ],
+  [
+   48.939,
+   48.404
+  ],
+  [
+   49.394,
+   48.849
+  ],
+  [
+   49.85,
+   49.296
+  ],
+  [
+   50.303,
+   49.742
+  ],
+  [
+   50.759,
+   50.189
+  ],
+  [
+   51.212,
+   50.635
+  ],
+  [
+   51.668,
+   51.082
+  ],
+  [
+   52.123,
+   51.528
+  ],
+  [
+   52.577,
+   51.972
+  ],
+  [
+   53.032,
+   52.419
+  ],
+  [
+   53.488,
+   52.865
+  ],
+  [
+   53.941,
+   53.312
+  ],
+  [
+   54.397,
+   53.759
+  ],
+  [
+   54.85,
+   54.206
+  ],
+  [
+   55.306,
+   54.652
+  ],
+  [
+   55.759,
+   55.099
+  ],
+  [
+   56.212,
+   55.545
+  ],
+  [
+   56.666,
+   55.992
+  ],
+  [
+   57.119,
+   56.436
+  ],
+  [
+   57.572,
+   56.88
+  ],
+  [
+   58.028,
+   57.326
+  ],
+  [
+   58.481,
+   57.768
+  ],
+  [
+   58.934,
+   58.211
+  ],
+  [
+   59.386,
+   58.653
+  ],
+  [
+   59.839,
+   59.095
+  ],
+  [
+   60.292,
+   59.539
+  ],
+  [
+   60.746,
+   59.983
+  ],
+  [
+   61.199,
+   60.43
+  ],
+  [
+   61.652,
+   60.874
+  ],
+  [
+   62.103,
+   61.316
+  ],
+  [
+   62.554,
+   61.761
+  ],
+  [
+   63.006,
+   62.206
+  ],
+  [
+   63.459,
+   62.651
+  ],
+  [
+   63.912,
+   63.097
+  ],
+  [
+   64.363,
+   63.542
+  ],
+  [
+   64.817,
+   63.986
+  ],
+  [
+   65.268,
+   64.429
+  ],
+  [
+   65.719,
+   64.871
+  ],
+  [
+   66.172,
+   65.315
+  ],
+  [
+   66.626,
+   65.76
+  ],
+  [
+   67.077,
+   66.204
+  ],
+  [
+   67.528,
+   66.649
+  ],
+  [
+   67.979,
+   67.093
+  ],
+  [
+   68.432,
+   67.537
+  ],
+  [
+   68.883,
+   67.98
+  ],
+  [
+   69.337,
+   68.423
+  ],
+  [
+   69.788,
+   68.868
+  ],
+  [
+   70.239,
+   69.313
+  ],
+  [
+   70.69,
+   69.758
+  ],
+  [
+   71.143,
+   70.201
+  ],
+  [
+   71.594,
+   70.643
+  ],
+  [
+   72.046,
+   71.088
+  ],
+  [
+   72.497,
+   71.532
+  ],
+  [
+   72.948,
+   71.977
+  ],
+  [
+   73.399,
+   72.421
+  ],
+  [
+   73.85,
+   72.863
+  ],
+  [
+   74.301,
+   73.305
+  ],
+  [
+   74.754,
+   73.749
+  ],
+  [
+   75.206,
+   74.193
+  ],
+  [
+   75.659,
+   74.639
+  ],
+  [
+   76.112,
+   75.084
+  ],
+  [
+   76.563,
+   75.528
+  ],
+  [
+   77.017,
+   75.973
+  ],
+  [
+   77.468,
+   76.417
+  ],
+  [
+   77.921,
+   76.862
+  ],
+  [
+   78.374,
+   77.306
+  ],
+  [
+   78.826,
+   77.749
+  ],
+  [
+   79.279,
+   78.194
+  ],
+  [
+   79.73,
+   78.633
+  ],
+  [
+   80.179,
+   79.072
+  ],
+  [
+   80.63,
+   79.511
+  ],
+  [
+   81.081,
+   79.948
+  ],
+  [
+   81.532,
+   80.389
+  ],
+  [
+   81.983,
+   80.83
+  ],
+  [
+   82.432,
+   81.271
+  ],
+  [
+   82.883,
+   81.714
+  ],
+  [
+   83.332,
+   82.154
+  ],
+  [
+   83.783,
+   82.598
+  ],
+  [
+   84.234,
+   83.042
+  ],
+  [
+   84.686,
+   83.487
+  ],
+  [
+   85.134,
+   83.933
+  ],
+  [
+   85.586,
+   84.377
+  ],
+  [
+   86.034,
+   84.818
+  ],
+  [
+   86.486,
+   85.261
+  ],
+  [
+   86.934,
+   85.703
+  ],
+  [
+   87.386,
+   86.147
+  ],
+  [
+   87.834,
+   86.588
+  ],
+  [
+   88.286,
+   87.031
+  ],
+  [
+   88.734,
+   87.472
+  ],
+  [
+   89.186,
+   87.912
+  ],
+  [
+   89.634,
+   88.355
+  ],
+  [
+   90.086,
+   88.796
+  ],
+  [
+   90.534,
+   89.238
+  ],
+  [
+   90.986,
+   89.681
+  ],
+  [
+   91.434,
+   90.122
+  ],
+  [
+   91.886,
+   90.562
+  ],
+  [
+   92.334,
+   91.003
+  ],
+  [
+   92.786,
+   91.445
+  ],
+  [
+   93.234,
+   91.889
+  ],
+  [
+   93.686,
+   92.332
+  ],
+  [
+   94.134,
+   92.771
+  ],
+  [
+   94.583,
+   93.211
+  ],
+  [
+   95.032,
+   93.651
+  ],
+  [
+   95.483,
+   94.094
+  ],
+  [
+   95.932,
+   94.536
+  ],
+  [
+   96.383,
+   94.978
+  ],
+  [
+   96.832,
+   95.417
+  ],
+  [
+   97.283,
+   95.857
+  ],
+  [
+   97.732,
+   96.297
+  ],
+  [
+   98.183,
+   96.739
+  ],
+  [
+   98.634,
+   97.182
+  ],
+  [
+   99.086,
+   97.627
+  ],
+  [
+   99.534,
+   98.068
+  ],
+  [
+   99.986,
+   98.51
+  ],
+  [
+   100.434,
+   98.951
+  ],
+  [
+   100.886,
+   99.394
+  ],
+  [
+   101.334,
+   99.836
+  ],
+  [
+   101.783,
+   100.279
+  ],
+  [
+   102.232,
+   100.72
+  ],
+  [
+   102.681,
+   101.163
+  ],
+  [
+   103.128,
+   101.602
+  ],
+  [
+   103.577,
+   102.041
+  ],
+  [
+   104.023,
+   102.479
+  ],
+  [
+   104.472,
+   102.919
+  ],
+  [
+   104.919,
+   103.358
+  ],
+  [
+   105.366,
+   103.796
+  ],
+  [
+   105.812,
+   104.234
+  ],
+  [
+   106.259,
+   104.674
+  ],
+  [
+   106.706,
+   105.111
+  ],
+  [
+   107.154,
+   105.554
+  ],
+  [
+   107.601,
+   105.997
+  ],
+  [
+   108.048,
+   106.439
+  ],
+  [
+   108.492,
+   106.881
+  ],
+  [
+   108.939,
+   107.323
+  ],
+  [
+   109.386,
+   107.764
+  ],
+  [
+   109.834,
+   108.206
+  ],
+  [
+   110.281,
+   108.644
+  ],
+  [
+   110.73,
+   109.089
+  ],
+  [
+   111.177,
+   109.529
+  ],
+  [
+   111.623,
+   109.969
+  ],
+  [
+   112.07,
+   110.409
+  ],
+  [
+   112.519,
+   110.849
+  ],
+  [
+   112.966,
+   111.289
+  ],
+  [
+   113.412,
+   111.729
+  ],
+  [
+   113.857,
+   112.169
+  ],
+  [
+   114.303,
+   112.609
+  ],
+  [
+   114.748,
+   113.046
+  ],
+  [
+   115.194,
+   113.486
+  ],
+  [
+   115.641,
+   113.928
+  ],
+  [
+   116.09,
+   114.368
+  ],
+  [
+   116.537,
+   114.808
+  ],
+  [
+   116.986,
+   115.248
+  ],
+  [
+   117.43,
+   115.687
+  ],
+  [
+   117.877,
+   116.128
+  ],
+  [
+   118.323,
+   116.566
+  ],
+  [
+   118.77,
+   117.005
+  ],
+  [
+   119.214,
+   117.445
+  ],
+  [
+   119.661,
+   117.883
+  ],
+  [
+   120.106,
+   118.322
+  ],
+  [
+   120.55,
+   118.762
+  ],
+  [
+   120.992,
+   119.202
+  ],
+  [
+   121.439,
+   119.642
+  ],
+  [
+   121.886,
+   120.081
+  ],
+  [
+   122.33,
+   120.52
+  ],
+  [
+   122.774,
+   120.959
+  ],
+  [
+   123.221,
+   121.398
+  ],
+  [
+   123.666,
+   121.838
+  ],
+  [
+   124.11,
+   122.278
+  ],
+  [
+   124.554,
+   122.718
+  ],
+  [
+   125.001,
+   123.158
+  ],
+  [
+   125.448,
+   123.598
+  ],
+  [
+   125.892,
+   124.037
+  ],
+  [
+   126.337,
+   124.477
+  ],
+  [
+   126.781,
+   124.915
+  ],
+  [
+   127.226,
+   125.353
+  ],
+  [
+   127.67,
+   125.791
+  ],
+  [
+   128.114,
+   126.229
+  ],
+  [
+   128.559,
+   126.666
+  ],
+  [
+   129.003,
+   127.104
+  ],
+  [
+   129.448,
+   127.542
+  ],
+  [
+   129.892,
+   127.98
+  ],
+  [
+   130.337,
+   128.418
+  ],
+  [
+   130.783,
+   128.859
+  ],
+  [
+   131.226,
+   129.297
+  ],
+  [
+   131.67,
+   129.737
+  ],
+  [
+   132.114,
+   130.176
+  ],
+  [
+   132.559,
+   130.614
+  ],
+  [
+   133.001,
+   131.053
+  ],
+  [
+   133.446,
+   131.493
+  ],
+  [
+   133.888,
+   131.931
+  ],
+  [
+   134.33,
+   132.369
+  ],
+  [
+   134.772,
+   132.807
+  ],
+  [
+   135.217,
+   133.247
+  ],
+  [
+   135.659,
+   133.685
+  ],
+  [
+   136.101,
+   134.124
+  ],
+  [
+   136.544,
+   134.564
+  ],
+  [
+   136.989,
+   135.003
+  ],
+  [
+   137.431,
+   135.441
+  ],
+  [
+   137.876,
+   135.881
+  ],
+  [
+   138.32,
+   136.319
+  ],
+  [
+   138.764,
+   136.757
+  ],
+  [
+   139.209,
+   137.194
+  ],
+  [
+   139.653,
+   137.632
+  ],
+  [
+   140.098,
+   138.07
+  ],
+  [
+   140.541,
+   138.507
+  ],
+  [
+   140.983,
+   138.945
+  ],
+  [
+   141.426,
+   139.383
+  ],
+  [
+   141.869,
+   139.82
+  ],
+  [
+   142.313,
+   140.259
+  ],
+  [
+   142.756,
+   140.7
+  ],
+  [
+   143.198,
+   141.141
+  ],
+  [
+   143.641,
+   141.581
+  ],
+  [
+   144.086,
+   142.021
+  ],
+  [
+   144.53,
+   142.46
+  ],
+  [
+   144.974,
+   142.897
+  ],
+  [
+   145.419,
+   143.335
+  ],
+  [
+   145.862,
+   143.773
+  ],
+  [
+   146.306,
+   144.21
+  ],
+  [
+   146.75,
+   144.645
+  ],
+  [
+   147.194,
+   145.082
+  ],
+  [
+   147.638,
+   145.52
+  ],
+  [
+   148.08,
+   145.956
+  ],
+  [
+   148.522,
+   146.393
+  ],
+  [
+   148.964,
+   146.832
+  ],
+  [
+   149.407,
+   147.269
+  ],
+  [
+   149.85,
+   147.708
+  ],
+  [
+   150.293,
+   148.146
+  ],
+  [
+   150.736,
+   148.587
+  ],
+  [
+   151.178,
+   149.024
+  ],
+  [
+   151.62,
+   149.462
+  ],
+  [
+   152.062,
+   149.898
+  ],
+  [
+   152.504,
+   150.337
+  ],
+  [
+   152.947,
+   150.775
+  ],
+  [
+   153.389,
+   151.212
+  ],
+  [
+   153.83,
+   151.647
+  ],
+  [
+   154.27,
+   152.083
+  ],
+  [
+   154.71,
+   152.519
+  ],
+  [
+   155.15,
+   152.954
+  ],
+  [
+   155.59,
+   153.391
+  ],
+  [
+   156.031,
+   153.829
+  ],
+  [
+   156.473,
+   154.267
+  ],
+  [
+   156.916,
+   154.703
+  ],
+  [
+   157.358,
+   155.141
+  ],
+  [
+   157.8,
+   155.579
+  ],
+  [
+   158.242,
+   156.017
+  ],
+  [
+   158.686,
+   156.454
+  ],
+  [
+   159.13,
+   156.892
+  ],
+  [
+   159.573,
+   157.329
+  ],
+  [
+   160.014,
+   157.764
+  ],
+  [
+   160.454,
+   158.2
+  ],
+  [
+   160.894,
+   158.636
+  ],
+  [
+   161.334,
+   159.074
+  ],
+  [
+   161.774,
+   159.512
+  ],
+  [
+   162.214,
+   159.948
+  ],
+  [
+   162.653,
+   160.383
+  ],
+  [
+   163.092,
+   160.819
+  ],
+  [
+   163.533,
+   161.255
+  ],
+  [
+   163.976,
+   161.693
+  ],
+  [
+   164.418,
+   162.13
+  ],
+  [
+   164.86,
+   162.567
+  ],
+  [
+   165.302,
+   163.003
+  ],
+  [
+   165.744,
+   163.438
+  ],
+  [
+   166.187,
+   163.876
+  ],
+  [
+   166.628,
+   164.312
+  ],
+  [
+   167.067,
+   164.748
+  ],
+  [
+   167.506,
+   165.183
+  ],
+  [
+   167.946,
+   165.619
+  ],
+  [
+   168.386,
+   166.053
+  ],
+  [
+   168.826,
+   166.487
+  ],
+  [
+   169.266,
+   166.922
+  ],
+  [
+   169.706,
+   167.358
+  ],
+  [
+   170.146,
+   167.792
+  ],
+  [
+   170.587,
+   168.227
+  ],
+  [
+   171.028,
+   168.662
+  ],
+  [
+   171.467,
+   169.098
+  ],
+  [
+   171.904,
+   169.532
+  ],
+  [
+   172.342,
+   169.967
+  ],
+  [
+   172.78,
+   170.403
+  ],
+  [
+   173.218,
+   170.838
+  ],
+  [
+   173.656,
+   171.273
+  ],
+  [
+   174.093,
+   171.707
+  ],
+  [
+   174.531,
+   172.143
+  ],
+  [
+   174.97,
+   172.579
+  ],
+  [
+   175.41,
+   173.013
+  ],
+  [
+   175.85,
+   173.448
+  ],
+  [
+   176.29,
+   173.882
+  ],
+  [
+   176.73,
+   174.315
+  ],
+  [
+   177.168,
+   174.748
+  ],
+  [
+   177.606,
+   175.183
+  ],
+  [
+   178.043,
+   175.617
+  ],
+  [
+   178.481,
+   176.05
+  ],
+  [
+   178.919,
+   176.483
+  ],
+  [
+   179.357,
+   176.918
+  ],
+  [
+   179.794,
+   177.351
+  ],
+  [
+   180.232,
+   177.786
+  ],
+  [
+   180.668,
+   178.221
+  ],
+  [
+   181.106,
+   178.657
+  ],
+  [
+   181.543,
+   179.09
+  ],
+  [
+   181.981,
+   179.524
+  ],
+  [
+   182.419,
+   179.958
+  ],
+  [
+   182.857,
+   180.393
+  ],
+  [
+   183.294,
+   180.827
+  ],
+  [
+   183.732,
+   181.262
+  ],
+  [
+   184.169,
+   181.695
+  ],
+  [
+   184.607,
+   182.128
+  ],
+  [
+   185.044,
+   182.559
+  ],
+  [
+   185.482,
+   182.992
+  ],
+  [
+   185.92,
+   183.425
+  ],
+  [
+   186.358,
+   183.858
+  ],
+  [
+   186.794,
+   184.289
+  ],
+  [
+   187.23,
+   184.723
+  ],
+  [
+   187.667,
+   185.156
+  ],
+  [
+   188.106,
+   185.589
+  ],
+  [
+   188.544,
+   186.023
+  ],
+  [
+   188.982,
+   186.456
+  ],
+  [
+   189.42,
+   186.892
+  ],
+  [
+   189.858,
+   187.325
+  ],
+  [
+   190.297,
+   187.758
+  ],
+  [
+   190.738,
+   188.196
+  ],
+  [
+   191.181,
+   188.634
+  ],
+  [
+   191.624,
+   189.072
+  ],
+  [
+   192.068,
+   189.515
+  ],
+  [
+   192.513,
+   189.956
+  ],
+  [
+   192.962,
+   190.404
+  ],
+  [
+   193.413,
+   190.849
+  ],
+  [
+   193.866,
+   191.297
+  ],
+  [
+   194.318,
+   191.755
+  ],
+  [
+   194.77,
+   192.204
+  ],
+  [
+   195.222,
+   192.657
+  ],
+  [
+   195.676,
+   193.112
+  ],
+  [
+   196.13,
+   193.566
+  ],
+  [
+   196.586,
+   194.021
+  ],
+  [
+   197.041,
+   194.475
+  ],
+  [
+   197.497,
+   194.932
+  ],
+  [
+   197.953,
+   195.39
+  ],
+  [
+   198.409,
+   195.85
+  ],
+  [
+   198.866,
+   196.31
+  ],
+  [
+   199.324,
+   196.768
+  ],
+  [
+   199.781,
+   197.226
+  ],
+  [
+   200.236,
+   197.683
+  ],
+  [
+   200.69,
+   198.141
+  ],
+  [
+   201.146,
+   198.43601
+  ],
+  [
+   201.602,
+   198.73102
+  ],
+  [
+   202.059,
+   199.026677
+  ],
+  [
+   202.515,
+   199.321687
+  ],
+  [
+   202.971,
+   199.616697
+  ],
+  [
+   203.427,
+   199.911707
+  ],
+  [
+   203.884,
+   200.207364
+  ],
+  [
+   204.34,
+   200.502374
+  ],
+  [
+   204.796,
+   200.797384
+  ],
+  [
+   205.252,
+   201.092394
+  ],
+  [
+   205.708,
+   201.387404
+  ],
+  [
+   206.165,
+   201.683061
+  ],
+  [
+   206.621,
+   201.978072
+  ],
+  [
+   207.077,
+   202.273082
+  ],
+  [
+   207.533,
+   202.568092
+  ],
+  [
+   207.989,
+   202.863102
+  ],
+  [
+   208.446,
+   203.158759
+  ],
+  [
+   208.902,
+   203.453769
+  ],
+  [
+   209.358,
+   203.748779
+  ],
+  [
+   209.814,
+   204.043789
+  ],
+  [
+   210.04,
+   204.19
+  ],
+  [
+   210.271,
+   204.681464
+  ],
+  [
+   210.727,
+   205.651628
+  ],
+  [
+   211.183,
+   206.621791
+  ],
+  [
+   211.639,
+   207.591954
+  ],
+  [
+   212.0,
+   208.36
+  ]
+ ],
+ "time_base": "Seconds from first decoded sample of inputs/Moongazing - 2 semitones down.mp3; ffmpeg gapless audio-only decode, 48000 Hz.",
+ "warp_notes": "Every old beat plus zero, final pluck and file-end anchors. Through old b111.1: independently measured new pulses; after that: approximate monotonic reference transport through changed free-time ending. Use events/lyrics to override transport for identified events; missing/reordered ending events cannot be recovered with a scalar warp.",
+ "warp_unmatched_old_beats": [
+  201.146,
+  201.602,
+  202.059,
+  202.515,
+  202.971,
+  203.427,
+  203.884,
+  204.34,
+  204.796,
+  205.252,
+  205.708,
+  206.165,
+  206.621,
+  207.077,
+  207.533,
+  207.989,
+  208.446,
+  208.902,
+  209.358,
+  209.814,
+  210.271,
+  210.727,
+  211.183,
+  211.639
+ ],
+ "source_duration_s": 212.0,
+ "new_duration_s": 208.36
+}

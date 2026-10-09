@@ -7,7 +7,7 @@ import { earthView, EARTH_KEYS } from '../scenes/earthview.js';
 import { CUTS as BUILD } from '../scenes/buildsite.js';
 import { lampView, lampNight, lampLight } from '../scenes/worklamps.js';
 
-export const range = [122.77, 189.86];
+export const range = [120.96, 187.32];
 
 // ---- overlays pinned to a painting -----------------------------------------------------------------------------
 // the plate's image-uv → design-px map at local time lt (same maths as scenes/plate.js plateMap; overlay shots use
@@ -263,16 +263,16 @@ function bootDust(ctx, lt, dur) {
 // mosaic is sharp at the current scale, the frame stays on sharp line: the complete gold plan K_7.A at the station,
 // and a jiehua graticule round the pole (latitude rings, Shackleton's rim) — then the Moon comes up under it.
 // Scale/centre mirror scenes/cosmos.js (km per design px; south pole at 0,0).
-const CSCALE = [[181.11, 0.0022], [182.30, 0.035], [183.80, 2.4], [184.60, 14], [185.30, 250]];
+const CSCALE = [[178.66, 0.0022], [179.84, 0.035], [181.33, 2.4], [182.12, 14], [182.81, 250]];
 function cScale(t) {
   if (t <= CSCALE[0][0]) return CSCALE[0][1];
   for (let i = 1; i < CSCALE.length; i++) { const [t0, s0] = CSCALE[i - 1], [t1, s1] = CSCALE[i]; if (t <= t1) { const u = (t - t0) / (t1 - t0); const e = u * u * (3 - 2 * u) * 0.6 + u * 0.4; return Math.exp(Math.log(s0) + (Math.log(s1) - Math.log(s0)) * e); } }
   return CSCALE[CSCALE.length - 1][1];
 }
 const CSTATION = [-38.0, 26.0];
-const cCenter = (t) => { const a = smooth(182.0, 184.0, t); return [CSTATION[0] * (1 - a), CSTATION[1] * (1 - a)]; };
+const cCenter = (t) => { const a = smooth(179.54, 181.53, t); return [CSTATION[0] * (1 - a), CSTATION[1] * (1 - a)]; };
 function pullbackOpening(ctx, t) {
-  const v = 1 - smooth(182.75, 183.45, t); if (v <= 0) return;
+  const v = 1 - smooth(180.29, 180.98, t); if (v <= 0) return;
   const s = cScale(t), c = cCenter(t), at = ([x, y]) => [960 + (x - c[0]) / s, 540 + (y - c[1]) / s];
   ctx.pipe.layer((g) => { g.fillStyle = 'rgb(22,31,60)'; g.fillRect(0, 0, 1920, 1080); }, { mode: 'over', opacity: 0.96 * v, absorb: 0.35, seed: 980 });
   const [sx, sy] = at(CSTATION), w = 3.6 / s, img = ctx.assets && ctx.assets['K_7.A'];
@@ -384,7 +384,7 @@ export default function shots(B, X, L) {
   ].map((s, i) => ({ paper: 'indigo', grain: 71 + i, ...s, post: s.post || ((t, lt) => kick(lt)), t0: SA[i], t1: SA[i + 1] }));
 
   // ---- B · THE WORK — one crew member per bar ------------------------------------------------------------------
-  const T = { B1: bar(73), B2: bar(74), B3: bar(75), B4: bar(76), B5: bar(77), B6: 143.43, C2: bar(81), C3: bar(82) };
+  const T = { B1: bar(73), B2: bar(74), B3: bar(75), B4: bar(76), B5: bar(77), B6: 141.36, C2: bar(81), C3: bar(82) };
   const B4V = { from: { x: 0.5, y: 0.56, zoom: 1.0 }, to: { x: 0.5, y: 0.57, zoom: 1.06 } };
   const C6V = { from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.52, y: 0.5, zoom: 1.1 } };   // 7.C6's push (roto + its Earth)
   const B6V = { from: { x: 0.56, y: 0.5, zoom: 1.45 }, to: { x: 0.565, y: 0.5, zoom: 1.6 } };
@@ -468,12 +468,12 @@ export default function shots(B, X, L) {
     single(2, bar(83), bar(83, 2)), single(1, bar(83, 2), bar(83, 3)), share('a', bar(83, 3), bar(84)),
     single(3, bar(84), bar(84, 2)), single(0, bar(84, 2), bar(84, 3)), share('b', bar(84, 3), bar(85)),
     single(5, bar(85), bar(85, 2)), single(4, bar(85, 2), bar(85, 3)), share('c', bar(85, 3), bar(86)),
-    single(6, bar(86), bar(86, 2)), share('d', bar(86, 2), bar(86, 4)), single(7, bar(86, 4), 158.5),
+    single(6, bar(86), bar(86, 2)), share('d', bar(86, 2), bar(86, 4)), single(7, bar(86, 4), 156.28),
   ];
   const pairs = [];   // (the sharing scenes now sit inside `grid`, in running order)
   const GROUP = has('K_7.C4') ? 'K_7.C4' : 'K_7.C4_v3';
   // 7.C1 — the call home (bass out 158.5): Earth SILK | Moon GOLD, the words crossing the seam at the speed of light
-  const C1 = 158.5, C6 = bar(88);
+  const C1 = 156.28, C6 = bar(88);
   const callShot = { id: '7.C1', t0: C1, t1: C6, paper: 'silk', grain: 81,
     scene: [has('K_7.C1_earth') ? rot('K_7.C1_earth/take_6' /* rev3 KIDS: from the keyframe with T's fuller cheeks; f14, the take is on twos */, { paper: 'silk', rect: [0, 0, 960, 1080], offset: 14 / 24, lock: 0, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: 0.47, y: 0.42, zoom: 1.08 }, to: { x: 0.48, y: 0.42, zoom: 1.14 } }) : ph('Earth side: M mid-sentence at the laptop', 'K_7.C1_earth'),
       has('K_7.C1_moon') ? rot('K_7.C1_moon/take_2', { paper: 'silk', rect: [960, 0, 960, 1080], fill: [0.09, 0.13, 0.245], offset: 1.5, lock: 0, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: 0.46, y: 0.5, zoom: 1.12 }, to: { x: 0.47, y: 0.52, zoom: 1.2 } }) : ph('Moon side: Jade at the galley table', 'K_7.C1_moon'),
@@ -502,7 +502,7 @@ export default function shots(B, X, L) {
   // 7.C2 view (the push stops short of the TV: the whole screen stays in frame) and the game-screen atlas's meta
   // (media/keyframes/SCR_ddr_c2.json, written by tools/ddr_screen.py; k0 = the film frame of atlas frame 0)
   const C2V = { from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.53, y: 0.5, zoom: 1.06 } };
-  const DDR_SCR = { bbox: [0.05508, 0.1125, 0.26133, 0.39375], cols: 7, rows: 7, n: 43, fps: 24, k0: 3544, target: [2560, 1440] };
+  const DDR_SCR = { bbox: [0.05508, 0.1125, 0.26133, 0.39375], cols: 7, rows: 7, n: 43, fps: 24, k0: 3493, target: [2560, 1440] };
   const C_SHOTS = [
     // 7.C2 — the playroom from the rear three-quarter: Kenton, seen from behind, steps with T on the pad; M, the focal
     //        point, bounces and laughs as the family cat bats at the hem of her dress (rev2_c2, Oct 8: the cat of 7.C3
@@ -540,7 +540,7 @@ export default function shots(B, X, L) {
   ];
 
   // ---- D · TWO CHANG'ES (vocalise 163.5–169.8) — five framings, each distinct ----------------------------------------
-  const D = { D1: bar(89), D2: bar(90), D3: 164.5, D3b: bar(92), D3c: bar(93), D3d: bar(94), D4: 173.0, E1: bar(97) };
+  const D = { D1: bar(89), D2: bar(90), D3: 162.25, D3b: bar(92), D3c: bar(93), D3d: bar(94), D4: 170.62, E1: bar(97) };
   // the indigo of the J_7.D2 painting itself: gold redraws of that take lay their ground in it, so redrawn skin and sleeve
   // sit on the same paper as the painted keyframe (no darker patches on Jade's cheek). The views of the 7.D3/7.D4 takes
   // keep the top 4% of the take out of frame: Seedance 2.0 grows the canvas there and the registered key has a seam.
@@ -598,7 +598,10 @@ export default function shots(B, X, L) {
   //      three cameras). No keyframe carries a painted Earth: scenes/earthview.js draws the toast's real sky over the
   //      clean black of the paintings (JPL Horizons, 2038-Aug-30 08:00 UT: 99.9% lit, 4.9° up, south-up). Nothing passes
   //      in front of it: in the wide it hangs above every head; in the close the cups stop either side of it.
-  const SE = [bar(97), bar(97, 3), bar(98, 3), bar(100)];
+  // rev5 (Jade, Oct 9, on the two-cup card: "the hands still look stilted and weird. maybe we delete this shot"): the
+  // two-cup close (7.E1c) is gone. The toast is the group, Adaeze, and the group again, one bar each: the second group
+  // view is the same take further on (a cutaway hides the 0.7 s it skips) with the push carried on toward the Earth.
+  const SE = [bar(97), bar(98), bar(99), bar(100)];
   const TOAST_SKY = { subLat: 13.2, subLon: 60.5, north: 134.2, phase: 4.2, sunPA: 318.8 };
   const EARTH_K = 1.3;   // drawn 1.3× its true 2.05° in every toast view (one size logic: same lens → same size)
   // keyframe uv → design px under a roto layer's push (the view maths of roto/index.js: cover fit, eased from → to)
@@ -609,7 +612,7 @@ export default function shots(B, X, L) {
   const TOAST = [
     ['7.E1', 'K_7.E1', 'K_7.E1/take_4', 0.5, { from: { x: 0.5, y: 0.47, zoom: 1.14 }, to: { x: 0.51, y: 0.45, zoom: 1.24 } }, [0.519, 0.38, 0.0138]],   // rev3: every arm is in frame (was 1.42 → 1.56)
     ['7.E1b', 'K_7.E1b', 'K_7.E1b/take_9', 1.1, { from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.52, y: 0.5, zoom: 1.07 }, subject: false }, null],   // rev3: Adaeze in profile, flat; 1.1 s = the end of her one blink, then her eyes are on the Earth
-    ['7.E1c', 'K_7.E1c', 'K_7.E1c/take_9', 0.9, { from: { x: 0.5, y: 0.52, zoom: 1.04 }, to: { x: 0.5, y: 0.47, zoom: 1.14 }, subject: false }, [0.502, 0.39, 0.0275]],   // rev4: the wide's grip (fist round the lower half, thumb on the near face); 0.9 s = Jade's cup still rising, level with Lúcia's and held from about 2.5 s. subject: false = Jade's pale forearm is redrawn whole (the subject matte holed it against the pale plain)
+    ['7.E1d', 'K_7.E1', 'K_7.E1/take_4', 3.3, { from: { x: 0.51, y: 0.45, zoom: 1.24 }, to: { x: 0.515, y: 0.43, zoom: 1.34 } }, [0.519, 0.38, 0.0138]],   // rev5: back to the group, cups still up (the take runs 5.17 s: 3.3 s + one bar ends at 5.04 s)
   ];
   const E_SHOTS = TOAST.map(([id, key, clip, offset, V, E], i) => ({
     id, t0: SE[i], t1: SE[i + 1], paper: 'indigo', grain: 97 + i * 0.1, needs: [...EARTH_KEYS],

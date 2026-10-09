@@ -1,6 +1,70 @@
-# 望明月 · Moongazing — Handoff (Oct 8 2026, night)
+# 望明月 · Moongazing — Handoff (Oct 9 2026, small hours)
 
-## UPDATE, Oct 8 night: round four, the fixes from Jade's page answers — read this first
+## UPDATE, Oct 9: round five, the film retimed to the lower-key recording (cut v8) — read this first
+
+### What Jade asked
+Her message verbatim, her nine round-four answers and what was done about each: `docs/REVISION_NOTES_OCT9.md`. In short:
+retime the film to `inputs/Moongazing - 2 semitones down.mp3` with an even fade-out and export that mp3; do the fixes her
+answers call for; render a small version of the whole film and commit.
+
+### Where things stand
+- **Cut v8** `render/out/fullcut_v8_540p.mp4` (frames `render/out/frames_v8_540/`, 5,165 frames, 0..5164, 215.19 s) is the
+  whole film on the new recording with every round-five change in it. Rendered twice and compared
+  (`render/out/v8_render.log`: 226 frames differed, all settled by a third pass; flicker check passed). **Nobody has
+  watched it at speed with sound**; I looked at two contact sheets of the whole cut and one comparison image per fix.
+- **Audio:** `media/audio/moongazing_2down_master.wav/.mp3` (210.86 s), release copy
+  `release/audio/Moongazing_master_2_semitones_down.mp3`. Not in git. The old-key masters are untouched beside them.
+- **Timing:** `analysis/beatgrid.json` and `lyrics_timing.json` are the new recording's (`analysis/v2/`); the first
+  recording's are in `analysis/v1/`. Any time in older notes, reports and `docs/script.md` is a time on the first
+  recording: `analysis/v2/time_map.json` converts, `node render/tools/shot_table.mjs` says where a shot is now.
+- **Changed shots:** 1:03 desk (`J_3.6e/take_6`, the whole figure from a video take, no carried painting); 1:20 gold
+  visor (`J_4.3p/take_1g`); 1:43 masts at 1.6x (`K_5.2.jpg`, last round's kept as `K_5.2_v3.jpg`); 2:53 toast without
+  the two-cup shot (7.E1, 7.E1b, 7.E1d: group, Adaeze, group); 3:11 reunion version B (`K_8.2a` pick `take_10`);
+  3:16 the ending re-fitted (8.3 one bar, 8.4 from bar 111 to the last chord at 204.19, inscription faster).
+- **Page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp, published as "Round five" (version 8): the whole film
+  (one file and six parts), seven cards (`r5_sync, r5_ending, r5_desk, r5_photo, r5_plan, r5_toast, r5_reunion`), earlier
+  rounds under a fold. Answers: ArtifactData, collection `decisions`. Source: `release/review/cards_r5.json` (edit by
+  hand), `page_r5_body.html`, `page_r5.css`; `bash release/review/build_page_r5.sh` cuts
+  `render/out/rev_page/v8/{clips8,img8}/` and rewrites `decisions.html`; publish that file to the same URL with
+  `clips8/*` and `img8/*` as files (root `render/out/rev_page/v8`).
+- **Git:** committed and pushed on `round2-v5` (PR #5). Not committed, on purpose: `:memory:.ses` (stray) and
+  `inputs/Moongazing - 2 semitones down.mp3` (the first recording IS in the public repository as `inputs/moongazing.mp3`,
+  but publishing the new recording is Jade's call: ask her).
+
+### What each answer on the page leads to
+| Card | If she chooses… | Then |
+|---|---|---|
+| `r5_sync` | something early or late | Find the event in `analysis/v2/time_map.json` / `NOTES.md` (low-confidence ones are listed there), fix the value in `analysis/v2/retime/overrides.json` or the section file, lint, re-render the passage. |
+| `r5_ending` | roof deck too short / inscription rushed / hold through the chord | `render/src/sections/08_outro.js`: `S84` (now `bar(111)`), `END` (204.19), the `inscription` offsets, the fade (last 0.8 s). Holding past the chord means moving `END` later; the credits (`09_credits.js`) start at `END` and the seal lands there. The same numbers are in `release/subs/make_subs.py` (`S84`, `DED`). |
+| `r5_desk` | the take where she glances at the laptop | `clip: 'J_3.6e/take_8', offset: 1.3` on the 3.6e line of `03_verse2.js` (prepped; `rev5_desk_report.md`). |
+| | face does not read as her | The plate's face is still last round's first frame; a codex portrait pass over her photo, then a new take from it (`tools/vgen_rev5_desk.py`). |
+| `r5_photo` | clear visor again | one word in `media/gen/picks.json`: `J_4.3p` → `take_1s`, and the clip name in the 4.3 block of `04_hook.js`. |
+| `r5_toast` | end on Adaeze | `SE` and `TOAST` in the 7.E block of `07_drop.js`: e.g. `SE = [bar(97), bar(98, 3), bar(100)]` and drop the third row. |
+| `r5_reunion` | off | `K_8.2a` pick: `take_8` = version A, `take_9` = one hand. |
+
+### Things that went wrong or were learned, so they are not repeated
+- `/tmp` (16 GB tmpfs) was full of other projects' caches; Chrome then crashes at start with more than one render
+  worker. Run renders with `TMPDIR` on disk (`render/tools/ranges_verified.sh FIRST-LAST …` does).
+- Codex's sandbox hides the GPU and cannot run the renderer, and this session's safety check refuses to approve a
+  command outside codex's sandbox. Stems and renders ran from the main session's shell (detached with `setsid nohup`,
+  which costs no usage and survives a cut-off); codex did the master, the analysis on CPU, and the page build.
+- `pkill -f` with a pattern that also appears in your own command line kills your own shell.
+- Usage this round: two fix agents (about 240 k and 295 k tokens, 24 and 31 minutes), launched together at the start
+  of the window's last three and a half hours; nothing was running near the reset.
+- Spend: 1.84 USD video (desk takes), 0.40 USD images.
+
+### Next, in order
+1. Her answers on the `r5_*` cards (page and chat), then those fixes.
+2. A watch at speed by a person. Soft spots I know of: the second group view of the toast is close to the first; the
+   roof deck is 1.8 s; the inscription's English has about 2.5 s; the desk shot's face is softer than its neighbours;
+   the lyric at 1:03 leaves about 0.4 s before the cut.
+3. Lyric videos on the new recording (`release/lyric_video/`, codex): not redone; the ones on the page are the old key.
+4. 1080p: `TMPDIR=… bash render/tools/render_verified.sh 0 215.19 out/frames_v8_1080 1 3`, then encode.
+5. Items 2–5 of the round-three list below still stand (thumbnails, social cut, upload copies).
+
+
+## UPDATE, Oct 8 night: round four (superseded by the block above; its times are on the first recording)
+
 
 ### What Jade asked
 She answered the fifteen round-three cards on the decisions page and wrote in the chat: "0:59, yes fix the envelope

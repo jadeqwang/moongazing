@@ -14,7 +14,7 @@ L = {l['id']: l for l in json.load(open(os.path.join(REPO, 'analysis/lyrics_timi
 W = lambda lid, i: L[lid]['words'][i]['start']          # word start
 D = {d['bar']: d['t'] for d in json.load(open(os.path.join(REPO, 'analysis/beatgrid.json')))['downbeats']}
 
-MASTER = os.path.join(REPO, 'media/audio/moongazing_master.wav')
+MASTER = os.path.join(REPO, 'media/audio/moongazing_2down_master.wav')   # Oct 9: the lower-key recording
 def audio_end():
     if os.path.exists(MASTER):
         import subprocess
@@ -57,10 +57,10 @@ LYRICS = [
 # ---- on-screen cards (times from render/src/sections/*.js; card(ctx, key, o, t, a, b) is visible a..b)
 # Each card: mono = one cue for the single-language files; bi = sub-cues for the bilingual file
 # (split so every bilingual cue is exactly 2 lines and English lines stay <= 42 chars).
-S03, S04, S05, S06 = 5.86, D[4], D[5], 13.10            # 00_intro.js
+S03, S04, S05, S06 = 5.94, D[4], D[5], 13.15            # 00_intro.js
 T9, T11 = D[9], D[11]                                   # 01_intro_b.js TAIKO[0], TAIKO[1]
-S84 = 201.6                                             # 08_outro.js inscription(ctx, t, S84)
-DED = 210.1                                             # credits dedication (after the seal lands at 210.04)
+S84 = 198.14                                             # 08_outro.js inscription(ctx, t, S84)
+DED = 204.25                                            # credits dedication (after the seal lands at 204.19)
 CARDS = [
     dict(lang='en', mono=(S03 + 0.3, S04 - 0.02, '很久以前，传说嫦娥飞上了月亮。', 'Long ago, the legend says,\nChang’e flew to the Moon.'),
          bi=[(S03, S03 + 1.24, '很久以前，传说', 'Long ago, the legend says,'),          # starts with 嫦娥奔月 brush-in
@@ -74,11 +74,11 @@ CARDS = [
     dict(lang='en', mono=(T9 + 0.25, T11 - 0.02, '全世界的航天计划共建国际月球基地。', 'Every space program on Earth\nis building the International Moonbase.'),
          bi=[(T9 + 0.25, T9 + 1.6, '全世界的航天计划', 'Every space program on Earth'),
              (T9 + 1.62, T11 - 0.02, '共建国际月球基地。', 'is building the International Moonbase.')]),
-    # closing inscription, Zhang Jiuling 张九龄《望月怀远》 — 海上生明月 brushes at S84+0.4, 天涯共此时 at S84+2.9
-    dict(lang='zh', mono=(S84 + 0.4, DED - 0.02, '海上生明月，天涯共此时', 'The bright moon rises over the sea;\nhowever far apart, we share this moment.'),
-         bi=[(S84 + 0.4, S84 + 2.9, '海上生明月，', 'The bright moon rises over the sea;'),
-             (S84 + 2.92, DED - 0.02, '天涯共此时', 'however far apart, we share this moment.')]),
-    # credits dedication (210.1 -> end of the mastered audio)
+    # closing inscription, Zhang Jiuling 张九龄《望月怀远》 — 海上生明月 brushes at S84+0.3, 天涯共此时 at S84+2.2
+    dict(lang='zh', mono=(S84 + 0.3, DED - 0.02, '海上生明月，天涯共此时', 'The bright moon rises over the sea;\nhowever far apart, we share this moment.'),
+         bi=[(S84 + 0.3, S84 + 2.2, '海上生明月，', 'The bright moon rises over the sea;'),
+             (S84 + 2.22, DED - 0.02, '天涯共此时', 'however far apart, we share this moment.')]),
+    # credits dedication (204.25 -> end of the mastered audio)
     dict(lang='en',
          mono=None,
          mono_en=[(DED, (DED + END) / 2 - 0.01, 'For everyone working far from\nthe people they love.'),

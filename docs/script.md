@@ -1,6 +1,13 @@
 # 望明月 · Moongazing — Shooting Script v1
 
-Song: 212.0 s. Times are song seconds (see `analysis/song_map.md`, `analysis/beatgrid.json`). Cuts land on downbeats
+**Oct 9: the film is now cut to the lower-key recording** (`inputs/Moongazing - 2 semitones down.mp3`, 208.36 s; master
+210.86 s). The bars are the same up to the end of the drop but about 1.4 % faster, and the ending is rearranged, so every
+time in this script that is not a bar number is a time on the FIRST recording. `analysis/v2/time_map.json` carries an old
+time to the new one; `node render/tools/shot_table.mjs` prints where each shot is now; `analysis/v2/NOTES.md` says how the
+recordings differ. Changed in the cut since this script was written: the two-cup toast close (7.E1c) is gone (group,
+Adaeze, group); 8.3 is one bar and 8.4 runs from bar 111 to the last chord at 204.19.
+
+Song (first recording): 212.0 s. Times are song seconds (see `analysis/v1/song_map.md`, `analysis/v1/beatgrid.json`). Cuts land on downbeats
 unless noted; sung lines start ~0.2 s *before* the downbeat, so lyric type leads the cut by 0.2 s.
 
 ## Concept in one breath
@@ -104,7 +111,7 @@ English lyrics: refined serif, small, horizontal, in the 留白; Chinese inscrip
 |---|---|---|---|---|
 | 4.1 | 76.11–78.9 | Impact 76.17 = IGNITION. Splashed-ink (泼墨) exhaust in gold and ember on indigo; the tower falls away. A waning crescent Moon above. | **月缺** — written by the exhaust plume | GOLD · JS over the K_4.1 painting (`LIFT` shader in `04_hook.js`; rev3: the whole exhaust is live for the whole shot: three flickering flames, a trail anchored to the world that lengthens, widens and thins as the rocket climbs, the painted ground cloud spreading and rolling) |
 | 4.2 | 78.96–81.46 | The same spot and staging as 1.6, a few minutes later: the rocket climbs on its kerosene-bright plume at the right; M (left arm round Kenton's neck) points up at it with her right arm, T holds Kenton's left hand, all three follow it with their heads; the crowd at the fence cheers; the roar arrives ~12 s later (nobody covers their ears). | **酒寒** (held 寒), upper right, beside the rocket's column and above the crescent | SILK night · K_4.2 → gen-v + roto |
-| 4.3 | 81.5–82.9 | Inside the capsule, seconds after liftoff, from behind Jade's left shoulder: strapped in, visor down and clear, mouth closed, she tips her head toward the snapshot of M and T taped below the window (the one 3.8f ends on). She does not sing; the snapshot is the only warm colour. | **我思念** | GOLD line, chalk-white suit (the 3.8 look) · `J_4.3p/take_1s` (rev4; keyframe `jade/J_4.3p.png`) |
+| 4.3 | 81.5–82.9 | Inside the capsule, seconds after liftoff, from behind Jade's left shoulder: strapped in, the gold visor down as at 3.8f (her face is hidden; rev5, Oct 9), she tips her helmet toward the snapshot of M and T taped below the window (the one 3.8f ends on). She does not sing; the snapshot is the only soft colour and the brightest thing in the frame. | **我思念** | GOLD line, chalk-white suit (the 3.8 look) · `J_4.3p/take_1g` (rev5: the video of rev4's `take_1s`, gold visor from `jade/J_4.3p_gold.png` carried on the helmet; keyframe `jade/J_4.3p.png`) |
 | 4.3b | 82.8–86.16 | The held 你 lands on who she misses: summer at an Austin splash park — M in pink running through the water arcs, T in his creeper swim shirt grinning in the spray. The warmest frame in the film. | **你** (one huge character, held) | SILK summer · still→Seedance + roto |
 | 4.4 | 86.62–88.6 | HUD `MET 00:02:41` — first-stage separation = THE SCROLL TEARS: the frame rips along a jagged paper edge; the lower half (Earth, family) falls away with the booster. | **I think of you,** | GOLD+SILK · JS paper tear |
 | 4.5 | 88.6–90.55 | Kids in the mission family viewing room at Wenchang, faces lit by the big screen; T's hand on the glass. | **I think of you** | SILK · still+parallax |

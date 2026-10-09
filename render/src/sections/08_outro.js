@@ -1,18 +1,21 @@
-// SECTION 8 · OUTRO — 189.86–210.04 (guzheng, humming, solo hum 201.6, last pluck 210.04). Colour returns.
+// SECTION 8 · OUTRO — 187.33–204.19 on the lower-key recording of Oct 9 (guzheng; humming 192.5–196.6; a run of
+// slowing plucks from 198.6; a short solo hum at 203.0; the last chord at 204.19). Colour returns.
+// (Until Oct 9: 189.86–210.04, solo hum 201.6, last pluck 210.04. The new ending is 3.3 s shorter between bar 110 and
+// the last note: the roof deck is one bar, and the tea cup with the inscription runs from bar 111 to the last chord.)
 // The closing inscription 海上生明月，天涯共此时 (Zhang Jiuling) brushes in vertically; the film goes dark exactly on the
 // last pluck, where 09_credits (engine owner) takes over with the seal and the colophon.
 import { calli, card, kf, ph, PALE, PALEC, smooth } from './_lib.js';
 
-export const range = [189.86, 210.04];
+export const range = [187.32, 204.19];
 
 export default function shots(B, X, L) {
   const bar = (n, b = 1) => B.bar(n, b);
-  const S81 = bar(105), S82 = bar(107), S83 = bar(110), S84 = 201.6, END = 210.04;
+  const S81 = bar(105), S82 = bar(107), S83 = bar(110), S84 = bar(111), END = 204.19;
   // 8.2 — the scroll that tore at stage separation (4.4, y = 560) is rejoined: the lower half rises back into place
   const JOIN = 1.5;
   const rise = (lt) => 1 - Math.pow(1 - smooth(0, JOIN, lt), 2.2);
   // two beats of the homecoming when delivered: (a) Jade squats low as M sprints in, (b) the impact — M bowls her over
-  const split = X.has('K_8.2a') && X.has('K_8.2b'), home = split ? 'K_8.2a' : 'K_8.2', S82b = split ? 197.04 : S83;
+  const split = X.has('K_8.2a') && X.has('K_8.2b'), home = split ? 'K_8.2a' : 'K_8.2', S82b = split ? 194.47 : S83;
   // generated take for 8.2b (media/gen/picks.json) — set when picked and prepped (tools/roto_prep.py); null = still.
   // (8.2a stays a still: its torn halves must stay pinned while they rejoin)
   const TAKE_82 = { b: 'take_2' };
@@ -120,13 +123,13 @@ export default function shots(B, X, L) {
        
         masks: { base: [0.0, 0.6], polys: [{ pts: [[0, 0.7], [1, 0.7], [1, 1], [0, 1]], depth: 0.95, blur: 10 }, { pts: [[0.542, 0.819], [0.564, 0.809], [0.625, 0.804], [0.686, 0.815], [0.703, 0.834], [0.681, 0.850], [0.625, 0.856], [0.565, 0.847]], water: 1, blur: 3 }] }, shimmer: 0.6, flicker: 0 }) : ph('The tea cup; the Moon in the tea', 'K_8.4')],
       type(ctx, t) { inscription(ctx, t, S84); },
-      post: (t) => ({ fade: smooth(END - 1.1, END, t), fadeColor: [0.02, 0.02, 0.03] }) },
+      post: (t) => ({ fade: smooth(END - 0.8, END, t), fadeColor: [0.02, 0.02, 0.03] }) },
   ];
 }
 
 // 海上生明月，天涯共此时 — two vertical columns in the 留白 top-left, with the English beneath
 function inscription(ctx, t, a) {
-  calli(ctx, 'z84a', { text: '海上生明月，', size: 74, x: 380, y: 70, color: PALEC, seed: 81 }, t, a + 0.4, 2.6, 213, 'over');
-  calli(ctx, 'z84b', { text: '天涯共此时', size: 74, x: 286, y: 70, color: PALEC, seed: 82 }, t, a + 2.9, 2.4, 213, 'over');
-  card(ctx, 'e84', { lines: [[{ t: 'The bright moon rises over the sea;', font: 'CormorantItalic' }], [{ t: 'however far apart, we share this moment.', font: 'CormorantItalic' }]], size: 34, x: 440, y: 120, color: PALE }, t, a + 4.8, 213, 'over');
+  calli(ctx, 'z84a', { text: '海上生明月，', size: 74, x: 380, y: 70, color: PALEC, seed: 81 }, t, a + 0.3, 2.0, a + 20, 'over');
+  calli(ctx, 'z84b', { text: '天涯共此时', size: 74, x: 286, y: 70, color: PALEC, seed: 82 }, t, a + 2.2, 2.0, a + 20, 'over');
+  card(ctx, 'e84', { lines: [[{ t: 'The bright moon rises over the sea;', font: 'CormorantItalic' }], [{ t: 'however far apart, we share this moment.', font: 'CormorantItalic' }]], size: 34, x: 440, y: 120, color: PALE }, t, a + 3.0, a + 20, 'over');
 }

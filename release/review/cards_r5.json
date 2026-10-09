@@ -1,0 +1,328 @@
+{
+ "film": {
+  "intro": "The film is now cut to the lower-key recording. Its bars are the same as before up to the end of the drop, played a little faster, so every cut and every word moved earlier by up to two and a half seconds; the ending is the one place where the music itself changed. This is the first full render on the new track, at small size. Nobody has watched it at speed with sound yet: you are the first.",
+  "parts": [
+   [
+    0,
+    32.23,
+    "Opening and title"
+   ],
+   [
+    32.23,
+    75.08,
+    "Verses"
+   ],
+   [
+    75.08,
+    110.28,
+    "Hook and interlude"
+   ],
+   [
+    110.28,
+    145.52,
+    "Breakdown, drop, the build"
+   ],
+   [
+    145.52,
+    187.32,
+    "Home, the split screen, the toast, the pull-back"
+   ],
+   [
+    187.32,
+    215.19,
+    "Homecoming, the inscription, credits"
+   ]
+  ]
+ },
+ "cards": [
+  {
+   "id": "r5_sync",
+   "when": "Whole film",
+   "title": "Does the picture land on the new recording?",
+   "at": 0,
+   "clips": [],
+   "asked": "Can you make Moongazing - 2 semitones down.mp3 fade out evenly again and time the video to the resulting track?",
+   "body": "Every cut sits on a beat, a sung word or a marked hit of the new recording, and the lyric type follows the new sung syllables. Four places are worth your ear, because the singing moved against the beat there or the hit itself changed: the ink drop landing on the opening strum (0:02; the strum is a longer roll now), <span class='zh'>月缺酒寒</span> (1:16; the line starts a beat later than before), <span class='zh'>低头思故乡</span> into the drop (1:54 to 2:01), and the last chord (3:24).",
+   "short": "The checks so far are measurements against the audio and stills, not a viewing at speed.",
+   "q": "Watching with sound: does it land?",
+   "opts": [
+    [
+     "ok",
+     "It lands"
+    ],
+    [
+     "off",
+     "Something is early or late",
+     "Give the time and what you saw in the note."
+    ]
+   ]
+  },
+  {
+   "id": "r5_ending",
+   "when": "3:16",
+   "title": "The ending is three seconds shorter",
+   "at": 196.3,
+   "clips": [
+    [
+     "ending",
+     "Now",
+     "3:07 – 3:35",
+     187.3,
+     215.19,
+     4850
+    ]
+   ],
+   "asked": "now it’s basically the same but somewhat shorter and some of the timings have shifted",
+   "body": "The new recording ends differently: the humming comes in under the reunion, the plucked run slows down sooner, and the last chord falls at 3:24 where the last pluck used to fall at 3:30. So the roof deck with the two toy globes is now one bar (1.8 seconds, it was 2.7), and the tea cup with the inscription runs six seconds (it was 8.4). <span class='zh'>海上生明月，天涯共此时</span> is brushed a little faster, the English comes in while the second column is still being written, and the picture goes dark on the last chord as before. The credits then run eleven seconds; the music has faded out after the first six and a half.",
+   "short": "The English line is fully readable for about two and a half seconds before the fade begins. The last four and a half seconds of the credits are silent (five before).",
+   "q": "Does the ending work?",
+   "multi": true,
+   "opts": [
+    [
+     "ok",
+     "It works"
+    ],
+    [
+     "roof",
+     "The roof deck is too short now"
+    ],
+    [
+     "poem",
+     "The inscription is rushed"
+    ],
+    [
+     "hold",
+     "Hold the tea cup through the last chord and go dark later"
+    ],
+    [
+     "off",
+     "Something else",
+     "Say what in the note."
+    ]
+   ]
+  },
+  {
+   "id": "r5_desk",
+   "when": "1:03",
+   "title": "The desk shot, moved by a video model",
+   "at": 62.65,
+   "clips": [
+    [
+     "desk",
+     "Now",
+     "1:01 – 1:06",
+     61.0,
+     66.0,
+     1525
+    ]
+   ],
+   "before": [
+    [
+     "clips7/desk.mp4",
+     "Before"
+    ]
+   ],
+   "asked": "now the glitchiness is just lower down. can you have a video model help you?",
+   "body": "Yes, and that was the right call. Until now your head, headphones and neck were one still painting slid along on top of a moving take, and the hair on your chest and your shirt were redrawn in ink twelve times a second, which broke the soft highlights in dark hair into grey flakes that kept changing shape. A still throat on a flickering chest, with an edge sliding between them: each fix moved that join and none removed it. Now there is no join. A new take from a video model moves your head, neck, hair, headphones and shoulders as one body (you keep writing, nod slightly, breathe), and the film shows that take's own drawing of you on the paper.",
+   "short": "Your face is the video model's drawing of the painted face, so it is softer than the painting was and varies very slightly from drawing to drawing. You do not glance at the laptop in this take; a second take in which you look up at it and back down is ready.",
+   "q": "Is the glitch gone?",
+   "opts": [
+    [
+     "ok",
+     "It is right now"
+    ],
+    [
+     "glance",
+     "Use the take where I look up at the laptop"
+    ],
+    [
+     "face",
+     "The glitch is gone but the face does not read as me"
+    ],
+    [
+     "off",
+     "Something is off",
+     "Say what in the note."
+    ]
+   ]
+  },
+  {
+   "id": "r5_photo",
+   "when": "1:20",
+   "title": "The gold visor",
+   "at": 80.32,
+   "clips": [
+    [
+     "photo",
+     "Now",
+     "1:18 – 1:24",
+     78.0,
+     84.0,
+     1945
+    ]
+   ],
+   "before": [
+    [
+     "clips7/photo.mp4",
+     "Before, visor clear"
+    ]
+   ],
+   "asked": "You ticked: make the visor gold as at 1:15, so my face is hidden.",
+   "body": "Same shot, same movement; the visor is now the opaque gold of the launch shots just before it, measured to the same colour. The gold is one painted patch that rides on the helmet's rim, so it cannot shimmer or slide.",
+   "short": "It still reads as an astronaut looking at a photograph of two children: the helmet is turned to the snapshot and leans toward it. It no longer says who is looking or what she feels; the longing was in your eyes, and the cut to the splash park has to carry it now. Nothing is reflected in the gold.",
+   "q": "Keep the gold visor?",
+   "opts": [
+    [
+     "ok",
+     "Yes, gold"
+    ],
+    [
+     "clear",
+     "Go back to the clear visor, my eyes matter more"
+    ],
+    [
+     "off",
+     "Something is off",
+     "Say what in the note."
+    ]
+   ]
+  },
+  {
+   "id": "r5_plan",
+   "when": "1:43",
+   "title": "The solar masts at 1.6 times",
+   "at": 103.36,
+   "clips": [
+    [
+     "plan",
+     "Now",
+     "1:39 – 1:48",
+     99.8,
+     107.9,
+     2520
+    ]
+   ],
+   "before": [
+    [
+     "clips7/plan.mp4",
+     "Before, at 1.4 times"
+    ]
+   ],
+   "asked": "You chose: larger still, about 1.6 times.",
+   "body": "The six masts are redrawn at 1.6 times; nothing else on the plan changed. The two lower masts now stand in front of the mounds beside them and their panels cross the mounds' edges, as you were told they would.",
+   "short": "A mast is now one and a half mounds tall on the plan; in the side views it is about three. The east mast's foot stands close to where the road leaves the mound.",
+   "q": "Large enough?",
+   "opts": [
+    [
+     "ok",
+     "It is right now"
+    ],
+    [
+     "off",
+     "Something is off",
+     "Say what in the note."
+    ]
+   ]
+  },
+  {
+   "id": "r5_toast",
+   "when": "2:53",
+   "title": "The toast without the two-cup shot",
+   "at": 173.45,
+   "clips": [
+    [
+     "toast",
+     "Now",
+     "2:51 – 3:00",
+     171.5,
+     180.2,
+     4215
+    ]
+   ],
+   "before": [
+    [
+     "clips7/toast.mp4",
+     "Before, with the two cups"
+    ]
+   ],
+   "asked": "the hands still look stilted and weird. maybe we delete this shot since the updated mp3 may be a bit shorter",
+   "body": "The two-cup shot is gone. The toast is now the group, Adaeze, and the group again, one bar each: the second group view is the same take a little further on, slightly closer, with the Earth above the raised cups. The new recording is not shorter at this point (it lost its three seconds at the very end), so the group shot took over the time.",
+   "short": "The second group view is close to the first in framing; it reads as the same moment continuing, not as a new picture.",
+   "q": "Is the toast right now?",
+   "opts": [
+    [
+     "ok",
+     "It works"
+    ],
+    [
+     "adaeze",
+     "End on Adaeze instead of going back to the group"
+    ],
+    [
+     "off",
+     "Something is off",
+     "Say what in the note."
+    ]
+   ]
+  },
+  {
+   "id": "r5_reunion",
+   "when": "3:11",
+   "title": "The reunion is version B",
+   "at": 190.85,
+   "clips": [
+    [
+     "reunion",
+     "Now",
+     "3:08 – 3:17",
+     188.5,
+     197.2,
+     4640
+    ]
+   ],
+   "before": [
+    [
+     "clips7/reunion_a.mp4",
+     "Before: version A"
+    ]
+   ],
+   "asked": "You chose B: he opens both arms, and his profile shows for a second.",
+   "body": "Version B is in the cut: Kenton hurries in and opens both arms, and in the close view the children's faces sit side by side. The humming of the new recording now starts under this shot.",
+   "short": "His face shows in profile, with glasses, for about a second.",
+   "q": "Right in the film?",
+   "opts": [
+    [
+     "ok",
+     "It works"
+    ],
+    [
+     "off",
+     "Something is off",
+     "Say what in the note."
+    ]
+   ]
+  }
+ ],
+ "settled": [
+  [
+   "0:20",
+   "The card in your wording",
+   "You marked it right."
+  ],
+  [
+   "0:58",
+   "The envelope",
+   "You marked it right."
+  ],
+  [
+   "1:08",
+   "M's hair against your face",
+   "You marked it right."
+  ],
+  [
+   "2:21",
+   "The work lamps",
+   "You marked them right."
+  ]
+ ]
+}

@@ -24,7 +24,7 @@
 import { lyricZH, card, hud, ph, typeLayer, cardUnits, PALE, WHITE, smooth, clamp, easeInOutSine } from './_lib.js';
 import { earthView, EARTH_KEYS, EARTH_INSETS, EARTH_INSET_KEYS } from '../scenes/earthview.js';
 
-export const range = [111.95, 122.77];
+export const range = [110.28, 120.96];
 
 // the sky of 2037-Sep-10 02:30 UT seen from Guanghan (screen-up = the station's zenith); the same in every Moon shot
 const SKY = { subLat: 6.6, subLon: 147.7, north: 131.3, phase: 6.2, sunPA: 25.8 };
@@ -83,10 +83,10 @@ const SUN = sunFixed(SKY);
 export default function shots(B, X, L) {
   const bar = (n, b = 1) => B.bar(n, b);
   // cuts: 低 (line onset) | bar 63 beat 3 | bar 64 | bar 64 beat 3 (only with FACE) | 乡 sung (118.8) | bar 66 | drop
-  const S61 = L.L14a.start, S62 = L.L14b.start, S62c = bar(63, 3), S62d = bar(64), S63 = 118.8, S62b = FACE ? bar(64, 3) : S63, S64 = bar(66), DROP = bar(67);
+  const S61 = L.L14a.start, S62 = L.L14b.start, S62c = bar(63, 3), S62d = bar(64), S63 = 117.05, S62b = FACE ? bar(64, 3) : S63, S64 = bar(66), DROP = bar(67);
   const gloss = (ctx, key, s, t, a, b) => card(ctx, key, { lines: [[{ t: s, font: 'CormorantItalic' }]], size: 32, x: 960, y: 1040, align: 'center', color: PALE }, t, a, b, 'over');
   const XX = 470, XY = 230; // the held 乡 stays put across 6.3 → 6.4
-  const xiang = (ctx, t) => lyricZH(ctx, L.L14b, { from: 4, key: 'xiang', size: 560, x: XX, y: XY, color: WHITE, seed: 130, until: 122.62, shake: 2.2 * smooth(118.8, 119.6, t), early: 0.0, halo: 18 }, t, 'over');
+  const xiang = (ctx, t) => lyricZH(ctx, L.L14b, { from: 4, key: 'xiang', size: 560, x: XX, y: XY, color: WHITE, seed: 130, until: 120.81, shake: 2.2 * smooth(117.05, 117.82, t), early: 0.0, halo: 18 }, t, 'over');
   // ---- type shared by the four Moon shots before 乡 (6.2a, c, d, b): it stays put across their cuts
   // 低头思故: one small column in the black sky at the left, where 乡 will stand; no sinking (home, not down)
   const column = (ctx, t) => lyricZH(ctx, L.L14b, { to: 4, key: 'col', size: 76, x: 238, y: 118, color: WHITE, seed: 132, until: S63 + 0.05, halo: 8 }, t, 'over');
@@ -110,10 +110,10 @@ export default function shots(B, X, L) {
     });
   };
   const home = (ctx, t) => {
-    const a = 1 - smooth(122.62 - 0.45, 122.62, t), w = clamp((t - S63) / 0.45);
+    const a = 1 - smooth(120.81 - 0.45, 120.81, t), w = clamp((t - S63) / 0.45);
     if (w <= 0 || a <= 0) return;
     const c = ctx.type.card('en62-home', { ...EN, x: ofCard(ctx).runEdges()[0][0].x1 + 18, size: 88, lines: [[{ t: 'home' }]] });
-    haloed(ctx, (g) => c.draw(g, w, a), 53, { key: 'en62-home', kind: 'card', end: 122.62, units: cardUnits(c, () => S63) });
+    haloed(ctx, (g) => c.draw(g, w, a), 53, { key: 'en62-home', kind: 'card', end: 120.81, units: cardUnits(c, () => S63) });
   };
   // (Jade, Oct 8, round three: the two small sky labels, Austin and the Moon side, are gone)
   const moonType = (ctx, t) => { column(ctx, t); think(ctx, t); };

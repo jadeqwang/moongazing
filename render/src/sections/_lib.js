@@ -10,9 +10,9 @@ export { smooth, clamp, easeInOutSine };
 
 // Musical events that are legal cut points besides beats/downbeats (song_map.md, script.md). Lyric line and word
 // onsets (analysis/lyrics_timing.json) are added by the lint automatically.
-export const ACCENTS = [0, 1.78, 2.84, 5.86, 9.14, 11.47, 13.10, 15.42, 17.1, 22.75, 30.57, 45.3, 47.14, 61.65, 74.4, 76.17,
-  97.73, 104.92, 109.5, 111.95, 115.57, 118.8, 120.12, 121.89, 122.65, 143.43, 158.5, 164.5, 167.0, 173.0, 181.0,
-  189.86, 193.22, 200.5, 201.6, 204.5, 205.7, 207.0, 208.3, 210.04, 212.0];
+export const ACCENTS = [0, 1.80, 2.91, 5.94, 9.22, 11.52, 13.15, 15.45, 17.09, 22.66, 30.43, 44.85, 46.64, 60.91, 73.41, 75.16,
+  96.31, 103.39, 107.86, 110.28, 113.86, 117.05, 118.32, 120.07, 120.48, 141.36, 156.28, 162.25, 164.60, 170.62, 178.57,
+  187.33, 192.50, 198.62, 203.02, 204.19, 208.36];
 
 // ---- type helpers ------------------------------------------------------------------------------------------------
 // A type layer, measurable. Draws like ctx.pipe.layer; when tools/type_reveal_check.mjs has set window.__typeProbe to an

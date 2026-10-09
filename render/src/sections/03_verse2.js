@@ -3,7 +3,7 @@
 import { lyricEN, lyricZH, calli, card, hud, kf, ph, bump, INK, INKC, PALE, PALEC, WHITE, smooth, easeInOutSine } from './_lib.js';
 import { plateMap } from '../scenes/plate.js';
 
-export const range = [46.82, 76.11];
+export const range = [46.16, 75.08];
 
 
 // 3.6a — the human centrifuge as a RIGID rotation of the painted arm (K_3.6a split offline by
@@ -65,10 +65,12 @@ export default function shots(B, X, L) {
     ['K_3.6c', 'PARABOLIC FLIGHT  ·  0 G  ·  22 S', { type: 'roto', clip: 'K_3.6c/take_4', paper: 'silk', offset: 0.35, lock: 0.12, from: { x: 0.5, y: 0.5, zoom: 1.06 }, to: { x: 0.5, y: 0.5, zoom: 1.12 } }],
     // the hammer is up at the cut and strikes two frames in (take frame 12); chips fly through the beat
     ['K_3.6d', 'ICELAND  ·  BASALT FIELD', { type: 'roto', clip: 'K_3.6d/take_2', paper: 'silk', offset: 0.42, lock: 0.0, from: { x: 0.55, y: 0.48, zoom: 1.12 }, to: { x: 0.56, y: 0.48, zoom: 1.18 } }],
-    // 3.6e: no lock, cut in at 0.5 s (she is already writing). Her face is the key plate's face carried on the head
-    // (meta.keep, tools/roto_keep.py): the ink redraw collapsed it. The laptop (a LaTeX paper + a music player) and the far
-    // page (a textbook page on the Hohmann transfer) are composited into the roto key by tools/desk_comp.py.
-    ['J_3.6e', 'ORBITAL MECHANICS  ·  03:00', { type: 'roto', clip: 'J_3.6e/take_2', paper: 'ink', offset: 0.5, lock: 0, keepOcc: false, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.5, y: 0.5, zoom: 1.12 } }],
+    // 3.6e (rev5 DESK, Oct 9): no lock, cut in at 0.5 s (she is already writing). The whole figure is drawn from the
+    // take (take_6, Seedance 2.0, which holds its first frame = the plate with the laptop paper and the textbook page,
+    // media/keyframes/jade/J_3.6e_desk.jpg) in the take's own tones on our paper (silk branch, no snap, no line): head,
+    // neck, hair, headphones and torso move as one body. Nothing of the painting is carried on her (no meta.keep, no
+    // roto_force): three rounds of that composite each left a join that slid (docs/reviews/rev5_desk_report.md).
+    ['J_3.6e', 'ORBITAL MECHANICS  ·  03:00', { type: 'roto', clip: 'J_3.6e/take_6', paper: 'silk', style: { snapAmt: 0, shade: 0, gran: 0, lineA: 0 }, offset: 0.5, lock: 0, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.5, y: 0.5, zoom: 1.12 } }],
   ];
   const montage = mont.map(([img, label, roto], i) => ({
     id: `3.6${'abcde'[i]}`, t0: mt[i], t1: mt[i + 1], paper: i === 4 ? 'xuan' : 'silk', grain: 360 + i, post: (t, lt) => bump(lt, 0.012),
@@ -227,9 +229,9 @@ export default function shots(B, X, L) {
       scene: [X.pick(key) ? { type: 'roto', clip: X.pick(key).clip, paper: 'silk', style: { ink: [0.80, 0.66, 0.38], lineA: 0.8 }, offset, lock: 0, from, to }
         : X.has(key) ? kf(key, { from, to, dolly: 0.05, grade: 'native' }) : ph('Strapping in', key)],
       type(ctx, t) {
-        const T0 = 76.17, s = Math.max(0, T0 - t);
+        const T0 = 75.16, s = Math.max(0, T0 - t);
         hud(ctx, `T−00:00:${String(Math.floor(s)).padStart(2, '0')}.${String(Math.floor((s % 1) * 10))}`, 64, 1030, { size: 20, rgb: '255,255,255' }, 1);
-        hud(ctx, 'HARNESS  ·  LOCKED', 64, 1000, { size: 14, rgb: '232,72,52', a: 0.95 }, smooth(74.4, 74.45, t));
+        hud(ctx, 'HARNESS  ·  LOCKED', 64, 1000, { size: 14, rgb: '232,72,52', a: 0.95 }, smooth(73.41, 73.46, t));
       },
     })),
   ];

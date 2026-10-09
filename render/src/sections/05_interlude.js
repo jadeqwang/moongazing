@@ -4,7 +4,7 @@
 import { hud, card, kf, ph, bump, INK, PALE, smooth } from './_lib.js';
 import { earthView, EARTH_KEYS } from '../scenes/earthview.js';
 
-export const range = [101.33, 111.95];
+export const range = [99.83, 110.28];
 
 export const CREW = [ // order of the cells in K_7.C4_grid (row 1, row 2)
   ['CHEN YU', 'CHINA', 'COMMANDER', 'HARBIN'], ['ANASTASIA VOLKOVA', 'RUSSIA', 'FLIGHT ENGINEER', 'STAR CITY'],
@@ -25,7 +25,7 @@ export const cell = (i, zoom = 2.0) => ({ x: ((i % 4) + 0.5) / 4, y: (Math.floor
 
 export default function shots(B, X, L) {
   const bar = (n, b = 1) => B.bar(n, b);
-  const S51 = bar(55), S52 = bar(57), S53 = bar(58, 3), S54 = 109.5, END = L.L14a.start;
+  const S51 = bar(55), S52 = bar(57), S53 = bar(58, 3), S54 = 107.86, END = L.L14a.start;
   // eight stabs between 107.60 and 109.5: on beats and half-beats
   const stabs = [bar(58, 3), (bar(58, 3) + bar(58, 4)) / 2, bar(58, 4), (bar(58, 4) + bar(59)) / 2, bar(59), (bar(59) + bar(59, 2)) / 2, bar(59, 2), (bar(59, 2) + bar(59, 3)) / 2];
   // 5.4: the push on the take, and the Earth in keyframe uv [x, y, radius / width] (no Earth is painted in K_5.4_rev_sys2)

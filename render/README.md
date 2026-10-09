@@ -11,7 +11,7 @@ node tools/render.mjs --encode 0-212 --framedir out/frames_animatic_540 --out ou
 node tools/serve.mjs                            # http://127.0.0.1:8765/index.html?scale=0.5&play=1&debug=1
 ```
 
-`--encode` muxes the film's audio, trimmed sample-exactly from the first frame's time and encoded as AAC 320k. The audio is never altered otherwise. Which file that is comes from `data/audio.json`, written by `node tools/audio_info.mjs`: the master `media/audio/moongazing_master.wav` (or `.mp3`) when it exists, else the original `inputs/moongazing.mp3` (212.0 s). Run `audio_info.mjs` again when the master lands. The credits section stretches to the new duration, and the lint follows. Frame files are named by their global frame index (`round(t*24)`), so ranges can be re-rendered and resumed independently.
+`--encode` muxes the film's audio, trimmed sample-exactly from the first frame's time and encoded as AAC 320k. The audio is never altered otherwise. Which file that is comes from `data/audio.json`, written by `node tools/audio_info.mjs`: the master `media/audio/moongazing_2down_master.wav` (or `.mp3`) when it exists, else the recording itself, `inputs/Moongazing - 2 semitones down.mp3` (208.36 s). Run `audio_info.mjs` again when the master lands. The credits section stretches to the new duration, and the lint follows. Frame files are named by their global frame index (`round(t*24)`), so ranges can be re-rendered and resumed independently.
 
 ## Layer model (per frame)
 
@@ -27,18 +27,23 @@ node tools/serve.mjs                            # http://127.0.0.1:8765/index.ht
 
 `src/sections/NN_*.js`, one file per song section:
 
+Times are for the lower-key recording the film has been cut to since Oct 9 (`inputs/Moongazing - 2 semitones down.mp3`,
+master `media/audio/moongazing_2down_master.wav`, 210.86 s). The grid and lyric timing of the first recording are kept in
+`analysis/v1/`; `analysis/v2/time_map.json` carries any old time to the new one, and `analysis/v2/NOTES.md` says how the
+two recordings differ.
+
 | File | Section | Range (s) |
 |---|---|---|
-| `00_intro` | cold open | 0–15.67 |
-| `01_intro_b` | intro B | 15.67–32.42 |
-| `02_verse1` | verse 1 | –46.82 |
-| `03_verse2` | verse 2 | –76.11 |
-| `04_hook` | hook | –101.33 |
-| `05_interlude` | interlude | –111.95 |
-| `06_breakdown` | breakdown | –122.77 |
-| `07_drop` | drop | –189.86 |
-| `08_outro` | outro | –212 |
-| `09_credits` | dedication and colophon (engine owner) | 212 → end of the audio (at least 11 s) |
+| `00_intro` | cold open | 0–15.69 |
+| `01_intro_b` | intro B | 15.69–32.23 |
+| `02_verse1` | verse 1 | –46.16 |
+| `03_verse2` | verse 2 | –75.08 |
+| `04_hook` | hook | –99.83 |
+| `05_interlude` | interlude | –110.28 |
+| `06_breakdown` | breakdown | –120.96 |
+| `07_drop` | drop | –187.32 |
+| `08_outro` | outro | –204.19 (the last chord) |
+| `09_credits` | dedication and colophon (engine owner) | 204.19 → 215.19 (at least 11 s, or the end of the audio if later) |
 
 Each file exports `range` and a default `shots(B, X, L)`:
 - `B` is the beat grid: `B.bar(n, beat)` gives exact beat times.

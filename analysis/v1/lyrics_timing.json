@@ -1,0 +1,1237 @@
+{
+ "song": "望明月, Moongazing",
+ "audio": "inputs/moongazing.mp3",
+ "duration_s": 212.0,
+ "time_base": "seconds from the first decoded sample (ffmpeg decode, 48 kHz). The mp3 reports start=0.023 s; ffmpeg/most NLEs trim the encoder delay so t=0 matches. If your editor shows a constant ~23–50 ms offset, shift everything by that.",
+ "method": {
+  "separation": "BS-RoFormer (model_bs_roformer_ep_317_sdr_12.9755) vocal stem = primary; Demucs htdemucs_ft as cross-check",
+  "transcription": "faster-whisper large-v3 free transcription per vocal region (en + zh) to discover what is sung",
+  "word_alignment_primary": "torchaudio MMS_FA CTC forced alignment of the known text (Chinese romanised with pypinyin) on the RoFormer vocal stem",
+  "word_alignment_check": "stable-ts (whisper large-v3) forced alignment = alt_start_stable_ts (less reliable here; large deltas usually mean stable-ts drifted, e.g. it crushed 对影成三人 into 1.4 s)",
+  "line_start_refinement": "vocal-stem energy rise (crossing -40 dBFS) and consonant noise bursts; 7 manual corrections documented per word in 'note'",
+  "word_end": "next word start, or where vocal energy drops below -40 dB; held notes are included in the word they belong to"
+ },
+ "confidence": {
+  "line_starts_after_silence": "±50 ms (CTC start and independent energy-rise agree within 0–70 ms for L01–L06, L09, L10, L11, L14a)",
+  "line_starts_legato (L07, L08, L12, L13, L14b)": "±80–100 ms (no silence before the line; based on CTC + consonant/pitch evidence)",
+  "word_starts": "±80 ms typical; Chinese characters ±100 ms; the two 'I' in L11 are ±120 ms (swallowed syllables)",
+  "word_ends": "±150 ms (sustains fade gradually)"
+ },
+ "lines": [
+  {
+   "id": "L01",
+   "section": "Verse 1",
+   "text": "The willow in winter is slender,",
+   "lang": "en",
+   "start": 32.141,
+   "end": 34.81,
+   "start_grid": {
+    "bar": 16,
+    "beat": 4,
+    "offset_ms": 187
+   },
+   "delivery": "sung softly, intimate, low register (B3–D4); sparse backing, no drums",
+   "words": [
+    {
+     "text": "The",
+     "start": 32.141,
+     "end": 32.381,
+     "ctc_score": 0.97,
+     "alt_start_stable_ts": 32.12,
+     "methods_delta_ms": 21
+    },
+    {
+     "text": "willow",
+     "start": 32.381,
+     "end": 33.122,
+     "ctc_score": 0.872,
+     "alt_start_stable_ts": 32.18,
+     "methods_delta_ms": 201
+    },
+    {
+     "text": "in",
+     "start": 33.122,
+     "end": 33.303,
+     "ctc_score": 0.964,
+     "alt_start_stable_ts": 32.92,
+     "methods_delta_ms": 202
+    },
+    {
+     "text": "winter",
+     "start": 33.303,
+     "end": 33.783,
+     "ctc_score": 0.966,
+     "alt_start_stable_ts": 33.1,
+     "methods_delta_ms": 203
+    },
+    {
+     "text": "is",
+     "start": 33.783,
+     "end": 33.943,
+     "ctc_score": 0.308,
+     "alt_start_stable_ts": 33.58,
+     "methods_delta_ms": 203
+    },
+    {
+     "text": "slender",
+     "start": 33.943,
+     "end": 34.81,
+     "ctc_score": 0.87,
+     "alt_start_stable_ts": 33.82,
+     "methods_delta_ms": 123
+    }
+   ],
+   "first_word_methods_delta_ms": 21,
+   "energy_rise": 32.19,
+   "median_word_methods_delta_ms": 201,
+   "dur": 2.669
+  },
+  {
+   "id": "L02",
+   "section": "Verse 1",
+   "text": "her switches plain and straight;",
+   "lang": "en",
+   "start": 35.846,
+   "end": 38.25,
+   "start_grid": {
+    "bar": 18,
+    "beat": 4,
+    "offset_ms": 189
+   },
+   "delivery": "sung softly, low register",
+   "words": [
+    {
+     "text": "her",
+     "start": 35.846,
+     "end": 36.026,
+     "ctc_score": 0.994,
+     "alt_start_stable_ts": 34.86,
+     "methods_delta_ms": 986
+    },
+    {
+     "text": "switches",
+     "start": 36.026,
+     "end": 36.867,
+     "ctc_score": 0.972,
+     "alt_start_stable_ts": 35.86,
+     "methods_delta_ms": 166
+    },
+    {
+     "text": "plain",
+     "start": 36.867,
+     "end": 37.468,
+     "ctc_score": 0.888,
+     "alt_start_stable_ts": 36.24,
+     "methods_delta_ms": 627
+    },
+    {
+     "text": "and",
+     "start": 37.468,
+     "end": 37.588,
+     "ctc_score": 0.221,
+     "alt_start_stable_ts": 37.02,
+     "methods_delta_ms": 448
+    },
+    {
+     "text": "straight",
+     "start": 37.588,
+     "end": 38.25,
+     "ctc_score": 0.493,
+     "alt_start_stable_ts": 37.46,
+     "methods_delta_ms": 128
+    }
+   ],
+   "first_word_methods_delta_ms": 986,
+   "energy_rise": 35.86,
+   "median_word_methods_delta_ms": 448,
+   "dur": 2.404
+  },
+  {
+   "id": "L03",
+   "section": "Verse 1",
+   "text": "the West Lake wind sings over water,",
+   "lang": "en",
+   "start": 39.531,
+   "end": 42.26,
+   "start_grid": {
+    "bar": 20,
+    "beat": 4,
+    "offset_ms": 201
+   },
+   "delivery": "sung softly, low register",
+   "words": [
+    {
+     "text": "the",
+     "start": 39.531,
+     "end": 39.751,
+     "ctc_score": 0.974,
+     "alt_start_stable_ts": 38.26,
+     "methods_delta_ms": 1271
+    },
+    {
+     "text": "West",
+     "start": 39.751,
+     "end": 40.091,
+     "ctc_score": 0.99,
+     "alt_start_stable_ts": 39.54,
+     "methods_delta_ms": 211
+    },
+    {
+     "text": "Lake",
+     "start": 40.091,
+     "end": 40.392,
+     "ctc_score": 0.975,
+     "alt_start_stable_ts": 39.88,
+     "methods_delta_ms": 211
+    },
+    {
+     "text": "wind",
+     "start": 40.392,
+     "end": 40.652,
+     "ctc_score": 0.47,
+     "alt_start_stable_ts": 40.24,
+     "methods_delta_ms": 152
+    },
+    {
+     "text": "sings",
+     "start": 40.652,
+     "end": 41.113,
+     "ctc_score": 0.993,
+     "alt_start_stable_ts": 40.44,
+     "methods_delta_ms": 212
+    },
+    {
+     "text": "over",
+     "start": 41.113,
+     "end": 41.593,
+     "ctc_score": 0.839,
+     "alt_start_stable_ts": 40.74,
+     "methods_delta_ms": 373
+    },
+    {
+     "text": "water",
+     "start": 41.593,
+     "end": 42.26,
+     "ctc_score": 0.999,
+     "alt_start_stable_ts": 41.26,
+     "methods_delta_ms": 333
+    }
+   ],
+   "first_word_methods_delta_ms": 1271,
+   "energy_rise": 39.56,
+   "median_word_methods_delta_ms": 212,
+   "dur": 2.729
+  },
+  {
+   "id": "L04",
+   "section": "Verse 1",
+   "text": "like smoothing silk, and late",
+   "lang": "en",
+   "start": 43.155,
+   "end": 45.98,
+   "start_grid": {
+    "bar": 22,
+    "beat": 4,
+    "offset_ms": 158
+   },
+   "delivery": "sung softly; 'late' trails off into the Verse 2 drum entrance at 47.14",
+   "words": [
+    {
+     "text": "like",
+     "start": 43.155,
+     "end": 43.356,
+     "ctc_score": 0.978,
+     "alt_start_stable_ts": 42.98,
+     "methods_delta_ms": 175
+    },
+    {
+     "text": "smoothing",
+     "start": 43.356,
+     "end": 44.317,
+     "ctc_score": 0.876,
+     "alt_start_stable_ts": 43.2,
+     "methods_delta_ms": 156
+    },
+    {
+     "text": "silk",
+     "start": 44.317,
+     "end": 44.858,
+     "ctc_score": 0.99,
+     "alt_start_stable_ts": 44.02,
+     "methods_delta_ms": 297
+    },
+    {
+     "text": "and",
+     "start": 44.858,
+     "end": 45.058,
+     "ctc_score": 0.708,
+     "alt_start_stable_ts": 44.9,
+     "methods_delta_ms": -42
+    },
+    {
+     "text": "late",
+     "start": 45.058,
+     "end": 45.98,
+     "ctc_score": 0.494,
+     "alt_start_stable_ts": 45.04,
+     "methods_delta_ms": 18
+    }
+   ],
+   "first_word_methods_delta_ms": 175,
+   "energy_rise": 43.16,
+   "median_word_methods_delta_ms": 156,
+   "dur": 2.825
+  },
+  {
+   "id": "L05",
+   "section": "Verse 2",
+   "text": "in afternoon teahouses watching",
+   "lang": "en",
+   "start": 46.82,
+   "end": 49.98,
+   "start_grid": {
+    "bar": 24,
+    "beat": 4,
+    "offset_ms": 159
+   },
+   "delivery": "sung, fuller; drums have just entered",
+   "words": [
+    {
+     "text": "in",
+     "start": 46.82,
+     "end": 47.181,
+     "ctc_score": 0.003,
+     "alt_start_stable_ts": 46.82,
+     "methods_delta_ms": 0
+    },
+    {
+     "text": "afternoon",
+     "start": 47.181,
+     "end": 47.941,
+     "ctc_score": 0.608,
+     "alt_start_stable_ts": 47.08,
+     "methods_delta_ms": 101
+    },
+    {
+     "text": "teahouses",
+     "start": 47.941,
+     "end": 48.902,
+     "ctc_score": 0.704,
+     "alt_start_stable_ts": 47.42,
+     "methods_delta_ms": 521
+    },
+    {
+     "text": "watching",
+     "start": 48.902,
+     "end": 49.98,
+     "ctc_score": 0.883,
+     "alt_start_stable_ts": 48.56,
+     "methods_delta_ms": 342
+    }
+   ],
+   "first_word_methods_delta_ms": 0,
+   "energy_rise": 46.89,
+   "median_word_methods_delta_ms": 221,
+   "dur": 3.16
+  },
+  {
+   "id": "L06",
+   "section": "Verse 2",
+   "text": "snow-brewed tea. That line—",
+   "lang": "en",
+   "start": 50.49,
+   "end": 53.73,
+   "start_grid": {
+    "bar": 26,
+    "beat": 4,
+    "offset_ms": 187
+   },
+   "delivery": "sung; 'That line—' ends on a short breath (53.73–54.09)",
+   "words": [
+    {
+     "text": "snow-brewed",
+     "start": 50.49,
+     "end": 51.564,
+     "ctc_score": 0.37,
+     "alt_start_stable_ts": 49.2,
+     "methods_delta_ms": 1290,
+     "note": "start moved from CTC 50.60 to consonant/energy onset 50.49"
+    },
+    {
+     "text": "tea",
+     "start": 51.564,
+     "end": 52.064,
+     "ctc_score": 0.428,
+     "alt_start_stable_ts": 51.38,
+     "methods_delta_ms": 184
+    },
+    {
+     "text": "That",
+     "start": 52.064,
+     "end": 52.525,
+     "ctc_score": 0.626,
+     "alt_start_stable_ts": 52.18,
+     "methods_delta_ms": -116
+    },
+    {
+     "text": "line",
+     "start": 52.525,
+     "end": 53.73,
+     "ctc_score": 0.852,
+     "alt_start_stable_ts": 55.89,
+     "methods_delta_ms": -3365
+    }
+   ],
+   "first_word_methods_delta_ms": 1290,
+   "energy_rise": 50.49,
+   "median_word_methods_delta_ms": 737,
+   "dur": 3.24
+  },
+  {
+   "id": "L07",
+   "section": "Verse 2",
+   "text": "举杯邀明月，对影成三人",
+   "lang": "zh",
+   "start": 54.09,
+   "end": 57.829,
+   "start_grid": {
+    "bar": 28,
+    "beat": 4,
+    "offset_ms": 149
+   },
+   "delivery": "sung in Mandarin, quick syllabic delivery (~2.7 chars/s)",
+   "words": [
+    {
+     "text": "举",
+     "start": 54.09,
+     "end": 54.346,
+     "pinyin": "ju",
+     "ctc_score": 0.501,
+     "alt_start_stable_ts": 55.99,
+     "methods_delta_ms": -1900,
+     "note": "start moved from CTC 54.11 to consonant/energy onset 54.09"
+    },
+    {
+     "text": "杯",
+     "start": 54.346,
+     "end": 54.586,
+     "pinyin": "bei",
+     "ctc_score": 0.383,
+     "alt_start_stable_ts": 56.134,
+     "methods_delta_ms": -1788
+    },
+    {
+     "text": "邀",
+     "start": 54.586,
+     "end": 54.967,
+     "pinyin": "yao",
+     "ctc_score": 0.253,
+     "alt_start_stable_ts": 56.278,
+     "methods_delta_ms": -1692
+    },
+    {
+     "text": "明",
+     "start": 54.967,
+     "end": 55.247,
+     "pinyin": "ming",
+     "ctc_score": 0.469,
+     "alt_start_stable_ts": 56.422,
+     "methods_delta_ms": -1455
+    },
+    {
+     "text": "月",
+     "start": 55.247,
+     "end": 55.927,
+     "pinyin": "yue",
+     "ctc_score": 0.276,
+     "alt_start_stable_ts": 56.566,
+     "methods_delta_ms": -1319
+    },
+    {
+     "text": "对",
+     "start": 55.927,
+     "end": 56.148,
+     "pinyin": "dui",
+     "ctc_score": 0.169,
+     "alt_start_stable_ts": 56.71,
+     "methods_delta_ms": -783
+    },
+    {
+     "text": "影",
+     "start": 56.148,
+     "end": 56.568,
+     "pinyin": "ying",
+     "ctc_score": 0.549,
+     "alt_start_stable_ts": 56.854,
+     "methods_delta_ms": -706
+    },
+    {
+     "text": "成",
+     "start": 56.568,
+     "end": 57.028,
+     "pinyin": "cheng",
+     "ctc_score": 0.408,
+     "alt_start_stable_ts": 56.998,
+     "methods_delta_ms": -430
+    },
+    {
+     "text": "三",
+     "start": 57.028,
+     "end": 57.529,
+     "pinyin": "san",
+     "ctc_score": 0.888,
+     "alt_start_stable_ts": 57.142,
+     "methods_delta_ms": -114
+    },
+    {
+     "text": "人",
+     "start": 57.529,
+     "end": 57.829,
+     "pinyin": "ren",
+     "ctc_score": 0.704,
+     "alt_start_stable_ts": 57.286,
+     "methods_delta_ms": 243
+    }
+   ],
+   "first_word_methods_delta_ms": -1900,
+   "energy_rise": 54.09,
+   "median_word_methods_delta_ms": 1051,
+   "dur": 3.739
+  },
+  {
+   "id": "L08",
+   "section": "Verse 2",
+   "text": "I think of you — homesick with waning",
+   "lang": "en",
+   "start": 57.849,
+   "end": 64.7,
+   "start_grid": {
+    "bar": 31,
+    "beat": 1,
+    "offset_ms": -179
+   },
+   "delivery": "sung; band lifts at 61.65 (bass + full drums); 'waning' held on B3 62.0–64.5",
+   "words": [
+    {
+     "text": "I",
+     "start": 57.849,
+     "end": 57.949,
+     "ctc_score": 0.592,
+     "alt_start_stable_ts": 57.43,
+     "methods_delta_ms": 419
+    },
+    {
+     "text": "think",
+     "start": 57.949,
+     "end": 58.469,
+     "ctc_score": 0.89,
+     "alt_start_stable_ts": 57.77,
+     "methods_delta_ms": 179
+    },
+    {
+     "text": "of",
+     "start": 58.469,
+     "end": 58.67,
+     "ctc_score": 0.864,
+     "alt_start_stable_ts": 58.05,
+     "methods_delta_ms": 419
+    },
+    {
+     "text": "you",
+     "start": 58.67,
+     "end": 58.93,
+     "ctc_score": 0.656,
+     "alt_start_stable_ts": 58.43,
+     "methods_delta_ms": 240
+    },
+    {
+     "text": "homesick",
+     "start": 59.31,
+     "end": 60.27,
+     "ctc_score": 0.771,
+     "alt_start_stable_ts": 58.85,
+     "methods_delta_ms": 460
+    },
+    {
+     "text": "with",
+     "start": 60.711,
+     "end": 61.152,
+     "ctc_score": 0.874,
+     "alt_start_stable_ts": 60.17,
+     "methods_delta_ms": 541
+    },
+    {
+     "text": "waning",
+     "start": 61.152,
+     "end": 64.7,
+     "ctc_score": 0.424,
+     "alt_start_stable_ts": 66.05,
+     "methods_delta_ms": -4898
+    }
+   ],
+   "first_word_methods_delta_ms": 419,
+   "energy_rise": 58.02,
+   "median_word_methods_delta_ms": 419,
+   "dur": 6.851
+  },
+  {
+   "id": "L09",
+   "section": "Verse 2",
+   "text": "moons and lonely wine.",
+   "lang": "en",
+   "start": 65.75,
+   "end": 71.19,
+   "start_grid": {
+    "bar": 35,
+    "beat": 2,
+    "offset_ms": 31
+   },
+   "delivery": "sung, warmer/louder; 'lonely wine' held on C#4 ~67.0–69.8 then decays to 71.2",
+   "words": [
+    {
+     "text": "moons",
+     "start": 65.75,
+     "end": 65.95,
+     "ctc_score": 0.475,
+     "alt_start_stable_ts": 66.45,
+     "methods_delta_ms": -700,
+     "note": "vocal energy resumes at 65.75 after a 1.2 s gap; MMS 66.11 is the vowel"
+    },
+    {
+     "text": "and",
+     "start": 66.696,
+     "end": 67.016,
+     "ctc_score": 0.579,
+     "alt_start_stable_ts": 66.65,
+     "methods_delta_ms": 46
+    },
+    {
+     "text": "lonely",
+     "start": 67.016,
+     "end": 68.397,
+     "ctc_score": 0.41,
+     "alt_start_stable_ts": 66.65,
+     "methods_delta_ms": 366
+    },
+    {
+     "text": "wine",
+     "start": 68.397,
+     "end": 71.19,
+     "ctc_score": 0.181,
+     "alt_start_stable_ts": 67.03,
+     "methods_delta_ms": 1367
+    }
+   ],
+   "first_word_methods_delta_ms": -700,
+   "energy_rise": 65.81,
+   "median_word_methods_delta_ms": 533,
+   "dur": 5.44
+  },
+  {
+   "id": "L10",
+   "section": "Hook",
+   "text": "月缺酒寒，我思念你",
+   "lang": "zh",
+   "start": 77.16,
+   "end": 86.16,
+   "start_grid": {
+    "bar": 41,
+    "beat": 3,
+    "offset_ms": 143
+   },
+   "delivery": "hook, strong full voice (F#4–C#5); 月 glides F#4→B4; 寒 held E4 79.9–81.5; 你 held F#4 82.8–86.0 (longest held lyric note in the hook)",
+   "words": [
+    {
+     "text": "月",
+     "start": 77.16,
+     "end": 78.462,
+     "pinyin": "yue",
+     "ctc_score": 0.208,
+     "alt_start_stable_ts": 77.16,
+     "methods_delta_ms": 0,
+     "note": "start moved from CTC 77.18 to consonant/energy onset 77.16"
+    },
+    {
+     "text": "缺",
+     "start": 78.462,
+     "end": 78.962,
+     "pinyin": "que",
+     "ctc_score": 0.027,
+     "alt_start_stable_ts": 78.12,
+     "methods_delta_ms": 342
+    },
+    {
+     "text": "酒",
+     "start": 78.962,
+     "end": 79.643,
+     "pinyin": "jiu",
+     "ctc_score": 0.484,
+     "alt_start_stable_ts": 78.6,
+     "methods_delta_ms": 362
+    },
+    {
+     "text": "寒",
+     "start": 79.643,
+     "end": 81.464,
+     "pinyin": "han",
+     "ctc_score": 0.617,
+     "alt_start_stable_ts": 79.16,
+     "methods_delta_ms": 483
+    },
+    {
+     "text": "我",
+     "start": 81.464,
+     "end": 82.125,
+     "pinyin": "wo",
+     "ctc_score": 0.667,
+     "alt_start_stable_ts": 80.76,
+     "methods_delta_ms": 704
+    },
+    {
+     "text": "思",
+     "start": 82.125,
+     "end": 82.585,
+     "pinyin": "si",
+     "ctc_score": 0.487,
+     "alt_start_stable_ts": 81.46,
+     "methods_delta_ms": 665
+    },
+    {
+     "text": "念",
+     "start": 82.585,
+     "end": 83.266,
+     "pinyin": "nian",
+     "ctc_score": 0.35,
+     "alt_start_stable_ts": 81.98,
+     "methods_delta_ms": 605
+    },
+    {
+     "text": "你",
+     "start": 83.266,
+     "end": 86.16,
+     "pinyin": "ni",
+     "ctc_score": 0.492,
+     "alt_start_stable_ts": 85.9,
+     "methods_delta_ms": -2634
+    }
+   ],
+   "first_word_methods_delta_ms": 0,
+   "energy_rise": 77.16,
+   "median_word_methods_delta_ms": 544,
+   "dur": 9.0
+  },
+  {
+   "id": "L11",
+   "section": "Hook",
+   "text": "I think of you, I think of you",
+   "lang": "en",
+   "start": 86.62,
+   "end": 90.55,
+   "start_grid": {
+    "bar": 46,
+    "beat": 4,
+    "offset_ms": 134
+   },
+   "delivery": "sung, repeated phrase; second 'you' melisma to 90.55",
+   "words": [
+    {
+     "text": "I",
+     "start": 86.62,
+     "end": 86.85,
+     "ctc_score": 0.002,
+     "alt_start_stable_ts": 86.7,
+     "methods_delta_ms": -80,
+     "note": "MMS 'I' had zero confidence at 84.97 (inside the held 你); placed at re-attack 86.62"
+    },
+    {
+     "text": "think",
+     "start": 86.85,
+     "end": 87.189,
+     "ctc_score": 0.154,
+     "alt_start_stable_ts": 86.7,
+     "methods_delta_ms": 150
+    },
+    {
+     "text": "of",
+     "start": 87.189,
+     "end": 87.409,
+     "ctc_score": 0.159,
+     "alt_start_stable_ts": 86.92,
+     "methods_delta_ms": 269
+    },
+    {
+     "text": "you",
+     "start": 87.409,
+     "end": 88.3,
+     "ctc_score": 0.119,
+     "alt_start_stable_ts": 87.24,
+     "methods_delta_ms": 169
+    },
+    {
+     "text": "I",
+     "start": 88.3,
+     "end": 88.55,
+     "ctc_score": 0.0,
+     "alt_start_stable_ts": 88.44,
+     "methods_delta_ms": -140,
+     "note": "MMS 'I' zero confidence; placed at energy re-attack 88.30"
+    },
+    {
+     "text": "think",
+     "start": 88.55,
+     "end": 89.01,
+     "ctc_score": 0.348,
+     "alt_start_stable_ts": 88.44,
+     "methods_delta_ms": 110
+    },
+    {
+     "text": "of",
+     "start": 89.01,
+     "end": 89.211,
+     "ctc_score": 0.228,
+     "alt_start_stable_ts": 88.8,
+     "methods_delta_ms": 210
+    },
+    {
+     "text": "you",
+     "start": 89.211,
+     "end": 90.55,
+     "ctc_score": 0.291,
+     "alt_start_stable_ts": 89.06,
+     "methods_delta_ms": 151
+    }
+   ],
+   "first_word_methods_delta_ms": -80,
+   "energy_rise": 86.65,
+   "median_word_methods_delta_ms": 150,
+   "dur": 3.93
+  },
+  {
+   "id": "L12",
+   "section": "Hook",
+   "text": "举杯邀明月",
+   "lang": "zh",
+   "start": 92.213,
+   "end": 94.88,
+   "start_grid": {
+    "bar": 50,
+    "beat": 1,
+    "offset_ms": -121
+   },
+   "delivery": "sung, drums pull back under this line (92.3–97.7)",
+   "words": [
+    {
+     "text": "举",
+     "start": 92.213,
+     "end": 92.754,
+     "pinyin": "ju",
+     "ctc_score": 0.353,
+     "alt_start_stable_ts": 89.48,
+     "methods_delta_ms": 2733
+    },
+    {
+     "text": "杯",
+     "start": 92.754,
+     "end": 93.214,
+     "pinyin": "bei",
+     "ctc_score": 0.59,
+     "alt_start_stable_ts": 92.38,
+     "methods_delta_ms": 374
+    },
+    {
+     "text": "邀",
+     "start": 93.214,
+     "end": 93.654,
+     "pinyin": "yao",
+     "ctc_score": 0.525,
+     "alt_start_stable_ts": 92.84,
+     "methods_delta_ms": 374
+    },
+    {
+     "text": "明",
+     "start": 93.654,
+     "end": 94.135,
+     "pinyin": "ming",
+     "ctc_score": 0.615,
+     "alt_start_stable_ts": 93.48,
+     "methods_delta_ms": 174
+    },
+    {
+     "text": "月",
+     "start": 94.135,
+     "end": 94.88,
+     "pinyin": "yue",
+     "ctc_score": 0.278,
+     "alt_start_stable_ts": 93.7,
+     "methods_delta_ms": 435
+    }
+   ],
+   "first_word_methods_delta_ms": 2733,
+   "energy_rise": null,
+   "median_word_methods_delta_ms": 374,
+   "dur": 2.667,
+   "energy_rise_note": "legato / no silence before line; start from CTC alignment + pitch/consonant evidence"
+  },
+  {
+   "id": "L13",
+   "section": "Hook",
+   "text": "moons and lonely wine",
+   "lang": "en",
+   "start": 94.9,
+   "end": 98.45,
+   "start_grid": {
+    "bar": 51,
+    "beat": 3,
+    "offset_ms": -132
+   },
+   "delivery": "sung; 'wine' held C#4 to 98.45 then a falsetto flip to G#5 (98.5–99.7)",
+   "words": [
+    {
+     "text": "moons",
+     "start": 94.9,
+     "end": 95.556,
+     "ctc_score": 0.295,
+     "alt_start_stable_ts": 94.22,
+     "methods_delta_ms": 680,
+     "note": "nasal /m/ onset visible at 94.90 (dark spectrum, pitch drop to G3)"
+    },
+    {
+     "text": "and",
+     "start": 95.556,
+     "end": 95.896,
+     "ctc_score": 0.465,
+     "alt_start_stable_ts": 95.18,
+     "methods_delta_ms": 376
+    },
+    {
+     "text": "lonely",
+     "start": 95.896,
+     "end": 96.857,
+     "ctc_score": 0.44,
+     "alt_start_stable_ts": 95.46,
+     "methods_delta_ms": 436
+    },
+    {
+     "text": "wine",
+     "start": 96.857,
+     "end": 98.45,
+     "ctc_score": 0.109,
+     "alt_start_stable_ts": 96.4,
+     "methods_delta_ms": 457
+    }
+   ],
+   "first_word_methods_delta_ms": 680,
+   "energy_rise": null,
+   "median_word_methods_delta_ms": 446,
+   "dur": 3.55,
+   "energy_rise_note": "legato / no silence before line; start from CTC alignment + pitch/consonant evidence"
+  },
+  {
+   "id": "L14a",
+   "section": "Breakdown",
+   "text": "举头望明月，",
+   "lang": "zh",
+   "start": 111.95,
+   "end": 115.546,
+   "start_grid": {
+    "bar": 61,
+    "beat": 1,
+    "offset_ms": -120
+   },
+   "delivery": "WHISPERED / breathy (low voicing, noisy high-frequency spectrum) over the breakdown beat",
+   "words": [
+    {
+     "text": "举",
+     "start": 111.95,
+     "end": 112.642,
+     "pinyin": "ju",
+     "ctc_score": 0.2,
+     "alt_start_stable_ts": 111.94,
+     "methods_delta_ms": 10,
+     "note": "start moved from CTC 111.96 to consonant/energy onset 111.95"
+    },
+    {
+     "text": "头",
+     "start": 112.642,
+     "end": 113.343,
+     "pinyin": "tou",
+     "ctc_score": 0.566,
+     "alt_start_stable_ts": 112.26,
+     "methods_delta_ms": 382
+    },
+    {
+     "text": "望",
+     "start": 113.343,
+     "end": 114.044,
+     "pinyin": "wang",
+     "ctc_score": 0.326,
+     "alt_start_stable_ts": 112.94,
+     "methods_delta_ms": 403
+    },
+    {
+     "text": "明",
+     "start": 114.044,
+     "end": 114.665,
+     "pinyin": "ming",
+     "ctc_score": 0.239,
+     "alt_start_stable_ts": 113.48,
+     "methods_delta_ms": 564
+    },
+    {
+     "text": "月",
+     "start": 114.665,
+     "end": 115.546,
+     "pinyin": "yue",
+     "ctc_score": 0.303,
+     "alt_start_stable_ts": 114.1,
+     "methods_delta_ms": 565
+    }
+   ],
+   "first_word_methods_delta_ms": 10,
+   "energy_rise": 111.95,
+   "median_word_methods_delta_ms": 403,
+   "dur": 3.596
+  },
+  {
+   "id": "L14b",
+   "section": "Breakdown",
+   "text": "低头思故乡",
+   "lang": "zh",
+   "start": 115.566,
+   "end": 122.6,
+   "start_grid": {
+    "bar": 63,
+    "beat": 1,
+    "offset_ms": -75
+   },
+   "delivery": "低头思故 whispered (115.6–118.2); 乡 becomes SUNG and is held on B4 118.8–122.6 (the climactic sustained note into the drop)",
+   "words": [
+    {
+     "text": "低",
+     "start": 115.566,
+     "end": 116.207,
+     "pinyin": "di",
+     "ctc_score": 0.654,
+     "alt_start_stable_ts": 116.26,
+     "methods_delta_ms": -694
+    },
+    {
+     "text": "头",
+     "start": 116.207,
+     "end": 116.928,
+     "pinyin": "tou",
+     "ctc_score": 0.556,
+     "alt_start_stable_ts": 116.26,
+     "methods_delta_ms": -53
+    },
+    {
+     "text": "思",
+     "start": 116.928,
+     "end": 117.629,
+     "pinyin": "si",
+     "ctc_score": 0.419,
+     "alt_start_stable_ts": 116.4,
+     "methods_delta_ms": 528
+    },
+    {
+     "text": "故",
+     "start": 117.629,
+     "end": 118.23,
+     "pinyin": "gu",
+     "ctc_score": 0.129,
+     "alt_start_stable_ts": 116.92,
+     "methods_delta_ms": 709
+    },
+    {
+     "text": "乡",
+     "start": 118.23,
+     "end": 122.6,
+     "pinyin": "xiang",
+     "ctc_score": 0.09,
+     "alt_start_stable_ts": 117.78,
+     "methods_delta_ms": 450
+    }
+   ],
+   "first_word_methods_delta_ms": -694,
+   "energy_rise": null,
+   "median_word_methods_delta_ms": 528,
+   "dur": 7.034,
+   "energy_rise_note": "legato / no silence before line; start from CTC alignment + pitch/consonant evidence"
+  }
+ ],
+ "vocalise_and_humming": [
+  {
+   "start": 18.6,
+   "end": 22.5,
+   "type": "humming/vocalise (soft, dark, near-closed mouth)",
+   "pitch": "C#5→B4",
+   "level": "quiet (-35 dB on vocal stem)",
+   "grid": {
+    "bar": 9,
+    "beat": 3,
+    "offset_ms": 123
+   },
+   "notes": "wordless; sits under guzheng + taiko intro"
+  },
+  {
+   "start": 22.75,
+   "end": 25.5,
+   "type": "open-vowel vocalise ('ah')",
+   "pitch": "B4→E5→G#5",
+   "level": "medium",
+   "grid": {
+    "bar": 11,
+    "beat": 4,
+    "offset_ms": 69
+   },
+   "notes": "the first clearly audible voice in the song"
+  },
+  {
+   "start": 25.5,
+   "end": 29.3,
+   "type": "sustained vocalise, fading ('oo'/hum)",
+   "pitch": "G5→F#5 held 25.9–27.2, fades out by 29.3",
+   "level": "medium→silent",
+   "grid": {
+    "bar": 13,
+    "beat": 2,
+    "offset_ms": 28
+   },
+   "notes": ""
+  },
+  {
+   "start": 90.74,
+   "end": 92.12,
+   "type": "ad-lib re-articulation / melisma (likely extension of 'you' or 'oh')",
+   "pitch": "F#4",
+   "level": "medium",
+   "grid": {
+    "bar": 49,
+    "beat": 1,
+    "offset_ms": 206
+   },
+   "notes": "between L11 and L12; low confidence on what syllable"
+  },
+  {
+   "start": 98.5,
+   "end": 99.7,
+   "type": "falsetto flip / ad-lib tail of 'wine'",
+   "pitch": "G#5",
+   "level": "soft",
+   "grid": {
+    "bar": 53,
+    "beat": 3,
+    "offset_ms": -134
+   },
+   "notes": ""
+  },
+  {
+   "start": 122.65,
+   "end": 124.0,
+   "type": "falsetto octave leap off '乡' into the drop",
+   "pitch": "B5",
+   "level": "soft, decaying",
+   "grid": {
+    "bar": 67,
+    "beat": 1,
+    "offset_ms": -124
+   },
+   "notes": "lands on the drop downbeat 122.77"
+  },
+  {
+   "start": 134.24,
+   "end": 134.87,
+   "type": "very short vocal chop",
+   "pitch": "E5–F#5",
+   "level": "quiet",
+   "grid": {
+    "bar": 73,
+    "beat": 3,
+    "offset_ms": -90
+   },
+   "notes": "low confidence"
+  },
+  {
+   "start": 163.5,
+   "end": 169.8,
+   "type": "wordless vocalise in the drop ('ooh/ah')",
+   "pitch": "A4–D5, held C#5 164.5–167.0",
+   "level": "loud (-21 dB)",
+   "grid": {
+    "bar": 90,
+    "beat": 1,
+    "offset_ms": -33
+   },
+   "notes": "no words detected by any recogniser; only lead-voice moment in the drop"
+  },
+  {
+   "start": 193.22,
+   "end": 199.1,
+   "type": "humming (outro)",
+   "pitch": "B4 (193.6–195.8) → C#5 (195.8–197.5) → C5",
+   "level": "medium",
+   "grid": {
+    "bar": 107,
+    "beat": 1,
+    "offset_ms": -193
+   },
+   "notes": "over guzheng after the drop cuts out"
+  },
+  {
+   "start": 201.58,
+   "end": 205.46,
+   "type": "humming, solo, closed mouth (outro)",
+   "pitch": "C#4 held 202.6–204.9",
+   "level": "loud relative to backing (nearly a cappella)",
+   "grid": {
+    "bar": 111,
+    "beat": 1,
+    "offset_ms": 890
+   },
+   "notes": "free time; final vocal sound of the song"
+  }
+ ],
+ "whispered": [
+  {
+   "start": 111.95,
+   "end": 118.2,
+   "text": "举头望明月，低头思故",
+   "notes": "whispered/breathy; 乡 (118.23) switches to full sung tone"
+  }
+ ],
+ "voice_like_instrument_regions_not_vocals": [
+  {
+   "start": 1.8,
+   "end": 5.0,
+   "what": "voice-like bowed/wind melody (erhu or dizi). Demucs put it in its vocal stem, BS-RoFormer does not (-68 dB). Treat as instrument, NOT humming."
+  },
+  {
+   "start": 101.0,
+   "end": 102.5,
+   "what": "erhu-like phrase (same evidence)"
+  },
+  {
+   "start": 133.9,
+   "end": 144.7,
+   "what": "erhu lead melody in the drop (Demucs 'vocal' stem only; RoFormer -44 dB) — do not lip-sync"
+  },
+  {
+   "start": 158.5,
+   "end": 162.4,
+   "what": "erhu phrase in the drop (same evidence)"
+  },
+  {
+   "start": 186.9,
+   "end": 190.1,
+   "what": "erhu phrase at the end of the drop (same evidence)"
+  }
+ ],
+ "deviations_from_lyrics_doc": [
+  "All written lyric lines are sung, in the written order, exactly once. No line is repeated beyond what the doc already writes (the hook is NOT sung twice; 'I think of you, I think of you' is the written repetition).",
+  "No lyrics are sung after 124 s: the Drop (122.8–189.9) is instrumental except a wordless vocalise at 163.5–169.8; the Outro (190–212) is humming only.",
+  "Intro: the Suno prompt asks for humming from the start, but the first actual voice is at 18.6 s (wordless vocalise 18.6–29.3). The 1.8–5.0 s 'voice' is an erhu/dizi line.",
+  "Breakdown line 举头望明月，低头思故乡 is whispered for the first 9 characters, then 乡 is sung and held ~4 s into the drop (not fully whispered as the prompt says).",
+  "Hook line 'I think of you, I think of you' is followed by an extra wordless F#4 re-articulation (90.74–92.12) before 举杯邀明月.",
+  "Pronunciation notes from blind ASR (useful for lip-sync expectations): 'homesick with waning' was heard as 'I'm sick with waiting'; 'snow-brewed tea' as 'snowbrook/smoke-brew tea'; 举杯邀明月 as 酒杯要明月/去北遥明月; 对影成三人 as 对应成三人; 月缺酒寒 as 月出酒喝/绝缺旧恨; 举头望明月 as 枝头往宁月 / 'You don't want me'. These are near-homophones consistent with the written text, so the written text is kept as the sung text."
+ ]
+}

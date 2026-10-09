@@ -34,10 +34,10 @@ function chop(ctx, t) {
   ctx.pipe.layer((g) => { const img = ctx.assets.seal_wangyue_baiwen || ctx.assets.seal_wangyue; if (!img) return; g.globalAlpha = a; g.drawImage(img, 1831, 160, 32, 32 * img.height / img.width); }, { mode: 'ink', absorb: 0.4, seed: 13 });
 }
 
-export const range = [0, 15.67];
+export const range = [0, 15.69];
 export default function shots(B, X, L) {
   const bar = (n, b = 1) => B.bar(n, b);
-  const FIRST = 1.78, BOOM = 2.84, S03 = 5.86, S04 = bar(4), S05 = bar(5), S06 = 13.10;
+  const FIRST = 1.80, BOOM = 2.91, S03 = 5.94, S04 = bar(4), S05 = bar(5), S06 = 13.15;
   const LIFT = bar(8);
   // the camera breathes in on the Moon, then (5.0 → the 5.86 pluck) glides so the ink Moon lands exactly where the
   // painted Moon of K_0.3 sits in 0.3's first frame (centre 1665,-11, R 633 px) — a match cut, ink → silk.
@@ -53,13 +53,13 @@ export default function shots(B, X, L) {
   // splat on each finger of the roll, the main expansion on the 2.62 peak, a secondary pulse on 2.87, then a slow
   // settle. The inkmoon scene derives everything from s = t - tImpact, so tImpact is evaluated per frame as t - s(t)
   // (a getter on the params; `cam` runs first each frame and records t). Pure function of t: deterministic.
-  const HIT = 2.44, ROLL = [[2.44, 0.045, 0.10], [2.49, 0.022, 0.09], [2.55, 0.022, 0.09], [2.62, 0.27, 0.26], [2.87, 0.20, 0.30]];
+  const HIT = 2.24, ROLL = [[2.24, 0.045, 0.10], [2.42, 0.022, 0.09], [2.53, 0.022, 0.09], [2.70, 0.27, 0.26], [2.95, 0.20, 0.30]];
   const eo = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : 1 - (1 - x) ** 3);
   const bloomClock = (t) => ROLL.reduce((s, [t0, A, d]) => s + A * eo((t - t0) / d), 0)
-    + (t > 2.62 ? 0.75 * (1 - Math.exp(-(t - 2.62) / 1.3)) + 0.12 * (t - 2.62) : 0);
+    + (t > 2.70 ? 0.75 * (1 - Math.exp(-(t - 2.70) / 1.3)) + 0.12 * (t - 2.70) : 0);
   let now = 0;
   const dropCam = (t) => { now = t; return moonRiseCam(t); };
-  const bloom = () => ({ hang: true, tFall: FIRST, get tImpact() { return now < HIT ? HIT : now - bloomClock(now); }, resolveAt: [3.58, 5.1] });
+  const bloom = () => ({ hang: true, tFall: FIRST, get tImpact() { return now < HIT ? HIT : now - bloomClock(now); }, resolveAt: [3.62, 5.1] });
   const SHANGHAI = /shanghai|pudong|puxi/i.test(X.text('K_0.6'));
   const K06_OFF = 1.3, K06_END = { x: 0.58, y: 0.575, zoom: 1.25 };   // shared with 1.1 (01_intro_b.js). rev3: the painted Moon (whole at the cut in) has left the top of the frame by LIFT, before 1.1's ink Moon appears
   return [

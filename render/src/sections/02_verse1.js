@@ -26,7 +26,7 @@ function silkBleed(ctx, key, P, t, a, b, cx = 960, cy = 540) {
   }, { mode: 'ink', absorb: 0.4, seed: 244 });
 }
 
-export const range = [32.42, 46.82];
+export const range = [32.23, 46.16];
 
 // small vertical inscription + seal, brushed in from a
 function inscription(ctx, key, text, x, y, t, a, b, o = {}) {
@@ -90,7 +90,7 @@ export default function shots(B, X, L) {
       // LSB: LS1_back/take_2 (Seedance 2.5 720p, prepped remouth=False), cut in 0.75 s into the take (the mother is
       // already moving), whole subjects redrawn; the take runs 5.04 s, the shot uses 0.75–4.38 s.
       scene: [LSB ? { type: 'roto', clip: LSB.clip, paper: 'silk', offset: 0.75, lock: 0, mouth: false, subject: false, maskGain: 8, from: { x: 0.52, y: 0.5, zoom: 1.03 }, to: { x: 0.54, y: 0.49, zoom: 1.07 } }
-        : LS1_ROTO ? { type: 'roto', clip: LS1.take === 'take_24' ? 'LS1/take_24f' : LS1.clip, paper: 'silk', ref_t0: 39.23, lag: LS1.lag, lock: 0, mouth: false, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 } }
+        : LS1_ROTO ? { type: 'roto', clip: LS1.take === 'take_24' ? 'LS1/take_24f' : LS1.clip, paper: 'silk', ref_t0: 38.88, lag: LS1.lag, lock: 0, mouth: false, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 } }
         : X.has('J_LS1') ? kf('J_LS1', { from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.48, zoom: 1.09 },
         masks: { base: [0.1, 0.4], polys: [{ pts: [[0.56, 0], [1, 0], [1, 1], [0.5, 1]], depth: 0.85, blur: 14 }, { pts: [[0, 0.47], [0.56, 0.47], [0.56, 0.8], [0, 0.8]], water: 1, blur: 12 }, { pts: [[0.72, 0.0], [1, 0.0], [1, 0.08], [0.72, 0.08]], flutter: 0.5, blur: 10 }] },
         shimmer: 1.2, flutter: [1.4, 1.6] }) : ph('LS1 — Jade sings in the West Lake rowboat', 'J_LS1')],
