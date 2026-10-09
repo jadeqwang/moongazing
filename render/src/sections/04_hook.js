@@ -429,8 +429,10 @@ export default function shots(B, X, L) {
         : ph('The kids in the family viewing room, faces lit by the big screen; T’s hand on the glass', 'K_4.5')],
       type(ctx, t) { lyricEN(ctx, L.L11, { ...huge, key: 'b', size: 120, x: 1860, y: 850, align: 'right', color: PALE, w0: 4, hold: 1.2, panel: 'dark' }, t, 'over'); } },
     // 4.6 — orbit: Earth fills the frame for the first time — a 青绿 painting
+    // 4.6 — rev6 (Oct 9): a straight cut. The ink-bloom opening put one blank indigo frame and a ragged hole on the
+    // song's stutter at 89.2 s, which read as a dropped frame.
     { id: '4.6', t0: S46, t1: S47, paper: 'indigo', grain: 46,
-      scene: [X.has('K_4.6') ? kf('K_4.6', { from: { x: 0.5, y: 0.55, zoom: 1.06 }, to: { x: 0.56, y: 0.5, zoom: 1.12 }, par: [0.02, 0], masks: { base: [0.3, 0.6] }, reveal: (t, lt) => smooth(0, 0.4, lt) * 1.6, mist: { color: [0.96, 0.96, 0.95], amount: 0.14, y0: 300, y1: 1080, speed: 20 } }) : ph('Orbit: Earth as a qinglü painting', 'K_4.6')],
+      scene: [X.has('K_4.6') ? kf('K_4.6', { from: { x: 0.5, y: 0.55, zoom: 1.06 }, to: { x: 0.56, y: 0.5, zoom: 1.12 }, par: [0.02, 0], masks: { base: [0.3, 0.6] }, mist: { color: [0.96, 0.96, 0.95], amount: 0.14, y0: 300, y1: 1080, speed: 20 } }) : ph('Orbit: Earth as a qinglü painting', 'K_4.6')],
       type(ctx, t) { hud(ctx, 'ORBIT  ·  200 KM  ·  7.8 KM/S', 64, 1030, { size: 15, rgb: '255,255,255' }, 1); } },
     // 4.7 — after TLI: in free fall Jade lifts a drink pouch toward the Moon — 举杯; the calligraphy floats too
     { id: '4.7', t0: S47, t1: S48, paper: 'indigo', grain: 47,

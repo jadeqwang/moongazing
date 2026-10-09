@@ -47,6 +47,12 @@ pass). Re-make after any re-render with `bash release/encode_1080.sh` (a range a
 `TMPDIR=render/out/tmp bash render/tools/render_verified.sh A B out/frames_v8_1080 1 3`). Only spot crops and a contact
 sheet have been looked at in 1080p. Jade has confirmed the hair fix in the chat.
 
+**After her first viewing of the 1080p (Oct 9, 10 AM, rev6):** three faults fixed and both sizes re-made: M's hair at
+0:27 (the earlier launch shot still carried the painted hair; now `K_1.6/take_4d`, the take's own), the cut to the
+Earth at 1:29 (straight cut, no ink bloom), the astronaut's legs at 1:48 (`K_5.4/take_6`, a Seedance take that stands
+still). The first 1080p files are in `render/out/release_1080_before_rev6/`. Details: "After her first viewing of the
+1080p" in `docs/REVISION_NOTES_OCT9.md`.
+
 ### What each answer on the page leads to
 | Card | If she chooses… | Then |
 |---|---|---|

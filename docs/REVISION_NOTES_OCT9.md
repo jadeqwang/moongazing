@@ -122,7 +122,36 @@ image moving on another still image and reads as unnatural."
   "moons and lonely wine", the reunion, the inscription, the credits (native crops in `render/out/rev5_hair/`), and
   the contact sheet of the encode. Not watched at speed.
 
+## After her first viewing of the 1080p: three faults (rev6)
+Her words: "M's hair is glitched in the 1080p, and there's a weird discontinuity glitch at 1:30, where the sound is
+discontinuous. and astronaut's legs are glitched at 1:50 (similar to previous glitch but the breakpoint is different,
+please have video model or Three.js help instead of freestyling)"; then "I suspect the hair is from an older version
+before the fix".
+
+- **M's hair.** The 1080p file does hold the rev5 fix at 1:17 (frames pulled from the mp4 match the rendered frames:
+  `render/out/rev6/mp4_vs_frames.jpg`). What was still the old version is the *other* launch shot, 1.6 at 0:27: it
+  still carried the painted hair as a rigid cut-out (the fault she had named at 1:17), and nobody had applied the fix
+  there. Now the same as 4.2: `K_1.6/take_4d` (= take_4, `roto_prep.py --detail`), the take's own tones, nothing
+  carried. The take's braid there is a crown braid with the pink elastic, not the side braid of 1:17.
+- **1:30.** The film's audio is the recording, unchanged: the encode, the wav master and her mp3 give the same levels
+  to 0.1 dB around 85-95 s, and the mp4's audio and video timestamps have no gaps. The recording itself has a stutter
+  at 89.2-89.3 s (the old-key recording has the same one at 90.7 s). The picture cut to the Earth sat exactly on it and
+  opened through an ink bloom: one blank indigo frame, then a ragged hole for four frames, then the sky changing from
+  indigo to black. That read as a dropped frame on the stutter. 4.6 is now a straight cut (`reveal` removed).
+- **1:48-1:50, the legs.** Not the redraw this time: `K_5.4/take_4` slides the whole body about 40 px sideways over
+  planted boots, so the legs shear at the knees. `take_6` (Seedance 2.0, made on Oct 8 from the same keyframe and not
+  used then) stands: weight settles, the arms ease out, legs and boots stay put for the first 4 s. 5.4 now plays
+  take_6 at 0.5-2.95 s (picks.json), mask widened to the whole figure as before. No hand fix.
+- Frames 641-686, 2141-2182, 2588-2647 re-rendered at both sizes (`OUT=out/frames_v8_1080 SCALE=1 bash
+  render/tools/ranges_verified.sh ...` is new), both cuts re-encoded; the first 1080p files are kept in
+  `render/out/release_1080_before_rev6/`. Job: `render/out/retime/run_rev6.sh`.
+- Looked for the same faults elsewhere: the only other ink-bloom opening is the mission emblem at 1:43 (K_5.2), which
+  opens over 0.9 s and is meant; other carried painted regions are faces (Jade's, by design) and M's head at 1:27,
+  where she sits still and it holds.
+
 ## Things learned
+- The temp disk filling also kills this session's own shell output ("Command output was lost"): keep scratch work in
+  `render/out/rev6/`-style folders on disk and set `MAGICK_TMPDIR` there for montage.
 - `/tmp` is a 16 GB tmpfs and was full (other projects' caches): Chrome then crashes at start with more than one
   worker ("Target crashed", "source image cannot be decoded"). `TMPDIR=<folder on disk>` in front of the render fixes
   it (`render/tools/ranges_verified.sh` sets it). With one worker a 10 s chunk takes about 23 s at 540p.

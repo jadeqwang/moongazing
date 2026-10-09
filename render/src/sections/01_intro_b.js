@@ -86,7 +86,9 @@ export default function shots(B, X, L) {
     { id: '1.6', t0: 26.73, t1: TAIKO[3], paper: 'silk', grain: 12, focus: [1150, 470],
       // rev3 KIDS (Oct 8): M's hair is the painting's own (the region the take redrew is replaced by the keyframe's pixels,
       // carried: tools/roto_keep.py), so it is the same braid as in 4.2 (the take had turned it into three braids).
-      scene: [{ type: 'roto', clip: 'K_1.6/take_4', paper: 'silk', offset: 0.5, lock: 0, keepOcc: false, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.52, y: 0.49, zoom: 1.06 } }],
+      // rev6 (Oct 9): no longer carried. The pasted hair stayed rigid while she moved (Jade: glitched at 1080p). As in 4.2
+      // since rev5: take_4d = take_4 prepared with `roto_prep.py --detail`, drawn in the take's own tones.
+      scene: [{ type: 'roto', clip: 'K_1.6/take_4d', paper: 'silk', style: { snapAmt: 0, shade: 0, gran: 0, lineA: 0 }, offset: 0.5, lock: 0, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.52, y: 0.49, zoom: 1.06 } }],
     },
 
     // 1.7 — TAIKO: the seal lands on 28.75; 望明月 written huge; MOONGAZING
