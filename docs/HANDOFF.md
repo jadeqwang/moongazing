@@ -40,7 +40,12 @@ the take's own braid, nothing carried; card `r5_hair` on the page awaits her), f
 and for the 1080p. The 1080p frames render from `render/out/retime/run_v8_1080.sh` (log
 `render/out/v8_1080_render.log`); codex encodes and checks them per `render/out/retime/brief_1080.md` into
 `render/out/release_1080/`. Details: "Morning" in `docs/REVISION_NOTES_OCT9.md`. Still true: nobody but Jade has
-watched the cut at speed with sound, and nothing has been looked at in 1080p yet.
+watched the cut at speed with sound.
+**1080p is made (Oct 9, 8:43 AM):** `render/out/release_1080/Moongazing_1080p.mp4` (upload copy, 437 MB),
+`Moongazing_1080p_subs.mp4` (with soft subtitles), `Moongazing_1080p_master.mkv` (1.25 GB), `REPORT.md` (all checks
+pass). Re-make after any re-render with `bash release/encode_1080.sh` (a range at 1080p:
+`TMPDIR=render/out/tmp bash render/tools/render_verified.sh A B out/frames_v8_1080 1 3`). Only spot crops and a contact
+sheet have been looked at in 1080p. Jade has confirmed the hair fix in the chat.
 
 ### What each answer on the page leads to
 | Card | If she chooses… | Then |

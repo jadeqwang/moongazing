@@ -111,6 +111,16 @@ image moving on another still image and reads as unnatural."
   renderer), into `render/out/frames_v8_1080`, log `render/out/v8_1080_render.log` (ends with `V8_1080_FRAMES_DONE`).
   Codex has `render/out/retime/brief_1080.md`: `release/encode_1080.sh`, the upload copy, the master, a copy with soft
   subtitles, checks, report in `render/out/release_1080/REPORT.md`, `V8_1080_ENCODE_DONE` in `jobs.log`.
+- **1080p done, 8:43 AM** (Jade at 8:00: "hair fix looks good! let's encode."). Frames: 5,165, two passes identical,
+  flicker check passed (08:27). Codex's encode (`bash release/encode_1080.sh [frames] [out]`, with
+  `release/encode_1080.py`, `check_1080.py`, `finish_1080.py`) in `render/out/release_1080/`:
+  `Moongazing_1080p.mp4` (437 MB, H.264 high two-pass 15.9 Mb/s, AAC 304 kb/s), `Moongazing_1080p_subs.mp4` (the same
+  streams plus two soft subtitle tracks, off by default), `Moongazing_1080p_master.mkv` (1.25 GB, CRF 12, PCM 24-bit).
+  All three decode fully with no errors, 5,165 frames; audio starts at 0 and matches the wav's loudness (-15.6 LUFS,
+  -4.4 dBTP); twelve frames compared with their source (upload copy 39 to 53 dB PSNR, master 43 to 53).
+  `REPORT.md`, `contact.jpg` there. Looked at in 1080p by me: M's hair at three moments, the desk face, the gold visor,
+  "moons and lonely wine", the reunion, the inscription, the credits (native crops in `render/out/rev5_hair/`), and
+  the contact sheet of the encode. Not watched at speed.
 
 ## Things learned
 - `/tmp` is a 16 GB tmpfs and was full (other projects' caches): Chrome then crashes at start with more than one
