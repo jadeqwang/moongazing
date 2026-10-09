@@ -3,7 +3,7 @@
 //                 top→bottom, a little left→right inside each character; bristle streaks at the leading edge,
 //                 ink bleed into the paper after the brush passes, pooled edges + granulation (paper absorption).
 //  (b) seals    — see seal.js
-//  (c) Card     — English display serif, quiet and letter-spaced; brush-wipe / fade in, faint ink bleed.
+//  (c) Card     — English display serif, quiet and letter-spaced; eased fades (per line, or per word for lyrics), faint ink bleed.
 //  (d) hud()    — IBM Plex Mono labels.
 // All drawing is in DESIGN px (1920x1080); bitmaps are built at device resolution (S = H/1080).
 import { makeCanvas, mulberry32, vnoise, clamp, smooth, hash2 } from './util.js';
@@ -70,6 +70,7 @@ export class InkText {
     for (let i = 0; i < N; i++) a[i] = A[i * 4 + 3] / 255;
     // reveal time per pixel: char index + position within the char (top->bottom dominant, slight left->right)
     const rv = new Float32Array(N).fill(1e9);
+    const ck = new Uint16Array(N);   // the character each pixel belongs to
     const streak = new Float32Array(N);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
       const i = y * W + x; const X = x / S, Y = y / S;
@@ -81,7 +82,7 @@ export class InkText {
       }
       const xn = clamp((X - best.x0) / sz), yn = clamp((Y - best.y0) / sz);
       const wob = (vnoise(X * 0.05, Y * 0.012, o.seed) - 0.5) * 0.10;
-      rv[i] = best.k + clamp(0.80 * yn + 0.20 * xn + wob, 0, 1) * 0.92;
+      rv[i] = best.k + clamp(0.80 * yn + 0.20 * xn + wob, 0, 1) * 0.92; ck[i] = best.k;
       // bristle streaks run along the stroke direction (mostly vertical): high freq across x, low along y
       streak[i] = vnoise(X * 0.9, Y * 0.035, o.seed + 7) * 0.65 + vnoise(X * 2.3, Y * 0.08, o.seed + 9) * 0.35;
     }
@@ -96,30 +97,43 @@ export class InkText {
     for (let i = 0; i < N; i++) rvb[i] = db[i] > 1e-4 ? nb[i] / db[i] : rv[i];
     const gran = new Float32Array(N);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) gran[y * W + x] = vnoise(x / S * 0.8, y / S * 0.8, o.seed + 3) * 0.6 + hash2(x, y, o.seed) * 0.4;
-    Object.assign(this, { W, H, a, ab: ab2, rv, rvb, streak, gran, n: chars.length, canvas: makeCanvas(W, H) });
+    Object.assign(this, { W, H, a, ab: ab2, rv, rvb, ck, streak, gran, n: chars.length, cells, sz, canvas: makeCanvas(W, H) });
     this.cg = this.canvas.getContext('2d');
     this.img = this.cg.createImageData(W, H);
   }
-  // p: reveal progress in characters (0..n). bleed: 0..1 how far ink has crept into the paper. alpha: overall
+  // p: reveal progress in characters (0..n): ONE brush travelling through the text (cards, inscriptions, the title).
+  //    Or an array, one progress per character (lyrics, each character on its own sung onset): 0 = not begun,
+  //    0..1 = being brushed top to bottom, 1 = fully brushed, 1..2 = its ink creeping on into the paper. A character
+  //    whose progress is 0 shows nothing at all, whatever its neighbours are doing. The dry leading edge is wider
+  //    here (FRONT_PER) so a stroke takes about three frames to arrive instead of one.
+  // bleed: 0..1 how far ink has crept into the paper. alpha: overall
   render(p, bleed = 1, alpha = 1) {
-    const { W, H, a, ab, rv, rvb, streak, gran, img } = this;
+    const { W, H, a, ab, rv, rvb, ck, streak, gran, img } = this;
+    const per = Array.isArray(p) || ArrayBuffer.isView(p);
     const d = img.data; const [r, g, b] = this.o.color;
     const R = Math.round(r * 255), G = Math.round(g * 255), B = Math.round(b * 255);
-    const FRONT = 0.16; // width of the dry leading edge, in characters
+    const FRONT = 0.16, FRONT_PER = 0.42; // width of the dry leading edge, in characters
     for (let i = 0, N = W * H; i < N; i++) {
       const cov = a[i], cb = ab[i];
       if (cb < 0.004 && cov < 0.004) { d[i * 4 + 3] = 0; continue; }
       // brush front
-      const q = (p - rv[i]) / FRONT;            // >1 fully painted, 0..1 dry leading edge
+      const k = ck[i];
+      let q, qb, soft = 1;                       // q: >1 fully painted, 0..1 dry leading edge; qb: the same for the bleed
+      if (per) {
+        const pv = p[k]; if (!(pv > 0)) { d[i * 4 + 3] = 0; continue; }
+        const m = Math.min(pv, 1), c = Math.max(0, pv - 1);
+        if (m < 0.3) { const u = m / 0.3; soft = u * u * (3 - 2 * u); }   // the first touch of the brush comes up softly: no crisp specks at the top of a character
+        q = (m * (0.92 + FRONT_PER) - (rv[i] - k)) / FRONT_PER;
+        qb = (1.08 * m + 0.52 * c - (Math.min(Math.max(rvb[i], k), k + 0.92) - k)) / FRONT;
+      } else { q = (p - rv[i]) / FRONT; qb = (p - rvb[i]) / FRONT; }
       let reveal = 0;
       if (q >= 1) reveal = 1;
       else if (q > 0) reveal = clamp((q * 1.25 - streak[i] * 0.85) * 3.0);
-      let A = cov * reveal;
+      let A = cov * reveal * soft;
       // pooled edge: pigment collects where coverage falls off; interior a touch lighter (absorption)
       const edge = cov * (1 - cov) * 4;
       let dens = 0.86 + 0.14 * edge - 0.10 * (gran[i] - 0.5) * (1 - edge);
       // bleed: a soft halo creeping out along the paper after the brush has passed
-      const qb = (p - rvb[i]) / FRONT;
       const bl = qb > 1 ? clamp((qb - 1) / 3) : 0;
       const halo = clamp((cb * (0.55 + 0.45 * gran[i]) - (0.42 - 0.3 * bleed * bl)) / 0.25) * 0.55 * bl * bleed;
       const fA = Math.max(A * dens, halo * (1 - A));
@@ -162,7 +176,7 @@ export class Card {
     this.o = o = { font: 'Cormorant', weight: 500, size: 58, tracking: 0.035, leading: 1.18, align: 'left', color: '#18181c', seed: 3, ...o };
     const S = kit.S;
     const meas = makeCanvas(4, 4).getContext('2d');
-    const runFont = (r) => `${r.weight ?? o.weight} ${r.size}px ${r.font ?? o.font}`;
+    const runFont = this.runFont = (r) => `${r.weight ?? o.weight} ${r.size}px ${r.font ?? o.font}`;
     // normalise lines -> runs with sizes, measure
     this.L = o.lines.map((ln, li) => {
       const base = (o.lineSizes && o.lineSizes[li]) || o.size;
@@ -201,50 +215,43 @@ export class Card {
     this.halo = hb;
     this.tmp = makeCanvas(c.width, c.height);
   }
-  // wipe: 0..1 brush-wipe progress (left→right, line by line), alpha: overall opacity
+  // wipe: 0..1 progress of the arrival (linear in time; eased here), alpha: overall opacity. Each line fades in whole,
+  // one after the other with overlapping ramps. There is no travelling edge (Oct 8, round three: the dry-brush wipe cut
+  // through letters, popped words and let the tops of the next line's tall letters show under the line above).
   draw(g, wipe = 1, alpha = 1) {
     if (alpha <= 0.001 || wipe <= 0) return;
-    if (wipe >= 1) return this.drawReveal(g, null, alpha);
-    const nl = this.L.length;
-    const edges = this.L.map((l, li) => {
-      const lp = clamp(wipe * (nl + 0.6) - li * 0.85, 0, 1.0001);
-      const feather = l.size * 1.4;
-      return lp <= 0 ? -1e9 : (l.x0 - feather) + (l.w + 2 * feather) * lp;
-    });
-    this.drawReveal(g, edges, alpha);
+    if (wipe >= 1) return this.drawWords(g, null, alpha);
+    const nl = this.L.length, lag = nl > 1 ? 0.55 / nl : 0, len = 1 - lag * (nl - 1);
+    this.drawWords(g, this.L.map((l, li) => { const a = ease((wipe - li * lag) / len); return l.runs.map(() => a); }), alpha);
   }
-  // per-word timing: x of the runs (absolute design px) — for lyric lines
+  // per-word layout: x of the runs (absolute design px) — for lyric lines
   runEdges() { return this.L.map((l) => l.runs.map((r) => ({ x0: l.x0 + r.x, x1: l.x0 + r.x + r.w }))); }
-  // edges: per line, absolute design-px x of the dry-brush reveal edge (null = everything revealed)
-  drawReveal(g, edges, alpha = 1) {
+  // A: per line, per run, the opacity of that run 0..1 (null = everything there). Each run is drawn whole at its own
+  // opacity, so nothing of a run is on screen before its turn and no edge ever crosses a letter.
+  drawWords(g, A, alpha = 1) {
     if (alpha <= 0.001) return;
     const S = this.kit.S, o = this.o, b = this.box;
     const t = this.tmp, tg = t.getContext('2d');
-    tg.setTransform(1, 0, 0, 1, 0, 0); tg.globalCompositeOperation = 'source-over'; tg.globalAlpha = 1;
+    const full = !A || A.every((row) => row.every((a) => a >= 0.999));
+    tg.setTransform(1, 0, 0, 1, 0, 0); tg.globalCompositeOperation = 'source-over'; tg.globalAlpha = 1; tg.filter = 'none';
     tg.clearRect(0, 0, t.width, t.height);
-    tg.globalAlpha = 0.22; tg.drawImage(this.halo, 0, 0);
-    tg.globalAlpha = 1; tg.drawImage(this.text, 0, 0);
-    if (edges) {
-      const m = this.mask || (this.mask = makeCanvas(t.width, t.height)); const mg = m.getContext('2d');
-      mg.setTransform(1, 0, 0, 1, 0, 0); mg.clearRect(0, 0, m.width, m.height);
-      mg.scale(S, S); mg.translate(-b.x, -b.y);
-      this.L.forEach((l, li) => {
-        const xe = edges[li]; if (xe === undefined || xe < -1e8) return;
-        const fs = l.size, feather = fs * 0.9;
-        for (let y = l.y - fs * 1.05; y < l.y + fs * 0.4; y += 2) {
-          const j = (vnoise(y * 0.09, li * 7.3, o.seed) - 0.5) * fs * 0.5 + (hash2(Math.round(y), li, o.seed) - 0.5) * fs * 0.18;
-          const gr = mg.createLinearGradient(xe + j - feather, 0, xe + j, 0);
-          gr.addColorStop(0, 'rgba(0,0,0,1)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
-          mg.fillStyle = gr; mg.fillRect(b.x - 10, y, xe + j - b.x + 10, 2.05);
-        }
-      });
-      tg.globalCompositeOperation = 'destination-in';
-      tg.drawImage(m, 0, 0);
-      tg.globalCompositeOperation = 'source-over';
+    if (full) { tg.globalAlpha = 0.22; tg.drawImage(this.halo, 0, 0); tg.globalAlpha = 1; tg.drawImage(this.text, 0, 0); }
+    else {
+      if (!A.some((row) => row.some((a) => a > 0.002))) return;
+      const w = this.words || (this.words = makeCanvas(t.width, t.height)), wg = w.getContext('2d');
+      wg.setTransform(1, 0, 0, 1, 0, 0); wg.globalAlpha = 1; wg.clearRect(0, 0, w.width, w.height);
+      wg.scale(S, S); wg.translate(-b.x, -b.y); wg.fillStyle = o.color; wg.textBaseline = 'alphabetic';
+      this.L.forEach((l, li) => l.runs.forEach((r, ri) => {
+        const a = clamp((A[li] && A[li][ri]) || 0); if (a <= 0.002) return;
+        wg.globalAlpha = a; wg.font = this.runFont(r); wg.letterSpacing = `${o.tracking * r.size}px`; wg.fillText(r.t, l.x0 + r.x, l.y);
+      }));
+      tg.globalAlpha = 0.22; tg.filter = `blur(${(1.1 * S).toFixed(2)}px)`; tg.drawImage(w, 0, 0);
+      tg.filter = 'none'; tg.globalAlpha = 1; tg.drawImage(w, 0, 0);
     }
     g.save(); g.globalAlpha = alpha; g.drawImage(t, b.x, b.y, b.w, b.h); g.restore();
   }
 }
+const ease = (x) => { const t = clamp(x); return t * t * (3 - 2 * t); };
 
 // ---------------------------------------------------------------------------------------------------------------
 const sig = (o, keys) => JSON.stringify(keys.map((k) => o[k]));
@@ -263,10 +270,8 @@ export class TypeKit {
   }
 }
 
-// standard card envelope: brush-wipe in over `win` s, hold, fade out over `fout` s
-export function cardTiming(t, t0, t1, win = 0.85, fout = 0.35) {
-  const wipe = smooth(t0, t0 + win, t);
-  const alpha = 1 - smooth(t1 - fout, t1, t);
-  return { wipe: wipe * wipe * (3 - 2 * wipe) > 0 ? wipe : 0, alpha };
+// standard card envelope: fade in over `win` s (Card.draw eases it, line after line), hold, fade out over `fout` s
+export function cardTiming(t, t0, t1, win = 0.85, fout = 0.4) {
+  return { wipe: clamp((t - t0) / win), alpha: 1 - smooth(t1 - fout, t1, t) };
 }
 export { mulberry32 };

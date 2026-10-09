@@ -107,15 +107,15 @@ function letterInk(g, ctx, W, H) {
   const em = ctx.assets.emblem_final; if (em) g.drawImage(em, 70, 64, 92, 92 * em.height / em.width);
   g.strokeStyle = 'rgba(40,40,46,0.6)'; g.lineWidth = 1; g.beginPath(); g.moveTo(70, 196); g.lineTo(W - 70, 196); g.stroke();
   g.fillStyle = ink; g.textBaseline = 'alphabetic';
-  g.font = '44px MaShanZheng'; g.fillText('廣寒站', 190, 118);
-  g.font = '500 20px Cormorant'; g.letterSpacing = '4px'; g.fillText('GUANGHAN STATION  ·  LUNAR SOUTH POLE', 192, 156);
+  g.font = '44px MaShanZheng'; g.fillText('国际月球基地', 190, 118);
+  g.font = '500 20px Cormorant'; g.letterSpacing = '4px'; g.fillText('INTERNATIONAL MOONBASE  ·  LUNAR SOUTH POLE', 192, 156);
   g.letterSpacing = '0px';
   g.font = '600 30px NotoSerifSC'; g.fillText('任命书', 70, 270);
   g.font = '500 30px Cormorant'; g.letterSpacing = '4px'; g.fillText('LETTER OF ASSIGNMENT', 200, 268); g.letterSpacing = '0px';
   g.font = '500 28px Cormorant';
-  ['Dr. Jade Wang,', 'You are assigned to Guanghan Station, Lunar South Pole,', 'as Mission Specialist (ISRU & Habitat), Expedition 1.', 'Time on station: thirteen months.'].forEach((s, i) => g.fillText(s, 70, 350 + i * 44));
+  ['Dr. Jade Wang,', 'You are assigned to the International Moonbase, Lunar South Pole,', 'as Mission Specialist (ISRU & Habitat), Expedition 1.', 'Time on station: thirteen months.'].forEach((s, i) => g.fillText(s, 70, 350 + i * 44));
   g.font = '400 24px NotoSerifSC';
-  ['Jade Wang 博士：', '兹任命您为广寒站第一期驻站任务专家', '（原位资源利用与居住），驻站十三个月。'].forEach((s, i) => g.fillText(s, 70, 570 + i * 42));
+  ['Jade Wang 博士：', '兹任命您为国际月球基地第一期驻站任务专家', '（原位资源利用与居住），驻站十三个月。'].forEach((s, i) => g.fillText(s, 70, 570 + i * 42));
   g.strokeStyle = 'rgba(40,40,46,0.5)'; g.beginPath(); g.moveTo(470, 860); g.lineTo(W - 80, 860); g.stroke();
   g.font = '500 18px Cormorant'; g.letterSpacing = '3px'; g.fillText('FLIGHT DIRECTOR  ·  飞行主任', 470, 890); g.letterSpacing = '0px';
   g.font = '14px PlexMono'; g.fillStyle = 'rgba(29,29,34,0.7)'; g.fillText('EXP-01  ·  ISRU/HAB  ·  2035', 70, H - 50);
@@ -144,8 +144,8 @@ export const assignment = {
       const Hm = homography(quad), I = Hm.inv;
       ctx.pipe.apply(this.warp, { uSheet: sheetTex, uI0: [I[0], I[1], I[2]], uI1: [I[3], I[4], I[5]], uI2: [I[6], I[7], I[8]] });
       const sp = Hm.map(HANDS_35.seal[0], HANDS_35.seal[1]);
-      if (ctx.assets.seal_guanghan) {
-        sealImg = sealImg || sealFromImage(ctx.type, ctx.assets.seal_guanghan, 150);
+      if (ctx.assets.emblem_final) {
+        sealImg = sealImg || sealFromImage(ctx.type, ctx.assets.emblem_final, 150);
         let post = {};
         ctx.pipe.layer((g) => { post = drawStamp(g, sealImg, { x: sp[0], y: sp[1], t, tLand: p.tLand, rot: -0.04, approach: 0.14 }); }, { mode: 'ink', absorb: 0.5, seed: 356 });
         ctx.postExtra = { ...(ctx.postExtra || {}), deflect: post.deflect, bump: post.bump };
@@ -184,8 +184,8 @@ export const assignment = {
       finger(g, LX - 70, LY + LH + 60, LX + 120, LY + LH - 40, 58);
       finger(g, LX + LW + 80, LY + LH + 70, LX + LW - 110, LY + LH - 46, 58);
     }, { mode: 'over', seed: 355 });
-    if (ctx.assets.seal_guanghan && p.tLand) {
-      sealImg = sealImg || sealFromImage(ctx.type, ctx.assets.seal_guanghan, 150);
+    if (ctx.assets.emblem_final && p.tLand) {
+      sealImg = sealImg || sealFromImage(ctx.type, ctx.assets.emblem_final, 150);
       let post = {};
       ctx.pipe.layer((g) => { post = drawStamp(g, sealImg, { x: 1580, y: 870, t, tLand: p.tLand, rot: -0.06, approach: 0.14 }); }, { mode: 'ink', absorb: 0.5, seed: 356 });
       ctx.postExtra = { ...(ctx.postExtra || {}), deflect: post.deflect, bump: post.bump };

@@ -1,0 +1,288 @@
+{
+ "id": "K_7.C5d",
+ "title": "airlock bench: Layla shows Jade her father’s falcon",
+ "people": {
+  "layla": {
+   "headTurnDeg": 16,
+   "headPitchDeg": -23,
+   "arms": {
+    "R": {
+     "reach": 0.76,
+     "handBehind": -0.42,
+     "elbowBehind": -0.1,
+     "target": "tablet:BR"
+    },
+    "L": {
+     "reach": 0.73,
+     "handBehind": -0.35,
+     "elbowBehind": -0.09,
+     "target": "tablet:BL"
+    }
+   },
+   "eye": [
+    0.21,
+    1.17,
+    0.21
+   ]
+  },
+  "jade": {
+   "headTurnDeg": 38,
+   "headPitchDeg": -17,
+   "arms": {
+    "R": {
+     "reach": 0.7,
+     "handBehind": -0.1,
+     "elbowBehind": 0.06,
+     "target": "lap"
+    },
+    "L": {
+     "reach": 0.63,
+     "handBehind": -0.1,
+     "elbowBehind": 0.12,
+     "target": "lap"
+    }
+   },
+   "eye": [
+    -0.25,
+    1.16,
+    0.24
+   ]
+  }
+ },
+ "screens": {
+  "tablet": {
+   "layla": {
+    "distM": 0.43,
+    "obliquityDeg": 25,
+    "seesFront": true,
+    "visibleFrac": 0.92,
+    "blockedBy": [
+     "layla.handL",
+     "layla.handR"
+    ],
+    "gazeOffDeg": 5,
+    "verdict": "sees it"
+   },
+   "jade": {
+    "distM": 0.5,
+    "obliquityDeg": 36,
+    "seesFront": true,
+    "visibleFrac": 0.92,
+    "blockedBy": [
+     "layla.handL",
+     "layla.handR"
+    ],
+    "gazeOffDeg": 4,
+    "verdict": "sees it"
+   }
+  }
+ },
+ "cameras": {
+  "hero": {
+   "people": {
+    "layla": {
+     "faceAngleDeg": 138,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      498.7,
+      443.5
+     ],
+     "inFrame": true
+    },
+    "jade": {
+     "faceAngleDeg": 126,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1510.5,
+      515.2
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 4,
+     "shows": "screen",
+     "visibleFrac": 0.92,
+     "cornersPx": [
+      [
+       752.1,
+       428
+      ],
+      [
+       1080.7,
+       433.7
+      ],
+      [
+       1076.4,
+       671.9
+      ],
+      [
+       746.3,
+       665.2
+      ]
+     ]
+    }
+   }
+  },
+  "front": {
+   "people": {
+    "layla": {
+     "faceAngleDeg": 28,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1218.9,
+      335.9
+     ],
+     "inFrame": true
+    },
+    "jade": {
+     "faceAngleDeg": 47,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      605.3,
+      356.6
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 134,
+     "shows": "back of the device",
+     "visibleFrac": 0,
+     "cornersPx": [
+      [
+       1226.2,
+       621.9
+      ],
+      [
+       914.1,
+       626.1
+      ],
+      [
+       896.8,
+       787.3
+      ],
+      [
+       1192.8,
+       780.7
+      ]
+     ]
+    }
+   }
+  },
+  "top": {
+   "people": {
+    "layla": {
+     "faceAngleDeg": 109,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1131.6,
+      489.1
+     ],
+     "inFrame": true
+    },
+    "jade": {
+     "faceAngleDeg": 102,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      732.2,
+      532.1
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 47,
+     "shows": "screen",
+     "visibleFrac": 0.92,
+     "cornersPx": [
+      [
+       1097.8,
+       756.2
+      ],
+      [
+       936.7,
+       780.3
+      ],
+      [
+       927.5,
+       702.5
+      ],
+      [
+       1081.7,
+       679.4
+      ]
+     ]
+    }
+   }
+  },
+  "side": {
+   "people": {
+    "layla": {
+     "faceAngleDeg": 70,
+     "view": "profile",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "jade.hair"
+     ],
+     "headPx": [
+      850,
+      231.8
+     ],
+     "inFrame": true
+    },
+    "jade": {
+     "faceAngleDeg": 143,
+     "view": "back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      965.4,
+      303.9
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 70,
+     "shows": "screen",
+     "visibleFrac": 0.88,
+     "cornersPx": [
+      [
+       1393.4,
+       548.3
+      ],
+      [
+       1506.9,
+       594.1
+      ],
+      [
+       1348.1,
+       808.3
+      ],
+      [
+       1249,
+       742.9
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

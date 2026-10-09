@@ -12,6 +12,15 @@ vec2 toPaper(vec2 P){ vec2 c = vec2(960., 540.); return rot(-uCam.w) * ((P - c) 
 uniform sampler2D uPrev, uKey, uCol, uGuide, uMask, uEyes, uSub;
 uniform float uSubTex;
 uniform float uEyeOn; uniform vec3 uEa, uEb;  // likeness lock: drawing px -> frame-0 px of the painted key's eyes
+// painted-region carry (meta.keep, tools/roto_keep.py): up to two regions of the PAINTED keyframe (faces) ride on the
+// take's tracked motion instead of being redrawn. uKeep r/g = the two region mattes in frame-0 px; uKa,uKb / uKc,uKd =
+// drawing px -> frame-0 px for each region. Off (uKeepOn 0) unless the clip's meta has "keep".
+uniform sampler2D uKeep; uniform float uKeepOn, uKeepOcc; uniform vec3 uKa, uKb, uKc, uKd;
+// carried insignia (meta.patch, tools/emblem_patch.py): up to 8 small painted patches (the agency emblem on a chest) from
+// their own key plate uPatch (the static key never contains them), matte uPatchM, each on its own tracked motion.
+// uPa,uPb = drawing px -> frame-0 px; uPc = frame-0 centre, gate radius, visibility; uPr = cloth Lab + 1 (hide the patch
+// where the take no longer looks like that cloth: an arm or a tablet in front) or w 0 (visibility only). Off when uPatchN 0.
+uniform sampler2D uPatch, uPatchM; uniform int uPatchN; uniform vec3 uPa[8], uPb[8]; uniform vec4 uPc[8], uPr[8];
 uniform vec2 uVid;            // video work size (px)
 uniform vec3 uView;           // centre (uv) + zoom
 uniform vec3 uTa, uTb;        // T_i  : current frame px -> frame-0 px (rows)
@@ -27,6 +36,11 @@ uniform float uFaceKeep, uSubOn, uSubLo, uSubHi, uSnapAmt;
 uniform float uSnap, uShade, uLineTh, uLineW, uLineA, uBoldA, uGran, uWet, uGlow, uWash, uFaceFlat;
 uniform vec3 uInk;            // line ink colour
 uniform float uSeed, uDark;
+uniform vec4 uRect;           // design-px rectangle the clip is drawn into (default: the whole frame); split screens
+uniform vec4 uFill;           // a > 0: lay this ground colour (with our paper's texture) inside the rect first
+uniform vec4 uTear;           // torn scroll, as in scenes/plate.js: tear y (design px), drop px, tilt rad, side (+1 upper half kept in
+                              // place, -1 lower half moved by drop/tilt, 0 = off). 8.2: the halves rejoin while the take plays.
+#define TEAR(c) mix(prev0, mix(c, vec3(0.93, 0.90, 0.84), tearRim * 0.85), tearM)
 out vec4 o;
 
 vec3 toLab(vec3 c){
@@ -67,14 +81,24 @@ float quantL(float l){         // soft quantisation to the keyframe's ink levels
 }
 
 void main(){
-  vec2 P = PX();
-  vec3 prev = FBO(uPrev, P).rgb;
+  vec2 P0 = PX(), P = P0;
+  vec3 prev = FBO(uPrev, P0).rgb, prev0 = prev;
+  float tearM = 1., tearRim = 0.;
+  if (uTear.w != 0.) {                                       // same edge and rim as the plate scene's tear
+    if (uTear.w < 0.) { vec2 c = vec2(960., uTear.x); P = c + rot(-uTear.z) * (P0 - c - vec2(0., uTear.y)); }
+    float edge = uTear.x + (fbm3(vec2(P.x * 0.006, 2.)) - .5) * 90. + (vnoise(vec2(P.x * 0.08, 5.)) - .5) * 12. + (hash12(vec2(floor(P.x * 0.7), 3.)) - .5) * 3.;
+    float d = (P.y - edge) * -uTear.w;
+    tearM = smoothstep(-0.8, 0.8, d);
+    tearRim = smoothstep(7., 0., d) * smoothstep(-1., 0.5, d) * (0.6 + 0.4 * hash12(floor(P * 0.9)));
+  }
   vec2 Pw = toPaper(P);
   vec3 tex = prev / uPm;                                     // our paper's own texture (weave / fibres / mottle)
   // --- where are we in the clip
-  float ar = uVid.x / uVid.y, rar = 1920. / 1080.;
+  float ar = uVid.x / uVid.y, rar = uRect.z / uRect.w;
   vec2 span = ar > rar ? vec2(rar / ar, 1.) : vec2(1., ar / rar);
-  vec2 q = P / vec2(1920., 1080.);
+  vec2 q = (P - uRect.xy) / uRect.zw;
+  if (any(lessThan(q, vec2(0.))) || any(greaterThan(q, vec2(1.)))) { o = vec4(prev0, 1.); return; }
+  if (uFill.a > 0.) prev = uFill.rgb * mix(vec3(1.), tex, 0.55);
   vec2 half_ = span / uView.z * 0.5;
   vec2 ctr = clamp(uView.xy, half_, 1. - half_);
   vec2 uvi = ctr + (q - .5) * span / uView.z;
@@ -101,8 +125,32 @@ void main(){
     mask *= max(sub, faceM);
   }
   mask = max(mask, uRedrawAll);
+  vec2 pk1 = vec2(0.), pk2 = vec2(0.); float k1 = 0., k2 = 0.;
+  if (uKeepOn > 0.) {                                         // carried painted regions always win over the static key
+    pk1 = aff(uKa, uKb, pf) / uVid; pk2 = aff(uKc, uKd, pf) / uVid;
+    k1 = texture(uKeep, clamp(pk1, 0., 1.)).r * uKeepOn; k2 = texture(uKeep, clamp(pk2, 0., 1.)).g * uKeepOn;
+    // occlusion: where the take shows something else in front of the region (the child's hair across her mother's
+    // cheek), the low-frequency colour of the take no longer matches the painting there: let the redraw through
+    vec3 tl = toLab(textureLod(uCol, uvf, 3.).rgb);
+    k1 *= 1. - uKeepOcc * smoothstep(20., 34., length(tl - toLab(textureLod(uKey, clamp(pk1, 0., 1.), 4.).rgb)));
+    k2 *= 1. - uKeepOcc * smoothstep(20., 34., length(tl - toLab(textureLod(uKey, clamp(pk2, 0., 1.), 4.).rgb)));
+    mask = max(mask, max(k1, k2));
+  }
   float keyAmt = max(1. - mask, uLock);
-  if (keyAmt >= 0.999) { o = vec4(keyN, 1.); return; }
+  float pm[8]; vec2 pq[8]; float pAny = 0.;
+  if (uPatchN > 0) {
+    vec3 tlp = toLab(textureLod(uCol, uvf, 3.).rgb);
+    for (int j = 0; j < 8; j++) {
+      pm[j] = 0.; pq[j] = vec2(0.);
+      if (j >= uPatchN) continue;
+      vec2 qp = aff(uPa[j], uPb[j], pf);
+      pq[j] = qp / uVid;
+      float m = texture(uPatchM, clamp(pq[j], 0., 1.)).r * step(length(qp - uPc[j].xy), uPc[j].z) * uPc[j].w;
+      if (uPr[j].w > 0.) m *= 1. - smoothstep(14., 26., length(tlp - uPr[j].xyz));
+      pm[j] = m; pAny = max(pAny, m);
+    }
+  }
+  if (keyAmt >= 0.999 && pAny <= 0.) { o = vec4(TEAR(keyN), 1.); return; }
 
   // --- the drawing
   vec3 src = texture(uCol, uvf).rgb;
@@ -205,5 +253,14 @@ void main(){
     vec3 ke = texture(uKey, clamp(pe / uVid, 0., 1.)).rgb * mix(vec3(1.), tex, 0.55);
     col = mix(col, ke, em);
   }
-  o = vec4(mix(col, keyN, keyAmt), 1.);
+  if (uKeepOn > 0.) {                                         // the painted faces themselves, moved with the heads
+    col = mix(col, texture(uKey, clamp(pk1, 0., 1.)).rgb * mix(vec3(1.), tex, 0.55), k1);
+    col = mix(col, texture(uKey, clamp(pk2, 0., 1.)).rgb * mix(vec3(1.), tex, 0.55), k2);
+  }
+  col = mix(col, keyN, keyAmt);
+  if (pAny > 0.) {                                            // explicit LoD: implicit derivatives are undefined after the early returns
+    float plod = max(0., log2(2. * uVid.x / (uRes.x * uView.z * uRect.z / 1920.)) - 0.35);
+    for (int j = 0; j < 8; j++) col = mix(col, textureLod(uPatch, clamp(pq[j], 0., 1.), plod).rgb * mix(vec3(1.), tex, 0.55), pm[j]);
+  }
+  o = vec4(TEAR(col), 1.);
 }`;

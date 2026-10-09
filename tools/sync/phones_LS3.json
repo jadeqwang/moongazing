@@ -1,0 +1,28 @@
+{
+ "_doc": "Phone-level ground truth for the hook line 酒寒，我思念你, read off the isolated vocal stem (analysis/stems/vocals.wav) on Oct 8 by rev2_ls: 5 ms STFT, band energies (<1 kHz voiced, 5-12 kHz frication), autocorrelation pitch, spectral flux. Script and plots: render/out/rev2_ls/audio/onsets.py, spec_*.png. Times are song seconds; 'open' is the jaw/lip opening the phone needs on a 0..1 scale (0 = lips closed), 'shape' the lip shape. analysis/lyrics_timing.json (CTC) puts 思 at 82.125, which is the middle of its /s/: the hiss starts at 81.93 and the vowel at 82.21.",
+ "phones": [
+  {"t0": 78.950, "t1": 79.070, "ph": "j",   "zh": "酒", "open": 0.10, "shape": "narrow, teeth close"},
+  {"t0": 79.070, "t1": 79.560, "ph": "iu",  "zh": "酒", "open": 0.35, "shape": "spread then rounded"},
+  {"t0": 79.590, "t1": 79.750, "ph": "h",   "zh": "寒", "open": 0.50, "shape": "opening"},
+  {"t0": 79.750, "t1": 80.800, "ph": "a",   "zh": "寒", "open": 1.00, "shape": "wide open, jaw dropped (held E4)"},
+  {"t0": 80.800, "t1": 81.150, "ph": "n",   "zh": "寒", "open": 0.12, "shape": "closing to a hum (level falls 12 dB, no energy above 5 kHz)"},
+  {"t0": 81.200, "t1": 81.330, "ph": "(in)", "zh": "",  "open": 0.25, "shape": "breath in through parted lips (unvoiced noise)"},
+  {"t0": 81.455, "t1": 81.560, "ph": "w",   "zh": "我", "open": 0.25, "shape": "lips rounded forward, small (energy only below 1 kHz, pitch glides E4 to G4)"},
+  {"t0": 81.560, "t1": 81.900, "ph": "o",   "zh": "我", "open": 0.60, "shape": "round, open (A4)"},
+  {"t0": 81.930, "t1": 82.200, "ph": "s",   "zh": "思", "open": 0.08, "shape": "jaw closed, teeth together, lips drawn back narrow (hiss at 8-9 kHz, unvoiced)"},
+  {"t0": 82.210, "t1": 82.500, "ph": "ih",   "zh": "思", "open": 0.15, "shape": "still narrow and spread (B4)"},
+  {"t0": 82.500, "t1": 82.635, "ph": "n",   "zh": "念", "open": 0.12, "shape": "narrow, tongue up (nasal hum, pitch falls to F4)"},
+  {"t0": 82.635, "t1": 83.060, "ph": "yen", "zh": "念", "open": 0.90, "shape": "jaw drops: the widest opening of the phrase"},
+  {"t0": 83.070, "t1": 83.310, "ph": "n",   "zh": "你", "open": 0.10, "shape": "narrow (nasal hum)"},
+  {"t0": 83.310, "t1": 86.000, "ph": "i",   "zh": "你", "open": 0.25, "shape": "spread, a little apart, held"}
+ ],
+ "events": [
+  {"id": "han_open",  "t": 79.750, "dir": "up",   "what": "寒: jaw drops for the held 'ah'"},
+  {"id": "han_close", "t": 80.800, "dir": "down", "what": "寒: closes to the hum"},
+  {"id": "wo_open",   "t": 81.455, "dir": "up",   "what": "我: lips round and open"},
+  {"id": "si_close",  "t": 81.930, "dir": "down", "what": "思: jaw closes for the hiss"},
+  {"id": "nian_open", "t": 82.635, "dir": "up",   "what": "念: jaw drops on 'yen'"},
+  {"id": "ni_close",  "t": 83.070, "dir": "down", "what": "你: closes to the hum (after the shot's cut at 82.88)"}
+ ],
+ "shot": [81.464, 82.880]
+}

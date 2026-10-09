@@ -66,6 +66,14 @@ with no nation in it suits an agency with eight nations in it.
   a thin gold rim, a slanted pale-gold band and a tiny pale-blue dot". Composite the real PNG or SVG in post wherever
   the patch is legible.
 
+**How the patch gets into a shot (`tools/emblem_patch.py`, placements in `tools/emblem_patch.json`).** The tool
+composites `emblem_final_small.png` into the painted keyframe (lit and creased by the cloth under it; the old keyframe
+is kept as `_vN`) and, for a shot with a roto take, tracks the cloth around it and writes a carried patch into the
+take's roto folder (`pkey.jpg`, `pmask.png`, `meta.json["patch"]`). The roto shader then shows the painted emblem on
+the chest's own motion and hides it where the take shows something in front. Up to 8 per clip, no section-file edit.
+Re-run the tool after `tools/roto_prep.py` is re-run on a listed take, and add an entry for any new keyframe with a
+visible chest patch.
+
 ### Alternatives considered for the emblem
 
 | Alternative | Why it was rejected |

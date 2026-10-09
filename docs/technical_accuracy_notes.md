@@ -60,6 +60,28 @@
 - **For a fully lit Earth on the south-pole horizon, the Sun is behind the astronaut**, so her **long shadow points toward Earth**.
 - **The Sun is also on the horizon at the pole** (never more than ±1.5°). It **circles the whole horizon once a month**. Shadows are **tens to hundreds of meters long**: about 65 m for a person at 1.5° sun elevation, about 200 m at 0.5°.
 
+## 4b. Earth from Guanghan (the sky of the breakdown, shots 6.1–6.4)
+
+*Numbers from JPL Horizons (run for this film on 2026-10-07): target 399 (Earth), centre `coord@301`, geodetic
+222.8°E, −89.45°, 1.5 km; quantities 1, 4, 10, 13, 14, 15, 16, 17, 23, 24.*
+
+- **Mid-Autumn is the wrong night.** At every Mid-Autumn full Moon from 2035 to 2040 the Earth is **5–7° below the
+  station's horizon** and 0.2–0.5% lit, with the Sun 5° from it. There is no Earth to see.
+- **The night we use: 2037-Sep-10 02:30 UT** (Sep 9, 9:30 pm in Austin), the new Moon fifteen days before Mid-Autumn
+  (Sep 24). The Earth is **99.7% lit, +4.8° above the horizon, 2.05° across**; sub-observer point 6.6°N 147.7°E; phase
+  angle 6.2°. A full Earth at the lunar south pole always coincides with a new Moon at home, so 6.1 is a moonless sky
+  and the children make their own Moon with a flashlight (the Copernican lesson of 3.4).
+- **Orientation.** Screen-up is the station's zenith, taken as the lunar south pole (RA 86.86°, Dec −65.64°):
+  `north = zenithPA − NP.ang`, `sunPA = zenithPA − SN.ang`. Renderer values (`render/src/scenes/earthview.js`):
+  `subLat 6.6, subLon 147.7, north 131.3, phase 6.2, sunPA 25.8`. The Earth hangs "south-up": Australia upper left, East
+  Asia lower right, the Pacific lower left. Hangzhou is on the disc in morning daylight; Austin is on the far side, in
+  its night. Do not rotate it to look familiar.
+- **Light that follows.** The Sun is on the horizon directly behind her, opposite the Earth: her shadow runs out in
+  front of her, toward the Earth; no sun glare or corona anywhere near the Earth; her face is in the shade of her own
+  helmet, lit by earthlight, so a clear visor with a readable face is right.
+- **Licences taken, on purpose.** The Earth is drawn 1.2x its true size in 6.2 so it reads on a phone. The reflection
+  on her visor in 6.3 is far larger than a convex visor would show (a true image would be about 3 mm across).
+
 ## 5. Time, light-delay and calls
 
 - **Earth–Moon distance** averages **384,400 km**, ranging from about 363,000 to 405,000 km.
@@ -161,7 +183,7 @@
 | Starry sky behind sunlit astronauts | Black sky without stars, unless in shadow, at night, or a long exposure. |
 | Giant Earth filling the sky | ~2° wide. Use a telephoto lens for drama, honestly. |
 | Earth rising over the horizon everywhere on the Moon | Only from orbit, the limb, and the **poles** (our base!). Elsewhere it's fixed. |
-| Full Earth while Earthlings see a full Moon | Opposite phases. Full Moon on Earth means new Earth for her. |
+| Full Earth while Earthlings see a full Moon | Opposite phases. Full Moon on Earth means new Earth for her. Our breakdown is therefore set at new Moon (§4b). |
 | Blue sky, sunsets, glowing atmosphere, lens haze | None. Instant shadows and black sky. |
 | Soft shadows, ambient fill everywhere | Hard shadows. Fill only from regolith bounce and Earthshine. |
 | Explosions with fireballs and sound | No sound, no fire-cloud. Flash, debris on straight parabolas, a gas puff that vanishes. |

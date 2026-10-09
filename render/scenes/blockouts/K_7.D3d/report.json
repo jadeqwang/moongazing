@@ -1,0 +1,523 @@
+{
+ "id": "K_7.D3d",
+ "title": "galley wall screen: the crew watch M’s play with Jade",
+ "people": {
+  "jade": {
+   "headTurnDeg": 7,
+   "headPitchDeg": -2,
+   "arms": {
+    "R": {
+     "reach": 0.97,
+     "handBehind": -0.01,
+     "elbowBehind": 0.05,
+     "target": "point"
+    },
+    "L": {
+     "reach": 0.97,
+     "handBehind": -0.01,
+     "elbowBehind": 0.05,
+     "target": "point"
+    }
+   },
+   "eye": [
+    0.01,
+    1.56,
+    0.85
+   ]
+  },
+  "adaeze": {
+   "headTurnDeg": 13,
+   "headPitchDeg": -2,
+   "arms": {
+    "R": {
+     "reach": 0.38,
+     "handBehind": -0.24,
+     "elbowBehind": -0.06,
+     "target": "jade.shoulderL"
+    },
+    "L": {
+     "reach": 0.97,
+     "handBehind": 0,
+     "elbowBehind": 0.05,
+     "target": "point"
+    }
+   },
+   "eye": [
+    0.42,
+    1.59,
+    0.64
+   ]
+  },
+  "chen": {
+   "headTurnDeg": 15,
+   "headPitchDeg": -4,
+   "arms": {
+    "R": {
+     "reach": 0.97,
+     "handBehind": -0.01,
+     "elbowBehind": 0.05,
+     "target": "point"
+    },
+    "L": {
+     "reach": 0.97,
+     "handBehind": -0.01,
+     "elbowBehind": 0.05,
+     "target": "point"
+    }
+   },
+   "eye": [
+    -0.45,
+    1.68,
+    0.65
+   ]
+  },
+  "arjun": {
+   "headTurnDeg": 22,
+   "headPitchDeg": -3,
+   "arms": {
+    "R": {
+     "reach": 0.97,
+     "handBehind": -0.01,
+     "elbowBehind": 0.05,
+     "target": "point"
+    },
+    "L": {
+     "reach": 0.32,
+     "handBehind": -0.09,
+     "elbowBehind": -0.01,
+     "target": "chin"
+    }
+   },
+   "eye": [
+    -0.91,
+    1.64,
+    0.61
+   ]
+  },
+  "layla": {
+   "headTurnDeg": 21,
+   "headPitchDeg": -1,
+   "arms": {
+    "R": {
+     "reach": 0.97,
+     "handBehind": -0.03,
+     "elbowBehind": 0.04,
+     "target": "point"
+    },
+    "L": {
+     "reach": 0.97,
+     "handBehind": -0.03,
+     "elbowBehind": 0.04,
+     "target": "point"
+    }
+   },
+   "eye": [
+    0.92,
+    1.58,
+    0.47
+   ]
+  }
+ },
+ "screens": {
+  "screen": {
+   "jade": {
+    "distM": 0.85,
+    "obliquityDeg": 4,
+    "seesFront": true,
+    "visibleFrac": 1,
+    "blockedBy": [],
+    "gazeOffDeg": 8,
+    "verdict": "sees it"
+   },
+   "adaeze": {
+    "distM": 1.15,
+    "obliquityDeg": 22,
+    "seesFront": true,
+    "visibleFrac": 1,
+    "blockedBy": [],
+    "gazeOffDeg": 1,
+    "verdict": "sees it"
+   },
+   "arjun": {
+    "distM": 1.42,
+    "obliquityDeg": 40,
+    "seesFront": true,
+    "visibleFrac": 1,
+    "blockedBy": [],
+    "gazeOffDeg": 1,
+    "verdict": "sees it"
+   },
+   "chen": {
+    "distM": 1.16,
+    "obliquityDeg": 25,
+    "seesFront": true,
+    "visibleFrac": 1,
+    "blockedBy": [],
+    "gazeOffDeg": 1,
+    "verdict": "sees it"
+   },
+   "layla": {
+    "distM": 1.54,
+    "obliquityDeg": 37,
+    "seesFront": true,
+    "visibleFrac": 1,
+    "blockedBy": [],
+    "gazeOffDeg": 1,
+    "verdict": "sees it"
+   }
+  }
+ },
+ "cameras": {
+  "A": {
+   "people": {
+    "jade": {
+     "faceAngleDeg": 162,
+     "view": "back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1214.7,
+      410.2
+     ],
+     "inFrame": true
+    },
+    "adaeze": {
+     "faceAngleDeg": 152,
+     "view": "back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      509.6,
+      380.2
+     ],
+     "inFrame": true
+    },
+    "chen": {
+     "faceAngleDeg": 127,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      2075.1,
+      221.4
+     ],
+     "inFrame": false
+    },
+    "arjun": {
+     "faceAngleDeg": 98,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      2826.1,
+      283.4
+     ],
+     "inFrame": false
+    },
+    "layla": {
+     "faceAngleDeg": 115,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      -585.2,
+      409
+     ],
+     "inFrame": false
+    }
+   },
+   "screens": {
+    "screen": {
+     "angleDeg": 7,
+     "shows": "screen",
+     "visibleFrac": 0.6,
+     "cornersPx": [
+      [
+       332.3,
+       13.7
+      ],
+      [
+       1749.6,
+       27.1
+      ],
+      [
+       1725.2,
+       799
+      ],
+      [
+       352.7,
+       821.5
+      ]
+     ]
+    }
+   }
+  },
+  "B": {
+   "people": {
+    "jade": {
+     "faceAngleDeg": 72,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      2595.8,
+      676.8
+     ],
+     "inFrame": false
+    },
+    "adaeze": {
+     "faceAngleDeg": 43,
+     "view": "three-quarter",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "jade.hair",
+      "jade.head",
+      "jade.nose"
+     ],
+     "headPx": [
+      2610.2,
+      646.8
+     ],
+     "inFrame": false
+    },
+    "chen": {
+     "faceAngleDeg": 71,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1590.3,
+      394.7
+     ],
+     "inFrame": true
+    },
+    "arjun": {
+     "faceAngleDeg": 71,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      645.6,
+      417.4
+     ],
+     "inFrame": true
+    },
+    "layla": {
+     "faceAngleDeg": 30,
+     "view": "three-quarter",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "jade.hair",
+      "jade.glasses",
+      "jade.head",
+      "jade.nose"
+     ],
+     "headPx": [
+      2735.1,
+      675
+     ],
+     "inFrame": false
+    }
+   },
+   "screens": {
+    "screen": {
+     "angleDeg": 83,
+     "shows": "screen",
+     "visibleFrac": 1,
+     "cornersPx": [
+      [
+       5799.6,
+       -261
+      ],
+      [
+       7388.6,
+       -2732.2
+      ],
+      [
+       8505.5,
+       5223.2
+      ],
+      [
+       6015.5,
+       1891.8
+      ]
+     ]
+    }
+   }
+  },
+  "top": {
+   "people": {
+    "jade": {
+     "faceAngleDeg": 93,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      960,
+      575.1
+     ],
+     "inFrame": true
+    },
+    "adaeze": {
+     "faceAngleDeg": 86,
+     "view": "profile",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "hull"
+     ],
+     "headPx": [
+      1249.6,
+      442.4
+     ],
+     "inFrame": true
+    },
+    "chen": {
+     "faceAngleDeg": 88,
+     "view": "profile",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "hull"
+     ],
+     "headPx": [
+      634.4,
+      446.2
+     ],
+     "inFrame": true
+    },
+    "arjun": {
+     "faceAngleDeg": 80,
+     "view": "profile",
+     "headVisibleFrac": 0.29,
+     "blockedBy": [
+      "hull"
+     ],
+     "headPx": [
+      330.2,
+      432.8
+     ],
+     "inFrame": true
+    },
+    "layla": {
+     "faceAngleDeg": 77,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1582.2,
+      343.5
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "screen": {
+     "angleDeg": 73,
+     "shows": "screen",
+     "visibleFrac": 1,
+     "cornersPx": [
+      [
+       1497,
+       1237.4
+      ],
+      [
+       423,
+       1237.4
+      ],
+      [
+       544.9,
+       1080.4
+      ],
+      [
+       1375.1,
+       1080.4
+      ]
+     ]
+    }
+   }
+  },
+  "wide": {
+   "people": {
+    "jade": {
+     "faceAngleDeg": 137,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1037.5,
+      416.1
+     ],
+     "inFrame": true
+    },
+    "adaeze": {
+     "faceAngleDeg": 170,
+     "view": "back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      867,
+      429.1
+     ],
+     "inFrame": true
+    },
+    "chen": {
+     "faceAngleDeg": 113,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1335.6,
+      339.8
+     ],
+     "inFrame": true
+    },
+    "arjun": {
+     "faceAngleDeg": 91,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1528.6,
+      351
+     ],
+     "inFrame": true
+    },
+    "layla": {
+     "faceAngleDeg": 163,
+     "view": "back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      566.9,
+      474.8
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "screen": {
+     "angleDeg": 28,
+     "shows": "screen",
+     "visibleFrac": 0.52,
+     "cornersPx": [
+      [
+       424.6,
+       195.6
+      ],
+      [
+       1075.7,
+       197.8
+      ],
+      [
+       1071.7,
+       559.2
+      ],
+      [
+       447,
+       637.6
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

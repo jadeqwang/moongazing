@@ -158,11 +158,12 @@ export const rocketPad = {
     const sp = (shot.params && shot.params.speed) || 1, off = (shot.params && shot.params.offset) || 0;
     lt = off + lt * sp;
     ctx.pipe.layer((g) => { g.translate(shot.params.shiftX || 0, 0); this.D.draw(g, lt); }, { mode: 'gold', seed: 7 });
-    // the agency seal on the fairing: one fleck of vermilion with a pale blue dot
+    // the agency emblem on the fairing: a pale blue dot in a faint sunbeam (no red: docs/identity.md)
     const a = smooth(1.5, 1.9, lt);
     if (a > 0) ctx.pipe.layer((g) => {
-      g.translate(shot.params.shiftX || 0, 0); g.globalAlpha = a; g.fillStyle = '#B9372C'; g.fillRect(1240 - 7, 388, 14, 14);
-      g.fillStyle = '#9CC3DD'; g.beginPath(); g.arc(1240, 395, 2.6, 0, Math.PI * 2); g.fill();
+      g.translate(shot.params.shiftX || 0, 0); g.globalAlpha = a * 0.5; g.strokeStyle = '#9CC3DD'; g.lineWidth = 1.2;
+      g.beginPath(); g.moveTo(1240 - 9, 395 + 9); g.lineTo(1240 + 9, 395 - 9); g.stroke();
+      g.globalAlpha = a; g.fillStyle = '#9CC3DD'; g.beginPath(); g.arc(1240, 395, 3.4, 0, Math.PI * 2); g.fill();
     }, { mode: 'over' });
   },
 };

@@ -1,3 +1,5 @@
+> **On-screen name (Oct 8 2026, Jade):** the station is **International Moonbase / 国际月球基地** in everything a viewer sees; "Guanghan" / 广寒 / 廣寒 and the 廣寒 seal survive only in file names and internal notes like this one.
+
 # 广寒 Guanghan Station — layout bible (canonical, v2 · 2026-10-07)
 
 Every moonbase frame — finished or mid-construction, interior or exterior, any paper — must match this document and
@@ -59,6 +61,10 @@ Sources:
   - Earth is drawn south-up.
 - **Sun:**
   - Any bearing; it circles once per 29.5 days. Its elevation is −1.5° to +1.5°.
+  - **Sense:** the Moon turns the same way as the Earth, so at the south pole the Sun moves **right to left** along the
+    horizon: its bearing *decreases*, by 360° / 29.53 d = 12.2° per day (anticlockwise on the plan, and anticlockwise in
+    the 7.A jiehua view). Shadows are 1 / tan(elevation) times the caster's height: 38× at 1.5°, 48× at 1.2°. The 7.A
+    speed-build (`render/src/scenes/buildsite.js`, `SUN`) uses bearing = 200° − 12.19° × day and 1.2°.
   - **Earth's phase follows from the Sun's bearing.**
     - Sun behind the viewer looking at Earth: full Earth.
     - Sun near Earth's bearing: new Earth (this is 6.2, Mid-Autumn).
@@ -121,6 +127,7 @@ North (Earth) is up. The figure is not to scale outside the inner ring. Render: 
 | **Landing pad** | **090 / 2000** | sintered disc Ø 50 (dark, glassy), blast berm ring r 35 × 2.5 high with a gap toward the road | Plume ejecta studies keep landing zones about 2 km from assets. Pad ejecta goes toward Shackleton's rim, away from the base. The crew's Lanyue-class lander parks beside it. |
 | **PSR ice crater** | 225 / 700 | Ø 300, 45 deep | 7.B1. From inside, the base is hidden behind the crater wall. |
 | **Roads** (graded, 5 wide) | garage → pad (E); S node → reactor (S); S → PSR crater (SW) | | Cable runs alongside. |
+| **Work lamps** (round four, Oct 8; `L.lamps`, positions from `lampList()`; 17 in all, fitted at stage 5) | **6 mast lamps**: one head on each solar mast, 6.0 up, on a 1 m arm toward the hub. **8 road bollards**: south verge of the pad road, every 25 m from the jog (65, 14) to x = 240, the edge of the graded plateau. **1 airlock flood** over the garage door of the E mound. **2 hatch lamps**, one over the vermilion hatch of each node. | mast pool r 5.0 (40° half-angle); bollard 1.1 tall, pool r 4.0 (the road's width); flood pool r 6.0 on the apron; hatch pool r 3.0 | Cut-off floods aimed straight down. There is no air, so nothing glows round a lamp: each shows only as a hard-edged pool on the regolith and as the hard shadows of what stands in it (a mast's pole and tripod). Neutral white, where the habitat's windows are amber. In full sun the pools do not show. |
 
 **Jiehua compression.** In plates drawn as parallel-oblique 界画 (K_7.A, the 7.A1–A4 stages, and optionally 5.2), the
 pad and reactor are moved in to 100 m and 92 m while **keeping their bearings**, and are separated from the base by a
@@ -164,6 +171,7 @@ World axes: x = grid east, y = up, z = grid **south** (metres; origin = hub cent
 |---|---|---|---|---|---|---|
 | 1.5 | INK | (−78.3, 2.2, 116.1) = 140 m at bearing 214, eye 2.2 | 026° / −2.5° | HFOV 70° | 250° / 0.8°, terrain shadow below 10 m | 0.15, 0.41 |
 | 5.2 | JIEHUA plan | top-down, centre (0, −20) | north up | ortho 262 m wide | plate light | — |
+| 5.2o (the K_5.2 plate since Oct 8) | JIEHUA plan-oblique | top-down, hub at (1040, 700) of 1920 × 1080; every height drawn straight up the page at plan scale. **Masts are drawn 1.6 × that size from their true feet** (`mastDraw`; 1.4 in round four, 1.6 since round five, Oct 9: the panels of M3 and M4 now overlap the edges of the SE and SW mounds and are drawn in front of them), and M2's tripod is turned 60° to keep its foot off the road's edge (`mastNudge`). | north up | ortho 331 m wide (5.8 px per metre) | plate light | — (the roundel sits upper left, the label lower left) |
 | 6.2 | RUBBING/INK | (2568, 141, −454) = Shackleton rim, 2.6 km at bearing 080 | 355° / −2.3° | HFOV 55° | 015° / 0.3° (new Earth) | 0.58, 0.39. **The base is behind-left: never in 6.2.** |
 | 7.A, 7.A1–A4 | GOLD jiehua | from bearing 315, elevation 33°, target (22, 0, 22) | 135° / −33° | ortho 210 m wide, compressed pad and reactor | plate light | — (pad upper left, reactor upper right) |
 | 7.B1 | INK | PSR crater floor (−497, −63, 498) | 057° / −3.5° | HFOV 62° | crater in shadow; helmet lamp only | — (base hidden by the crater wall) |
@@ -196,6 +204,7 @@ actual horizon. The diameter is 1.9° of the horizontal field of view (≈ 75 px
   - 4 tunnels in a cross;
   - 2 bare round end-nodes (N, S);
   - 1 comms tower to the north-northwest.
+  - at night, in terrain shadow: the work lamps' pools, never a halo (section 3).
 - **Masts are tall:** the panel bottoms are higher than the cupola's sill, and the panel tops are almost twice the
   height of the cupola top.
 - **Earth** is always at G-N, low on the horizon, 1.9° across, and composited, never painted by the model.
@@ -226,3 +235,12 @@ actual horizon. The diameter is 1.9° of the horizontal field of view (≈ 75 px
   - **K_7.A:** one mast panel is still long.
   - **K_4.7:** the Moon is slightly larger than 0.5°.
   - **K_5.4:** the base is at its stage-3 look (Day 001), which is correct for 5.4.
+- **Round 4 (2026-10-08 night, `docs/reviews/rev4_base_report.md`):**
+  - **Work lamps** added to the layout and the model (table in section 3). Lit in 7.B6 by the engine (`render/src/scenes/worklamps.js`, which projects `lampList()` through the shot's camera): from that camera the near mast's pool (M4) and three road bollards are in frame, and the HUD counts 21 lights. Marked on the 5.2 plan (a lamp head on each mast, four posts on the road).
+  - **Not lit elsewhere, by design:** 1.5 (the pools are two-pixel slivers from eye height), 7.E1 (the ground outside is in full sun), the 7.A build cuts (stages before the lamps are fitted; 7.A5 is in full sun).
+  - **K_5.2:** the six masts redrawn 1.4 × larger with gridded panels (the rev 3 plate is `K_5.2_v2.jpg`). Why a mast at plan scale looked small: a mound seen from above shows its whole 22 m footprint, so a 20 m mast came out 0.94 of a mound on the page; the side views show 2.7 to 3.8. It is 1.32 now, like the other picture that looks down on the station (7.A5, about 1.2). 1.4 is the most the sheet takes before the two south masts' panels touch the SE and SW mounds.
+- **Round 3 (2026-10-08, `docs/reviews/rev3_polish_report.md`):**
+  - **K_7.B6:** repainted: the mounds are heaped regolith with no windows; the engine lights the model's 17 lights (dome, sill portholes, hub windows, tunnel portholes, S node window and hatch lamp).
+  - **K_1.5:** the tower is cut down to about 1.3 mound heights (it was 2.2).
+  - **K_7.A:** the six mast panels measured: 130 to 159 px, growing with nearness; none stands out. Closed without an edit.
+  - **K_1.4a** (Earth, the launch pad): the rocket is the Long March 10 class vehicle of 1.2 and 4.1 (core, two boosters, capsule, escape tower).

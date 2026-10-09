@@ -1,0 +1,291 @@
+{
+ "id": "K_7.C5a",
+ "title": "galley bench: Adaeze shows Anastasia the twins’ lost tooth",
+ "people": {
+  "adaeze": {
+   "headTurnDeg": 16,
+   "headPitchDeg": -23,
+   "arms": {
+    "R": {
+     "reach": 0.73,
+     "handBehind": -0.35,
+     "elbowBehind": -0.09,
+     "target": "tablet:BR"
+    },
+    "L": {
+     "reach": 0.76,
+     "handBehind": -0.42,
+     "elbowBehind": -0.09,
+     "target": "tablet:BL"
+    }
+   },
+   "eye": [
+    -0.21,
+    1.18,
+    0.21
+   ]
+  },
+  "anastasia": {
+   "headTurnDeg": 43,
+   "headPitchDeg": -19,
+   "arms": {
+    "R": {
+     "reach": 0.61,
+     "handBehind": -0.07,
+     "elbowBehind": 0.13,
+     "target": "lap"
+    },
+    "L": {
+     "reach": 0.47,
+     "handBehind": -0.14,
+     "elbowBehind": -0.06,
+     "target": "mouth"
+    }
+   },
+   "eye": [
+    0.24,
+    1.17,
+    0.29
+   ]
+  }
+ },
+ "screens": {
+  "tablet": {
+   "adaeze": {
+    "distM": 0.43,
+    "obliquityDeg": 25,
+    "seesFront": true,
+    "visibleFrac": 0.92,
+    "blockedBy": [
+     "adaeze.handL",
+     "adaeze.handR"
+    ],
+    "gazeOffDeg": 5,
+    "verdict": "sees it"
+   },
+   "anastasia": {
+    "distM": 0.47,
+    "obliquityDeg": 38,
+    "seesFront": true,
+    "visibleFrac": 0.92,
+    "blockedBy": [
+     "adaeze.handL",
+     "adaeze.handR"
+    ],
+    "gazeOffDeg": 4,
+    "verdict": "sees it"
+   }
+  }
+ },
+ "cameras": {
+  "hero": {
+   "people": {
+    "adaeze": {
+     "faceAngleDeg": 51,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      582.7,
+      331.1
+     ],
+     "inFrame": true
+    },
+    "anastasia": {
+     "faceAngleDeg": 28,
+     "view": "three-quarter",
+     "headVisibleFrac": 0.71,
+     "blockedBy": [
+      "anastasia.handL",
+      "anastasia.forearmL"
+     ],
+     "headPx": [
+      1452.5,
+      351.2
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 129,
+     "shows": "back of the device",
+     "visibleFrac": 0,
+     "cornersPx": [
+      [
+       1387,
+       778.5
+      ],
+      [
+       951.4,
+       799.2
+      ],
+      [
+       882.2,
+       1035.8
+      ],
+      [
+       1298.3,
+       1006.9
+      ]
+     ]
+    }
+   }
+  },
+  "rear": {
+   "people": {
+    "adaeze": {
+     "faceAngleDeg": 138,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1421.6,
+      436.1
+     ],
+     "inFrame": true
+    },
+    "anastasia": {
+     "faceAngleDeg": 124,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      424.9,
+      449.9
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 4,
+     "shows": "screen",
+     "visibleFrac": 0.92,
+     "cornersPx": [
+      [
+       839.3,
+       433.7
+      ],
+      [
+       1167.9,
+       428
+      ],
+      [
+       1173.7,
+       665.2
+      ],
+      [
+       843.6,
+       671.9
+      ]
+     ]
+    }
+   }
+  },
+  "top": {
+   "people": {
+    "adaeze": {
+     "faceAngleDeg": 110,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      788.2,
+      489.6
+     ],
+     "inFrame": true
+    },
+    "anastasia": {
+     "faceAngleDeg": 104,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1181.8,
+      567.6
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 47,
+     "shows": "screen",
+     "visibleFrac": 0.92,
+     "cornersPx": [
+      [
+       983.3,
+       780.3
+      ],
+      [
+       822.2,
+       756.2
+      ],
+      [
+       838.3,
+       679.4
+      ],
+      [
+       992.5,
+       702.5
+      ]
+     ]
+    }
+   }
+  },
+  "side": {
+   "people": {
+    "adaeze": {
+     "faceAngleDeg": 70,
+     "view": "profile",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "anastasia.hair"
+     ],
+     "headPx": [
+      1068.9,
+      225.7
+     ],
+     "inFrame": true
+    },
+    "anastasia": {
+     "faceAngleDeg": 147,
+     "view": "back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      869.2,
+      284.9
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 70,
+     "shows": "screen",
+     "visibleFrac": 0.88,
+     "cornersPx": [
+      [
+       413.1,
+       594.1
+      ],
+      [
+       526.6,
+       548.3
+      ],
+      [
+       671,
+       742.9
+      ],
+      [
+       571.9,
+       808.3
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

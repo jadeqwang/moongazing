@@ -11,7 +11,7 @@ node tools/render.mjs --encode 0-212 --framedir out/frames_animatic_540 --out ou
 node tools/serve.mjs                            # http://127.0.0.1:8765/index.html?scale=0.5&play=1&debug=1
 ```
 
-`--encode` muxes the film's audio, trimmed sample-exactly from the first frame's time and encoded as AAC 320k. The audio is never altered otherwise. Which file that is comes from `data/audio.json`, written by `node tools/audio_info.mjs`: the master `media/audio/moongazing_master.wav` (or `.mp3`) when it exists, else the original `inputs/moongazing.mp3` (212.0 s). Run `audio_info.mjs` again when the master lands. The credits section stretches to the new duration, and the lint follows. Frame files are named by their global frame index (`round(t*24)`), so ranges can be re-rendered and resumed independently.
+`--encode` muxes the film's audio, trimmed sample-exactly from the first frame's time and encoded as AAC 320k. The audio is never altered otherwise. Which file that is comes from `data/audio.json`, written by `node tools/audio_info.mjs`: the master `media/audio/moongazing_2down_master.wav` (or `.mp3`) when it exists, else the recording itself, `inputs/Moongazing - 2 semitones down.mp3` (208.36 s). Run `audio_info.mjs` again when the master lands. The credits section stretches to the new duration, and the lint follows. Frame files are named by their global frame index (`round(t*24)`), so ranges can be re-rendered and resumed independently.
 
 ## Layer model (per frame)
 
@@ -27,18 +27,23 @@ node tools/serve.mjs                            # http://127.0.0.1:8765/index.ht
 
 `src/sections/NN_*.js`, one file per song section:
 
+Times are for the lower-key recording the film has been cut to since Oct 9 (`inputs/Moongazing - 2 semitones down.mp3`,
+master `media/audio/moongazing_2down_master.wav`, 210.86 s). The grid and lyric timing of the first recording are kept in
+`analysis/v1/`; `analysis/v2/time_map.json` carries any old time to the new one, and `analysis/v2/NOTES.md` says how the
+two recordings differ.
+
 | File | Section | Range (s) |
 |---|---|---|
-| `00_intro` | cold open | 0–15.67 |
-| `01_intro_b` | intro B | 15.67–32.42 |
-| `02_verse1` | verse 1 | –46.82 |
-| `03_verse2` | verse 2 | –76.11 |
-| `04_hook` | hook | –101.33 |
-| `05_interlude` | interlude | –111.95 |
-| `06_breakdown` | breakdown | –122.77 |
-| `07_drop` | drop | –189.86 |
-| `08_outro` | outro | –212 |
-| `09_credits` | dedication and colophon (engine owner) | 212 → end of the audio (at least 11 s) |
+| `00_intro` | cold open | 0–15.69 |
+| `01_intro_b` | intro B | 15.69–32.23 |
+| `02_verse1` | verse 1 | –46.16 |
+| `03_verse2` | verse 2 | –75.08 |
+| `04_hook` | hook | –99.83 |
+| `05_interlude` | interlude | –110.28 |
+| `06_breakdown` | breakdown | –120.96 |
+| `07_drop` | drop | –187.32 |
+| `08_outro` | outro | –204.19 (the last chord) |
+| `09_credits` | dedication and colophon (engine owner) | 204.19 → 215.19 (at least 11 s, or the end of the audio if later) |
 
 Each file exports `range` and a default `shots(B, X, L)`:
 - `B` is the beat grid: `B.bar(n, beat)` gives exact beat times.
@@ -61,15 +66,30 @@ It lists the shots still on placeholders.
 
 Use 5–6 workers. At 10 or more, SwiftShader pages run short of memory, images fail to decode and 2D layers can silently drop out of a frame, so `render.mjs` caps workers at 6 unless you pass `--force-workers`.
 
+**Verify every full render.** A frame can be saved with a layer missing and no error (fullcut v4: the type flashed in and out, because frames from an overloaded 6-worker pass were kept by `--resume`). The 2D layer canvas is CPU-backed since Oct 8 so that it cannot be lost under memory pressure, but the check stays: renders are byte-deterministic, so `tools/render_verified.sh` renders a range twice in fresh 10 s chunks, compares the passes frame by frame and re-renders any frame that differs. `tools/flicker_check.py` then looks for anything that drops out and comes back over a still background. Never `--resume` over frames from a run that logged errors.
+
 `--frames` keeps going if a frame fails (for example a browser crash or a broken shader mid-edit). It reports the frames that failed and exits non-zero; rerun with `--resume` to fill them in.
 
 **Type rules:**
-- Lyrics are revealed on the sung onsets: words for English, characters for Chinese.
+- Lyrics are revealed on the sung onsets: words for English, characters for Chinese. No wipes: a word fades in whole,
+  a character is brushed on its own clock, short phrases and anything already sung at a cut are simply there (the rules
+  are written out above `lyricEN` in `sections/_lib.js`).
 - Lyrics never cover faces. Place them in the frame's 留白 and use `panel` when the ground is busy.
 - **One focal point per shot.** Lyrics and HUD never compete with the subject. In busy frames, guide the eye with the slow push (`from`/`to`) and a focal vignette: set `focus: [x, y]` on the shot (optional `vignette`, default 0.32).
 - Verse 1 is in inscription mode. Verse 2 is bigger. The hook is huge. The breakdown is white-on-black rubbing.
 - The drop uses HUD and data type only.
 - The outro closes on the 海上生明月 inscription.
+
+## Checks added Oct 8 (round three)
+
+```
+node tools/type_reveal_check.mjs --plot out/type_curves     # every piece of type: revealed ink per frame; flags anything early, popped, fast or uneven
+../.venv/bin/python tools/type_reveal_strips.py out/type_reveal_check.json out/frames_540 out/type_strips   # consecutive-frame strips to look at
+node tools/roto_holds.mjs                                   # how long each roto drawing is held; every hold on twos should be 2 film frames
+```
+
+A roto take played at a rate other than 1 (or through a `time` function) counts its twos in film frames
+(`drawingAt` in `src/roto/index.js`), so its drawings are held evenly.
 
 ## Assets
 
@@ -77,6 +97,25 @@ Use 5–6 workers. At 10 or more, SwiftShader pages run short of memory, images 
 - **Identity:** `media/chars/identity/` (the 望月 and 廣寒 seals and the emblem).
 - **Fonts:** `fonts/`, OFL.
 - **Moon:** `assets/moon/`, NASA SVS 4720, public domain.
+
+## The speed-build (`src/scenes/buildsite.js`, shots 7.A1–7.A5)
+
+Guanghan Station drawn live as gold line, from `scenes/guanghan3d/layout.js` and the stage plates' own camera; no plates.
+In a section file: `{ name: 'buildsite', params: { cut: 'shell' } }`. The storyboard is the `CUTS` table at the end of the
+file: for each cut a framing (`view`: centre in the 1920×1080 guide's px, zoom), a window of days and a `state(u)` that
+says how far each thing is built at `u` = 0..1 through the cut. The Sun's bearing is `sunBearing(day)`, so the HUD's day
+counter (`buildDay`), the shadows, the mast panels and the mounds' hatching all agree. Three layers per frame: shadows
+(ink), line (gold, with hidden lines erased as it is drawn), light (screen). It resets the canvas shadow state the
+drop's HUD leaves on the shared 2D layer context (see `docs/reviews/rev2_build_report.md`).
+
+## Work lamps (`src/scenes/worklamps.js`, shot 7.B6)
+
+The station's exterior lamps live in the layout (`scenes/guanghan3d/layout.js`: `L.lamps`, `lampList()`); the 3D model
+builds them (`build.js`). `lampView(shotId)` projects them through a model shot's own camera (`shots.js`) into the uv of
+that shot's painted plate: each lamp's pool on the ground as a polygon, a mast lamp's pole and tripod shadows, and the
+mast's pole as an occluder. `lampNight` lifts the shot's night off the painting where the light lands (inside the 'ink'
+layer that holds the night); `lampLight` adds the lit regolith in a 'screen' layer of its own. No halos: there is no air.
+In a section file: see `habitatLights` in `07_drop.js` (which lamps, when each strikes, which are counted by the HUD).
 
 ## Roto: redrawing generated clips (`src/roto/`)
 

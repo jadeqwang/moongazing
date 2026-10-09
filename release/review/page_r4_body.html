@@ -1,0 +1,184 @@
+<div class="wrap">
+  <header class="head">
+    <h1>Moongazing: the fixes from your answers, round four</h1>
+    <p class="lede">You answered the round-three cards on the evening of 8 October. Each fix that followed is below as a short clip of just that passage, with the same passage from the cut you watched under it. Only these passages were re-rendered. Nobody has watched them at speed with sound: every check was made on frames. Tick a card when it is right, or say what is still off; answers save here and Claude reads them back.</p>
+  </header>
+
+  <div class="bar" id="bar">
+    <span><strong id="count">0 / 0</strong> looked at</span>
+    <span class="state" id="state">Connecting…</span>
+    <nav class="jump" id="jump" aria-label="Jump to a card"></nav>
+  </div>
+
+  <section>
+    <h2>Fixed tonight</h2>
+    <div class="cards" id="cards-r4"></div>
+  </section>
+
+  <section>
+    <h2>Settled by your answers</h2>
+    <ul class="settled" id="settled"></ul>
+  </section>
+
+  <details class="older">
+    <summary>Round three: the cards you answered</summary>
+    <section>
+      <h2>Yours to decide</h2>
+      <div class="cards" id="cards-new"></div>
+    </section>
+    <section>
+      <h2>Done as you asked</h2>
+      <div class="cards" id="cards-old"></div>
+    </section>
+  </details>
+
+  <section>
+    <h2>The lyric video</h2>
+    <p class="note">Two versions on the film's night sky. In the karaoke version the lead vocal is removed during the sung lines only, so the humming and the vocalise in the drop are the original. Nobody has listened to the separation yet. Smaller copies play here; the full-quality files are on your machine.</p>
+    <div class="shelf">
+      <figure><video controls preload="none" playsinline src="lyric/full.mp4" poster="img6/lyric.jpg"></video><figcaption><b>With vocals</b> the full master</figcaption></figure>
+      <figure><video controls preload="none" playsinline src="lyric/karaoke.mp4" poster="img6/lyric.jpg"></video><figcaption><b>Karaoke</b> lead vocal removed, backing vocals kept</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>The whole cut, in parts</h2>
+    <p class="note">Cut v6 in eleven parts, half size, with the song. This is the cut you watched: tonight's fixes are not in these parts.</p>
+    <div class="shelf" id="shelf"></div>
+  </section>
+</div>
+
+<script>
+const CLIPS = [
+  { n: 1, t0: 0, t1: 17.54, name: "0:00 – 0:17", what: "Opening: the ink Moon, Chang'e, the rooftops, the terrace over the Huangpu" },
+  { n: 2, t0: 17.54, t1: 32.42, name: "0:17 – 0:32", what: "The International Moonbase card, the walkout, the family at the shore, the title" },
+  { n: 3, t0: 32.42, t1: 46.82, name: "0:32 – 0:47", what: "West Lake, the ribbons, the boat from behind, the silk, the teahouse begins" },
+  { n: 4, t0: 46.82, t1: 61.65, name: "0:47 – 1:02", what: "Teahouse, the reading finger, the lesson with the eclipse, the envelope" },
+  { n: 5, t0: 61.65, t1: 76.11, name: "1:02 – 1:16", what: "Training, the desk, the museum, strapping in" },
+  { n: 6, t0: 76.11, t1: 101.33, name: "1:16 – 1:41", what: "Ignition, the shore, the sung close-up, splash park, orbit, the pouch toast, landing" },
+  { n: 7, t0: 101.33, t1: 122.77, name: "1:41 – 2:03", what: "First steps, the plan of the base, name cards, the ridge, the rooftop, the crew looking up, 乡" },
+  { n: 8, t0: 122.77, t1: 147.64, name: "2:03 – 2:28", what: "Building the base, the drill, the valve, the glovebox, the radio array, lights on" },
+  { n: 9, t0: 147.64, t1: 161.77, name: "2:28 – 2:42", what: "Playroom, sofa, the crew and their families, the call" },
+  { n: 10, t0: 161.77, t1: 189.86, name: "2:42 – 3:10", what: "The play, one fingertip, the toast, the pull-back to the pale blue dot" },
+  { n: 11, t0: 189.86, t1: 221.04, name: "3:10 – 3:41", what: "Splashdown, the reunion, the rooftop, the tea cup, credits" },
+];
+const D = __CARDS__;
+const R4 = __CARDS4__;
+const SETTLED = __SETTLED__;
+const ALL = [...R4, ...D];
+
+const $ = (s, el = document) => el.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) { if (k === "class") e.className = v; else if (k === "html") e.innerHTML = v; else e.setAttribute(k, v); }
+  for (const k of kids) e.append(k); return e; };
+const answers = {};   // id -> { choice: string | string[], note: string }
+let db = null;
+
+const partAt = (at) => CLIPS.find((x) => at >= x.t0 && at < x.t1);
+function video(dir, at, poster) {
+  const c = partAt(at); if (!c) return null;
+  const start = Math.max(0, at - c.t0);
+  const v = el("video", { controls: "", preload: "none", playsinline: "", src: `${dir}/part_${c.n}.mp4#t=${start.toFixed(1)}` });
+  if (poster) v.setAttribute("poster", poster);
+  return v;
+}
+const fig = (node, label, cap) => el("figure", {}, node, el("figcaption", {}, ...(label ? [el("b", {}, label)] : []), cap));
+function options(d, what) {
+  const fs = el("fieldset", { class: "opts" }, el("legend", {}, d.q));
+  d.opts.forEach(([val, label, hint]) => {
+    const inp = el("input", { type: d.multi ? "checkbox" : "radio", name: `o-${d.id}`, value: val, id: `o-${d.id}-${val}` });
+    const lab = el("label", { class: "opt", for: inp.id }, inp, el("span", {}, label, ...(hint ? [el("small", {}, hint)] : [])));
+    inp.addEventListener("change", () => { collect(d); save(d); });
+    fs.append(lab);
+  });
+  what.append(fs);
+}
+function noteBox(d, what, placeholder) {
+  const ta = el("textarea", { id: `n-${d.id}`, placeholder, "aria-label": `Note for: ${d.title}` });
+  let timer; ta.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => { collect(d); save(d); }, 900); });
+  what.append(ta, el("div", { class: "saved", id: `s-${d.id}` }));
+}
+function stills(d, dir, media) {
+  const rest = d.more || []; if (!rest.length) return;
+  const p = el("div", { class: rest.length > 1 ? "pair" : "" });
+  rest.forEach(([, cap], k) => p.append(el("figure", {}, el("img", { src: `${dir}/${d.id}_${k}.jpg`, alt: cap, loading: "lazy" }), el("figcaption", {}, cap))));
+  media.append(p);
+}
+function render() {
+  const jump = $("#jump");
+  R4.forEach((d) => {
+    const media = el("div", { class: "media" });
+    const from = `from ${d.when.split(" ")[0]}`;
+    (d.clips || []).forEach(([file, label, cap]) => media.append(fig(el("video", { controls: "", preload: "none", playsinline: "", src: `clips7/${file}.mp4`, poster: `img7/${file}.jpg` }), label, cap)));
+    const before = d.at >= 0 ? video("clips6", d.at, d.bp ? `img7/${d.id}_before.jpg` : "") : null;
+    if (before) media.append(fig(before, "Before", `The cut you watched, ${from}`));
+    stills(d, "img7", media);
+    const what = el("div", { class: "what" }, el("div", { class: "when" }, d.when), el("h3", {}, d.title));
+    if (d.asked) what.append(el("blockquote", { class: "asked" }, el("span", { class: "who" }, "You wrote"), el("p", { html: d.asked })));
+    what.append(el("p", { html: d.body }));
+    if (d.short) what.append(el("p", { class: "short", html: `<b>Still short</b> ${d.short}` }));
+    options(d, what);
+    noteBox(d, what, "Still off? Say what.");
+    $("#cards-r4").append(el("article", { class: "card", id: d.id }, media, what));
+    jump.append(el("a", { href: `#${d.id}`, id: `j-${d.id}`, title: d.title }, d.when.split(" ")[0]));
+  });
+  SETTLED.forEach(([when, what, how]) => $("#settled").append(el("li", {}, el("span", { class: "t" }, when), el("b", {}, what), how)));
+  let n = 0;
+  D.forEach((d) => {
+    const media = el("div", { class: "media" });
+    const from = `from ${d.when.split(" ")[0]}`;
+    const now = d.at >= 0 ? video("clips6", d.at, d.p ? `img6/${d.id}.jpg` : "") : null;
+    if (now) media.append(fig(now, "Then", `Cut v6, ${from}`));
+    stills(d, "img6", media);
+    const what = el("div", { class: "what" }, el("div", { class: "when" }, d.decide ? `${String(++n).padStart(2, "0")} · ${d.when}` : d.when), el("h3", {}, d.title), el("p", { html: d.body }));
+    if (d.opts) options(d, what);
+    noteBox(d, what, d.decide ? "Note (optional)" : "Still off? Say what.");
+    const card = el("article", { class: "card", id: d.id }, media, what);
+    if (!media.childNodes.length) { card.style.gridTemplateColumns = "minmax(0, 1fr)"; media.remove(); }
+    $(d.decide ? "#cards-new" : "#cards-old").append(card);
+  });
+  const shelf = $("#shelf");
+  CLIPS.forEach((c) => shelf.append(el("figure", {}, el("video", { controls: "", preload: "none", playsinline: "", src: `clips6/part_${c.n}.mp4`, poster: `img6/part_${c.n}.jpg` }),
+    el("figcaption", {}, el("b", {}, c.name), ` ${c.what}`))));
+}
+function collect(d) {
+  const picked = [...document.querySelectorAll(`input[name="o-${d.id}"]:checked`)].map((i) => i.value);
+  answers[d.id] = { choice: d.multi ? picked : (picked[0] || ""), note: $(`#n-${d.id}`).value, touched: true };
+  paint(d);
+}
+function paint(d) {
+  const a = answers[d.id] || {};
+  document.querySelectorAll(`input[name="o-${d.id}"]`).forEach((i) => {
+    const on = d.multi ? (a.choice || []).includes(i.value) : a.choice === i.value;
+    i.checked = on; i.closest(".opt").classList.toggle("on", on); });
+  const j = $(`#j-${d.id}`); if (!j) return;
+  const noted = !!(a.note && a.note.trim());
+  j.classList.toggle("done", !!a.touched && (!!(a.choice && a.choice.length) || noted));
+  $("#count").textContent = `${R4.filter((x) => $(`#j-${x.id}`).classList.contains("done")).length} / ${R4.length}`;
+}
+async function save(d) {
+  const a = answers[d.id], s = $(`#s-${d.id}`);
+  try { localStorage.setItem("mg-decisions-r3", JSON.stringify(answers)); } catch (e) { /* private window */ }
+  if (!db) { s.textContent = "Kept in this browser only"; return; }
+  s.textContent = "Saving…";
+  try { await db.doc(`decisions/${d.id}`).set({ choice: a.choice, note: a.note, title: d.title, when: d.when, at: new Date().toISOString() }); s.textContent = "Saved"; }
+  catch (e) { s.textContent = "Could not save here; tell Claude in the chat instead"; }
+}
+function apply(id, data) {
+  const d = ALL.find((x) => x.id === id); if (!d || !data) return;
+  answers[id] = { choice: data.choice ?? (d.multi ? [] : ""), note: data.note || "", touched: true };
+  const ta = $(`#n-${id}`); if (document.activeElement !== ta) ta.value = answers[id].note;
+  paint(d);
+}
+render();
+try { const local = JSON.parse(localStorage.getItem("mg-decisions-r3") || "{}"); for (const [id, a] of Object.entries(local)) apply(id, a); } catch (e) { /* none */ }
+ALL.forEach(paint);
+(async () => {
+  const state = $("#state");
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) { state.textContent = "Answers stay in this browser; tell Claude your choices in the chat"; state.classList.add("warn"); return; }
+  state.textContent = "Answers save here; Claude can read them"; state.classList.add("ok");
+  db.collection("decisions").onSnapshot((snap) => snap.docs.forEach((doc) => apply(doc.id, doc.data())),
+    () => { state.textContent = "Lost the connection; answers stay in this browser"; state.className = "state warn"; });
+})();
+</script>

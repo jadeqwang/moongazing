@@ -1,0 +1,167 @@
+{
+ "id": "K_7.C3",
+ "title": "sofa: M watches Rare Earth, tablet on her raised knees, cat at her side",
+ "people": {
+  "M": {
+   "headTurnDeg": 0,
+   "headPitchDeg": -23,
+   "arms": {
+    "R": {
+     "reach": 0.74,
+     "handBehind": -0.3,
+     "elbowBehind": -0.12,
+     "target": "tablet:TR"
+    },
+    "L": {
+     "reach": 1.03,
+     "handBehind": -0.17,
+     "elbowBehind": -0.08,
+     "target": "point"
+    }
+   },
+   "eye": [
+    0.02,
+    0.88,
+    -0.12
+   ]
+  }
+ },
+ "screens": {
+  "tablet": {
+   "M": {
+    "distM": 0.26,
+    "obliquityDeg": 6,
+    "seesFront": true,
+    "visibleFrac": 0.68,
+    "blockedBy": [
+     "M.thighL",
+     "M.thighR"
+    ],
+    "gazeOffDeg": 6,
+    "verdict": "partly blocked"
+   }
+  }
+ },
+ "cameras": {
+  "front": {
+   "people": {
+    "M": {
+     "faceAngleDeg": 29,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1055.4,
+      223.7
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 130,
+     "shows": "back of the device",
+     "visibleFrac": 0,
+     "cornersPx": [
+      [
+       1445.4,
+       487.6
+      ],
+      [
+       967.2,
+       500.2
+      ],
+      [
+       919.1,
+       741
+      ],
+      [
+       1363.8,
+       721.5
+      ]
+     ]
+    }
+   }
+  },
+  "ots": {
+   "people": {
+    "M": {
+     "faceAngleDeg": 144,
+     "view": "back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1376.5,
+      431
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 21,
+     "shows": "screen",
+     "visibleFrac": 0.52,
+     "cornersPx": [
+      [
+       556.4,
+       414.8
+      ],
+      [
+       1145.2,
+       274.4
+      ],
+      [
+       1268.4,
+       697.2
+      ],
+      [
+       692.6,
+       890
+      ]
+     ]
+    }
+   }
+  },
+  "top": {
+   "people": {
+    "M": {
+     "faceAngleDeg": 107,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      982.9,
+      327.4
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 50,
+     "shows": "screen",
+     "visibleFrac": 0.68,
+     "cornersPx": [
+      [
+       1114.1,
+       667.3
+      ],
+      [
+       848.7,
+       667.3
+      ],
+      [
+       856.3,
+       548.4
+      ],
+      [
+       1103.6,
+       548.4
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

@@ -103,7 +103,9 @@ export class Pipeline {
     this.A = gl.target(); this.B = gl.target();
     this.cur = this.A;
     this.layerCanvas = makeCanvas(gl.W, gl.H);
-    this.lg = this.layerCanvas.getContext('2d');
+    // CPU-backed on purpose: a GPU-backed 2D canvas can lose its contents when the machine runs short of memory, and the
+    // frame is then saved with every 2D layer (all the type) missing. That was the flashing text in fullcut v4.
+    this.lg = this.layerCanvas.getContext('2d', { willReadFrequently: true });
     this.layerTex = gl.texture(this.layerCanvas);
     this.pPaper = gl.program(PAPER_FS, 'paper');
     this.pComp = gl.program(COMPOSITE_FS, 'composite');
@@ -129,9 +131,19 @@ export class Pipeline {
     g.setTransform(1, 0, 0, 1, 0, 0);
     g.globalAlpha = 1; g.globalCompositeOperation = 'source-over'; g.filter = 'none';
     g.clearRect(0, 0, this.layerCanvas.width, this.layerCanvas.height);
+    // commit the clear now. Chrome can lose a full-canvas clear that is followed by a clipped draw before anything reads
+    // the canvas: the last layer of the previous frame then ghosts into this one (doubled scale bar in the pull-back, a
+    // doubled brush in 0.1), and a frame depends on what the page drew before it. Verified with frames rendered alone
+    // against the same frames rendered in sequence (Oct 8).
+    g.getImageData(0, 0, 1, 1);
     g.setTransform(S, 0, 0, S, 0, 0);
     if (cam) applyCam2D(g, this.cam, S);
-    draw(g);
+    // every layer starts from the context's defaults and leaves nothing behind. State used to stay on the shared
+    // context (the drop's HUD shadow, line dashes, letter spacing…), so later layers and the next frame were drawn with
+    // it, and a frame depended on what the page had drawn before.
+    g.save(); g.beginPath();   // the current path is not part of the saved state
+    try { draw(g); } finally { g.restore(); }
+    if (g.isContextLost && g.isContextLost()) throw new Error('2D layer canvas lost its context');   // fail the frame so it is rendered again
     this.gl.update(this.layerTex, this.layerCanvas);
     const M = { ink: 0, over: 1, gold: 2, screen: 3 }[mode];
     this.apply(this.pComp, { uLayer: this.layerTex, uMode: { i: M }, uOpacity: opacity, uAbsorb: absorb, uSeed: seed });

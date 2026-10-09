@@ -1,0 +1,887 @@
+[
+ {
+  "id": "E1_wide",
+  "label": "7.E1 wide from behind: the Earth",
+  "raise": 0.7,
+  "pos": [
+   0.2,
+   8.22,
+   -2.3
+  ],
+  "target": [
+   0,
+   8.2,
+   6
+  ],
+  "hfov": 66,
+  "bearing": 358.6,
+  "pitch": -0.1,
+  "earth": {
+   "inFrame": true,
+   "x": 0.5186,
+   "y": 0.3793,
+   "r": 0.0138
+  },
+  "people": [
+   {
+    "id": "kenji",
+    "h": 1.71,
+    "seated": false,
+    "eyeY": 1.61,
+    "cupY": 1.61,
+    "cupAboveEye": 0,
+    "elbowDeg": 79,
+    "headUV": [
+     -0.041,
+     0.505
+    ]
+   },
+   {
+    "id": "anastasia",
+    "h": 1.72,
+    "seated": false,
+    "eyeY": 1.63,
+    "cupY": 1.67,
+    "cupAboveEye": 0.05,
+    "elbowDeg": 88,
+    "headUV": [
+     0.182,
+     0.5
+    ]
+   },
+   {
+    "id": "arjun",
+    "h": 1.75,
+    "seated": false,
+    "eyeY": 1.66,
+    "cupY": 1.76,
+    "cupAboveEye": 0.1,
+    "elbowDeg": 99,
+    "headUV": [
+     0.269,
+     0.49
+    ]
+   },
+   {
+    "id": "jade",
+    "h": 1.65,
+    "seated": true,
+    "eyeY": 1.22,
+    "cupY": 1.3,
+    "cupAboveEye": 0.08,
+    "elbowDeg": 100,
+    "headUV": [
+     0.429,
+     0.615
+    ]
+   },
+   {
+    "id": "lucia",
+    "h": 1.62,
+    "seated": true,
+    "eyeY": 1.21,
+    "cupY": 1.32,
+    "cupAboveEye": 0.11,
+    "elbowDeg": 109,
+    "headUV": [
+     0.544,
+     0.619
+    ]
+   },
+   {
+    "id": "layla",
+    "h": 1.67,
+    "seated": false,
+    "eyeY": 1.58,
+    "cupY": 1.6,
+    "cupAboveEye": 0.02,
+    "elbowDeg": 83,
+    "headUV": [
+     0.683,
+     0.518
+    ]
+   },
+   {
+    "id": "adaeze",
+    "h": 1.68,
+    "seated": false,
+    "eyeY": 1.59,
+    "cupY": 1.56,
+    "cupAboveEye": -0.03,
+    "elbowDeg": 77,
+    "headUV": [
+     0.808,
+     0.514
+    ]
+   },
+   {
+    "id": "chen",
+    "h": 1.78,
+    "seated": false,
+    "eyeY": 1.68,
+    "cupY": 1.8,
+    "cupAboveEye": 0.12,
+    "elbowDeg": 103,
+    "headUV": [
+     0.941,
+     0.479
+    ]
+   }
+  ]
+ },
+ {
+  "id": "E1b_faces",
+  "label": "7.E1b Adaeze in earthlight (Chen beside her)",
+  "raise": 0.62,
+  "pos": [
+   1.95,
+   8.16,
+   2.8
+  ],
+  "target": [
+   1.66,
+   8.17,
+   1.4
+  ],
+  "hfov": 47,
+  "bearing": 191.7,
+  "pitch": 0.4,
+  "earth": {
+   "inFrame": false
+  },
+  "people": [
+   {
+    "id": "kenji",
+    "h": 1.71,
+    "seated": false,
+    "eyeY": 1.61,
+    "cupY": 1.54,
+    "cupAboveEye": -0.07,
+    "elbowDeg": 69,
+    "headUV": [
+     1.998,
+     0.485
+    ]
+   },
+   {
+    "id": "anastasia",
+    "h": 1.72,
+    "seated": false,
+    "eyeY": 1.62,
+    "cupY": 1.61,
+    "cupAboveEye": -0.01,
+    "elbowDeg": 77,
+    "headUV": [
+     2.342,
+     0.463
+    ]
+   },
+   {
+    "id": "arjun",
+    "h": 1.75,
+    "seated": false,
+    "eyeY": 1.65,
+    "cupY": 1.7,
+    "cupAboveEye": 0.05,
+    "elbowDeg": 88,
+    "headUV": [
+     2.021,
+     0.434
+    ]
+   },
+   {
+    "id": "jade",
+    "h": 1.65,
+    "seated": true,
+    "eyeY": 1.22,
+    "cupY": 1.24,
+    "cupAboveEye": 0.02,
+    "elbowDeg": 89,
+    "headUV": [
+     3.681,
+     1.423
+    ]
+   },
+   {
+    "id": "lucia",
+    "h": 1.62,
+    "seated": true,
+    "eyeY": 1.21,
+    "cupY": 1.28,
+    "cupAboveEye": 0.07,
+    "elbowDeg": 99,
+    "headUV": [
+     3.145,
+     1.669
+    ]
+   },
+   {
+    "id": "layla",
+    "h": 1.67,
+    "seated": false,
+    "eyeY": 1.58,
+    "cupY": 1.53,
+    "cupAboveEye": -0.04,
+    "elbowDeg": 73,
+    "headUV": [
+     1.001,
+     0.511
+    ]
+   },
+   {
+    "id": "adaeze",
+    "h": 1.68,
+    "seated": false,
+    "eyeY": 1.58,
+    "cupY": 1.49,
+    "cupAboveEye": -0.09,
+    "elbowDeg": 69,
+    "headUV": [
+     0.545,
+     0.496
+    ]
+   },
+   {
+    "id": "chen",
+    "h": 1.78,
+    "seated": false,
+    "eyeY": 1.68,
+    "cupY": 1.76,
+    "cupAboveEye": 0.08,
+    "elbowDeg": 93,
+    "headUV": [
+     0.085,
+     0.361
+    ]
+   }
+  ]
+ },
+ {
+  "id": "E1c_close",
+  "label": "7.E1c two cups and the Earth (first frame)",
+  "raise": 0.52,
+  "pos": [
+   0,
+   7.87,
+   1.3
+  ],
+  "target": [
+   0,
+   8.02,
+   6
+  ],
+  "hfov": 36,
+  "bearing": 0,
+  "pitch": 1.8,
+  "earth": {
+   "inFrame": true,
+   "x": 0.5,
+   "y": 0.3532,
+   "r": 0.0275
+  },
+  "people": [
+   {
+    "id": "kenji",
+    "h": 1.71,
+    "seated": false,
+    "eyeY": 1.61,
+    "cupY": 1.45,
+    "cupAboveEye": -0.16,
+    "elbowDeg": 62,
+    "headUV": null
+   },
+   {
+    "id": "anastasia",
+    "h": 1.72,
+    "seated": false,
+    "eyeY": 1.62,
+    "cupY": 1.52,
+    "cupAboveEye": -0.1,
+    "elbowDeg": 66,
+    "headUV": [
+     -9.043,
+     -3.267
+    ]
+   },
+   {
+    "id": "arjun",
+    "h": 1.75,
+    "seated": false,
+    "eyeY": 1.65,
+    "cupY": 1.62,
+    "cupAboveEye": -0.03,
+    "elbowDeg": 75,
+    "headUV": [
+     -13.805,
+     -8.679
+    ]
+   },
+   {
+    "id": "jade",
+    "h": 1.65,
+    "seated": true,
+    "eyeY": 1.22,
+    "cupY": 1.16,
+    "cupAboveEye": -0.06,
+    "elbowDeg": 78,
+    "headUV": [
+     0.026,
+     0.735
+    ]
+   },
+   {
+    "id": "lucia",
+    "h": 1.62,
+    "seated": true,
+    "eyeY": 1.21,
+    "cupY": 1.2,
+    "cupAboveEye": 0,
+    "elbowDeg": 85,
+    "headUV": [
+     0.975,
+     0.767
+    ]
+   },
+   {
+    "id": "layla",
+    "h": 1.67,
+    "seated": false,
+    "eyeY": 1.57,
+    "cupY": 1.44,
+    "cupAboveEye": -0.13,
+    "elbowDeg": 64,
+    "headUV": [
+     9.866,
+     -4.278
+    ]
+   },
+   {
+    "id": "adaeze",
+    "h": 1.68,
+    "seated": false,
+    "eyeY": 1.58,
+    "cupY": 1.41,
+    "cupAboveEye": -0.17,
+    "elbowDeg": 63,
+    "headUV": [
+     8.769,
+     -2.087
+    ]
+   },
+   {
+    "id": "chen",
+    "h": 1.78,
+    "seated": false,
+    "eyeY": 1.68,
+    "cupY": 1.68,
+    "cupAboveEye": 0,
+    "elbowDeg": 79,
+    "headUV": [
+     86.293,
+     -27.284
+    ]
+   }
+  ]
+ },
+ {
+  "id": "E1c_close_end",
+  "label": "7.E1c two cups and the Earth (end pose: check clearance)",
+  "raise": 1,
+  "pos": [
+   0,
+   7.87,
+   1.3
+  ],
+  "target": [
+   0,
+   8.02,
+   6
+  ],
+  "hfov": 36,
+  "bearing": 0,
+  "pitch": 1.8,
+  "earth": {
+   "inFrame": true,
+   "x": 0.5,
+   "y": 0.3532,
+   "r": 0.0275
+  },
+  "people": [
+   {
+    "id": "kenji",
+    "h": 1.71,
+    "seated": false,
+    "eyeY": 1.62,
+    "cupY": 1.75,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 106,
+    "headUV": null
+   },
+   {
+    "id": "anastasia",
+    "h": 1.72,
+    "seated": false,
+    "eyeY": 1.63,
+    "cupY": 1.75,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 105,
+    "headUV": [
+     -9.044,
+     -3.283
+    ]
+   },
+   {
+    "id": "arjun",
+    "h": 1.75,
+    "seated": false,
+    "eyeY": 1.66,
+    "cupY": 1.8,
+    "cupAboveEye": 0.14,
+    "elbowDeg": 108,
+    "headUV": [
+     -13.809,
+     -8.707
+    ]
+   },
+   {
+    "id": "jade",
+    "h": 1.65,
+    "seated": true,
+    "eyeY": 1.23,
+    "cupY": 1.36,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 114,
+    "headUV": [
+     0.026,
+     0.733
+    ]
+   },
+   {
+    "id": "lucia",
+    "h": 1.62,
+    "seated": true,
+    "eyeY": 1.21,
+    "cupY": 1.34,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 115,
+    "headUV": [
+     0.975,
+     0.765
+    ]
+   },
+   {
+    "id": "layla",
+    "h": 1.67,
+    "seated": false,
+    "eyeY": 1.58,
+    "cupY": 1.71,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 106,
+    "headUV": [
+     9.868,
+     -4.303
+    ]
+   },
+   {
+    "id": "adaeze",
+    "h": 1.68,
+    "seated": false,
+    "eyeY": 1.59,
+    "cupY": 1.68,
+    "cupAboveEye": 0.09,
+    "elbowDeg": 101,
+    "headUV": [
+     8.769,
+     -2.102
+    ]
+   },
+   {
+    "id": "chen",
+    "h": 1.78,
+    "seated": false,
+    "eyeY": 1.68,
+    "cupY": 1.83,
+    "cupAboveEye": 0.14,
+    "elbowDeg": 109,
+    "headUV": [
+     86.358,
+     -27.363
+    ]
+   }
+  ]
+ },
+ {
+  "id": "E1_wide_end",
+  "label": "7.E1 wide (end pose: check Earth clearance)",
+  "raise": 1,
+  "pos": [
+   0.2,
+   8.22,
+   -2.3
+  ],
+  "target": [
+   0,
+   8.2,
+   6
+  ],
+  "hfov": 66,
+  "bearing": 358.6,
+  "pitch": -0.1,
+  "earth": {
+   "inFrame": true,
+   "x": 0.5186,
+   "y": 0.3793,
+   "r": 0.0138
+  },
+  "people": [
+   {
+    "id": "kenji",
+    "h": 1.71,
+    "seated": false,
+    "eyeY": 1.62,
+    "cupY": 1.75,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 106,
+    "headUV": [
+     -0.041,
+     0.505
+    ]
+   },
+   {
+    "id": "anastasia",
+    "h": 1.72,
+    "seated": false,
+    "eyeY": 1.63,
+    "cupY": 1.75,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 105,
+    "headUV": [
+     0.182,
+     0.5
+    ]
+   },
+   {
+    "id": "arjun",
+    "h": 1.75,
+    "seated": false,
+    "eyeY": 1.66,
+    "cupY": 1.8,
+    "cupAboveEye": 0.14,
+    "elbowDeg": 108,
+    "headUV": [
+     0.269,
+     0.49
+    ]
+   },
+   {
+    "id": "jade",
+    "h": 1.65,
+    "seated": true,
+    "eyeY": 1.23,
+    "cupY": 1.36,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 114,
+    "headUV": [
+     0.429,
+     0.615
+    ]
+   },
+   {
+    "id": "lucia",
+    "h": 1.62,
+    "seated": true,
+    "eyeY": 1.21,
+    "cupY": 1.34,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 115,
+    "headUV": [
+     0.544,
+     0.619
+    ]
+   },
+   {
+    "id": "layla",
+    "h": 1.67,
+    "seated": false,
+    "eyeY": 1.58,
+    "cupY": 1.71,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 106,
+    "headUV": [
+     0.683,
+     0.518
+    ]
+   },
+   {
+    "id": "adaeze",
+    "h": 1.68,
+    "seated": false,
+    "eyeY": 1.59,
+    "cupY": 1.68,
+    "cupAboveEye": 0.09,
+    "elbowDeg": 101,
+    "headUV": [
+     0.808,
+     0.514
+    ]
+   },
+   {
+    "id": "chen",
+    "h": 1.78,
+    "seated": false,
+    "eyeY": 1.68,
+    "cupY": 1.83,
+    "cupAboveEye": 0.14,
+    "elbowDeg": 109,
+    "headUV": [
+     0.941,
+     0.479
+    ]
+   }
+  ]
+ },
+ {
+  "id": "top",
+  "label": "plan (north up)",
+  "raise": 1,
+  "pos": null,
+  "target": null,
+  "hfov": null,
+  "bearing": null,
+  "pitch": null,
+  "earth": null,
+  "people": [
+   {
+    "id": "kenji",
+    "h": 1.71,
+    "seated": false,
+    "eyeY": 1.62,
+    "cupY": 1.75,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 106,
+    "headUV": [
+     0.332,
+     0.382
+    ]
+   },
+   {
+    "id": "anastasia",
+    "h": 1.72,
+    "seated": false,
+    "eyeY": 1.63,
+    "cupY": 1.75,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 105,
+    "headUV": [
+     0.382,
+     0.284
+    ]
+   },
+   {
+    "id": "arjun",
+    "h": 1.75,
+    "seated": false,
+    "eyeY": 1.66,
+    "cupY": 1.8,
+    "cupAboveEye": 0.14,
+    "elbowDeg": 108,
+    "headUV": [
+     0.42,
+     0.303
+    ]
+   },
+   {
+    "id": "jade",
+    "h": 1.65,
+    "seated": true,
+    "eyeY": 1.23,
+    "cupY": 1.36,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 114,
+    "headUV": [
+     0.472,
+     0.152
+    ]
+   },
+   {
+    "id": "lucia",
+    "h": 1.62,
+    "seated": true,
+    "eyeY": 1.21,
+    "cupY": 1.34,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 115,
+    "headUV": [
+     0.528,
+     0.152
+    ]
+   },
+   {
+    "id": "layla",
+    "h": 1.67,
+    "seated": false,
+    "eyeY": 1.58,
+    "cupY": 1.71,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 106,
+    "headUV": [
+     0.579,
+     0.295
+    ]
+   },
+   {
+    "id": "adaeze",
+    "h": 1.68,
+    "seated": false,
+    "eyeY": 1.59,
+    "cupY": 1.68,
+    "cupAboveEye": 0.09,
+    "elbowDeg": 101,
+    "headUV": [
+     0.631,
+     0.274
+    ]
+   },
+   {
+    "id": "chen",
+    "h": 1.78,
+    "seated": false,
+    "eyeY": 1.68,
+    "cupY": 1.83,
+    "cupAboveEye": 0.14,
+    "elbowDeg": 109,
+    "headUV": [
+     0.672,
+     0.313
+    ]
+   }
+  ]
+ },
+ {
+  "id": "front",
+  "label": "check: from the glass, looking back at the faces",
+  "raise": 1,
+  "pos": [
+   0,
+   8.2,
+   3.3
+  ],
+  "target": [
+   0,
+   7.9,
+   0
+  ],
+  "hfov": 86,
+  "bearing": 180,
+  "pitch": -5.2,
+  "earth": {
+   "inFrame": false
+  },
+  "people": [
+   {
+    "id": "kenji",
+    "h": 1.71,
+    "seated": false,
+    "eyeY": 1.62,
+    "cupY": 1.75,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 106,
+    "headUV": [
+     0.962,
+     0.413
+    ]
+   },
+   {
+    "id": "anastasia",
+    "h": 1.72,
+    "seated": false,
+    "eyeY": 1.63,
+    "cupY": 1.75,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 105,
+    "headUV": [
+     0.953,
+     0.408
+    ]
+   },
+   {
+    "id": "arjun",
+    "h": 1.75,
+    "seated": false,
+    "eyeY": 1.66,
+    "cupY": 1.8,
+    "cupAboveEye": 0.14,
+    "elbowDeg": 108,
+    "headUV": [
+     0.785,
+     0.394
+    ]
+   },
+   {
+    "id": "jade",
+    "h": 1.65,
+    "seated": true,
+    "eyeY": 1.23,
+    "cupY": 1.36,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 114,
+    "headUV": [
+     0.722,
+     0.846
+    ]
+   },
+   {
+    "id": "lucia",
+    "h": 1.62,
+    "seated": true,
+    "eyeY": 1.21,
+    "cupY": 1.34,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 115,
+    "headUV": [
+     0.278,
+     0.861
+    ]
+   },
+   {
+    "id": "layla",
+    "h": 1.67,
+    "seated": false,
+    "eyeY": 1.58,
+    "cupY": 1.71,
+    "cupAboveEye": 0.13,
+    "elbowDeg": 106,
+    "headUV": [
+     0.209,
+     0.432
+    ]
+   },
+   {
+    "id": "adaeze",
+    "h": 1.68,
+    "seated": false,
+    "eyeY": 1.59,
+    "cupY": 1.68,
+    "cupAboveEye": 0.09,
+    "elbowDeg": 101,
+    "headUV": [
+     -0.022,
+     0.429
+    ]
+   },
+   {
+    "id": "chen",
+    "h": 1.78,
+    "seated": false,
+    "eyeY": 1.68,
+    "cupY": 1.83,
+    "cupAboveEye": 0.14,
+    "elbowDeg": 109,
+    "headUV": [
+     -0.091,
+     0.381
+    ]
+   }
+  ]
+ }
+]

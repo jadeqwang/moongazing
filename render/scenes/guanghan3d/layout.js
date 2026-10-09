@@ -57,6 +57,18 @@ export const L = {
   },
   comms: { bearing: 345, r: 90, h: 25, dishD: 3.0 },
 
+  // Work lamps (round four, Oct 8 2026; Jade: "Add work lamps on the masts and along the road"). The Sun only grazes
+  // the horizon, so the ground between the mounds lies in terrain shadow for most of the month; these light the places
+  // where people and rovers work. Every head is a full cut-off flood aimed straight down. There is no air: nothing
+  // glows round a lamp, and a lamp shows only as the pool it throws on the regolith and on whatever stands in that pool.
+  // Fitted at stage 5 ("lights on"). Positions: `lampList()` below.
+  lamps: {
+    mast: { y: 6.0, arm: 1.0, halfAngle: 40 },   // one head per solar mast, on a 1 m arm toward the hub, under the slew ring (10.1 m): a pool of r = 5.0 m round the tripod
+    road: { h: 1.1, every: 25, n: 8, x0: 65, z: 14, verge: 3.2, poolR: 4.0 },   // bollards on the south verge of the pad road, from the jog (65, 14) east to x = 240, the edge of the graded plateau (reflectors only beyond); each lights the road's width
+    airlock: { y: 4.4, out: 5.5, poolR: 6.0 },   // one flood over the garage door of the E mound (main airlock): the apron in front of the door
+    hatch: { y: 3.2, out: 2.5, poolR: 3.0 },     // one small lamp over the vermilion hatch of the N and of the S node
+  },
+
   // Far elements (true distances). Jiehua plates compress these (see `compressed`).
   reactor: { bearing: 180, r: 1000, coreR: 1.6, coreH: 3.5, sunk: 2.0, fins: 12, finW: 3, finH: 9, berm: { len: 52, w: 12, h: 5, offset: 8 } }, // straight E–W berm between reactor and base (K_7.A)
   pad: { bearing: 90, r: 2000, discR: 25, bermR: 35, bermH: 2.5 },
@@ -66,6 +78,22 @@ export const L = {
   malapert: { bearing: 0, r: 120000, h: 5000 },
   compressed: { pad: { bearing: 90, r: 100, scale: 0.5 }, reactor: { bearing: 180, r: 92, scale: 0.8 } },
 };
+
+// Every work lamp of L.lamps: { id, kind, head: [x, y, z] (the lamp), pool: [x, 0, z] (centre of its light on the ground), r (m) }.
+// build.js (the 3D model) and render/src/scenes/worklamps.js (the film's lit shots) both read this list.
+export function lampList() {
+  const A = L.lamps, out = [];
+  for (const b of L.masts.bearings) { const [x, , z] = P(b, L.masts.ringR - A.mast.arm);
+    out.push({ id: L.masts.names[b], kind: 'mast', bearing: b, head: [x, A.mast.y, z], pool: [x, 0, z], r: A.mast.y * Math.tan(rad(A.mast.halfAngle)) }); }
+  const padEdge = L.pad.r - L.pad.bermR;   // the pad road runs straight from the jog to the gap in the pad's berm
+  for (let i = 0; i < A.road.n; i++) { const x = A.road.x0 + i * A.road.every, z = A.road.z * (padEdge - x) / (padEdge - A.road.x0) + A.road.verge;
+    out.push({ id: 'R' + (i + 1), kind: 'road', head: [x, A.road.h, z], pool: [x, 0, z], r: A.road.poolR }); }
+  { const door = L.mounds.E.r + L.mounds.E.a - 0.9;
+    out.push({ id: 'AIRLOCK', kind: 'airlock', head: [door + 0.4, A.airlock.y, 0], pool: [door + A.airlock.out, 0, 0], r: A.airlock.poolR }); }
+  for (const k of ['N', 'S']) { const n = L.nodes[k], [hx, , hz] = P(n.bearing, n.r + n.rad + 0.15), [px, , pz] = P(n.bearing, n.r + n.rad + A.hatch.out);
+    out.push({ id: 'HATCH_' + k, kind: 'hatch', head: [hx, A.hatch.y, hz], pool: [px, 0, pz], r: A.hatch.poolR }); }
+  return out;
+}
 
 // Construction stages. Every mid-construction shot picks one of these (7.A1–A4); nothing else may differ.
 export const STAGES = {

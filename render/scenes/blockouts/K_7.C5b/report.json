@@ -1,0 +1,289 @@
+{
+ "id": "K_7.C5b",
+ "title": "crew quarters: Arjun shows Chen Yu his newborn daughter",
+ "people": {
+  "arjun": {
+   "headTurnDeg": 16,
+   "headPitchDeg": -25,
+   "arms": {
+    "R": {
+     "reach": 0.72,
+     "handBehind": -0.35,
+     "elbowBehind": -0.08,
+     "target": "tablet:BR"
+    },
+    "L": {
+     "reach": 0.74,
+     "handBehind": -0.42,
+     "elbowBehind": -0.08,
+     "target": "tablet:BL"
+    }
+   },
+   "eye": [
+    -0.2,
+    1.2,
+    0.22
+   ]
+  },
+  "chen": {
+   "headTurnDeg": 40,
+   "headPitchDeg": -21,
+   "arms": {
+    "R": {
+     "reach": 0.85,
+     "handBehind": -0.14,
+     "elbowBehind": 0,
+     "target": "arjun.shoulderR"
+    },
+    "L": {
+     "reach": 0.86,
+     "handBehind": -0.29,
+     "elbowBehind": -0.03,
+     "target": "knee"
+    }
+   },
+   "eye": [
+    0.25,
+    1.21,
+    0.26
+   ]
+  }
+ },
+ "screens": {
+  "tablet": {
+   "arjun": {
+    "distM": 0.44,
+    "obliquityDeg": 25,
+    "seesFront": true,
+    "visibleFrac": 0.92,
+    "blockedBy": [
+     "arjun.handL",
+     "arjun.handR"
+    ],
+    "gazeOffDeg": 5,
+    "verdict": "sees it"
+   },
+   "chen": {
+    "distM": 0.52,
+    "obliquityDeg": 35,
+    "seesFront": true,
+    "visibleFrac": 0.92,
+    "blockedBy": [
+     "arjun.handL",
+     "arjun.handR"
+    ],
+    "gazeOffDeg": 4,
+    "verdict": "sees it"
+   }
+  }
+ },
+ "cameras": {
+  "hero": {
+   "people": {
+    "arjun": {
+     "faceAngleDeg": 138,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1423,
+      391.2
+     ],
+     "inFrame": true
+    },
+    "chen": {
+     "faceAngleDeg": 126,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      387.9,
+      415.5
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 4,
+     "shows": "screen",
+     "visibleFrac": 0.92,
+     "cornersPx": [
+      [
+       839.3,
+       433.7
+      ],
+      [
+       1167.9,
+       428
+      ],
+      [
+       1173.7,
+       665.2
+      ],
+      [
+       843.6,
+       671.9
+      ]
+     ]
+    }
+   }
+  },
+  "front": {
+   "people": {
+    "arjun": {
+     "faceAngleDeg": 29,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      701.2,
+      302
+     ],
+     "inFrame": true
+    },
+    "chen": {
+     "faceAngleDeg": 49,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1321.8,
+      292.9
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 134,
+     "shows": "back of the device",
+     "visibleFrac": 0,
+     "cornersPx": [
+      [
+       1005.9,
+       626.1
+      ],
+      [
+       693.8,
+       621.9
+      ],
+      [
+       727.2,
+       780.7
+      ],
+      [
+       1023.2,
+       787.3
+      ]
+     ]
+    }
+   }
+  },
+  "top": {
+   "people": {
+    "arjun": {
+     "faceAngleDeg": 112,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      787.1,
+      492.4
+     ],
+     "inFrame": true
+    },
+    "chen": {
+     "faceAngleDeg": 105,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1195.4,
+      541.4
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 47,
+     "shows": "screen",
+     "visibleFrac": 0.92,
+     "cornersPx": [
+      [
+       983.3,
+       780.3
+      ],
+      [
+       822.2,
+       756.2
+      ],
+      [
+       838.3,
+       679.4
+      ],
+      [
+       992.5,
+       702.5
+      ]
+     ]
+    }
+   }
+  },
+  "side": {
+   "people": {
+    "arjun": {
+     "faceAngleDeg": 70,
+     "view": "profile",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "chen.hair",
+      "chen.head"
+     ],
+     "headPx": [
+      1062.7,
+      189
+     ],
+     "inFrame": true
+    },
+    "chen": {
+     "faceAngleDeg": 142,
+     "view": "back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      931.1,
+      204.7
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {
+    "tablet": {
+     "angleDeg": 70,
+     "shows": "screen",
+     "visibleFrac": 0.88,
+     "cornersPx": [
+      [
+       413.1,
+       594.1
+      ],
+      [
+       526.6,
+       548.3
+      ],
+      [
+       671,
+       742.9
+      ],
+      [
+       571.9,
+       808.3
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

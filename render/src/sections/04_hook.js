@@ -10,24 +10,60 @@
 import { lyricEN, lyricZH, card, hud, kf, ph, bump, INK, INKC, PALE, PALEC, WHITE, smooth, clamp } from './_lib.js';
 import { PAPER_GLSL } from '../paper.js';
 
-export const range = [76.11, 101.33];
+export const range = [75.08, 99.83];
 
 // ---- LIFT ---------------------------------------------------------------------------------------------------------
 const LIFT_FS = `${PAPER_GLSL}
 uniform sampler2D uPrev, uImg;
 uniform vec4 uCamA;            // P = uCamA.xy * uv + uCamA.zw  (design px)
 uniform float uD, uT, uFlame, uOpacity;
+uniform float uLt;             // 4.1: seconds since ignition, the whole exhaust is live; < 0: the plain stretched column (4.4)
 uniform vec2 uShake;
 out vec4 o;
 const vec4 RK = vec4(0.482, 0.028, 0.532, 0.481);   // the rocket (image uv)
 const vec4 MN = vec4(0.15, 0.07, 0.26, 0.23);       // the crescent
 const vec3 SKY = vec3(0.184, 0.176, 0.232);
+const float AR = 2752. / 1536.;
+const float HZ = 0.7055;                            // the ruled horizon (image uv)
 float box(vec2 u, vec4 b, float f){ return smoothstep(b.x - f, b.x + f, u.x) * smoothstep(b.z + f, b.z - f, u.x) * smoothstep(b.y - f, b.y + f, u.y) * smoothstep(b.w + f, b.w - f, u.y); }
+// the flame's flicker, 0..1 (seeded noise of song time only)
+float flick(float t){ return 0.6 * vnoise(vec2(t * 19., 3.)) + 0.4 * vnoise(vec2(t * 47., 7.)); }
+// where the painting holds only exhaust (the 泼墨 cloud, its column, the spatter): the tower stands right of 0.56.
+// Only this part of the picture may flow.
+float plumeZone(vec2 u){
+  return smoothstep(1.0, 0.55, length((u - vec2(0.39, 0.74)) / vec2(0.205, 0.31))) * smoothstep(0.566, 0.540, u.x);
+}
+// how much of the painting around a point is the cloud's pigment (a coarse look: thin ruled lines do not count)
+float cloudAt(vec2 m){ vec3 l = textureLod(uImg, m, 5.5).rgb; return smoothstep(0.03, 0.15, l.r - l.b); }
 vec3 bgAt(vec2 u){                 // the painting without its rocket; plain sky beyond its top edge
   float above = smoothstep(0.0, -0.05, u.y);
   vec2 m = vec2(1. - abs(1. - abs(u.x)), clamp(u.y, 0.002, 1.));
+  float z = 0.;
+  if (uLt >= 0.) {
+    // the painted splash keeps spreading (cloud, column and flying spatter move outward together): the picture itself
+    // is slowly enlarged inside the plume's zone, about a point ON the ruled horizon, so that line only slides along
+    // itself. Above the horizon it grows a little faster: the cloud's top rolls up.
+    z = plumeZone(m);
+    float e = 0.50 * (1. - exp(-uLt / 1.5));
+    vec2 d = m - vec2(0.500, HZ);
+    float up = 1. + 1.3 * smoothstep(0., -0.03, d.y) * exp(d.y / 0.09);
+    m = vec2(0.500, HZ) + d / (1. + e * z * vec2(1., up));
+    // the body of the cloud and the column roll: a slow flow of the pigment only (never the ruled lines)
+    float body = z * cloudAt(m);
+    vec2 q = (m - vec2(0.5, 0.87)) * vec2(AR, 1.);
+    vec2 roll = vec2(fbm3(q * 7.5 + vec2(3., uLt * 0.42)), fbm3(q * 7.5 + vec2(31., -uLt * 0.36))) - .5;
+    roll += 0.5 * (vec2(fbm3(q * 19. + vec2(uLt * 0.8, 5.)), fbm3(q * 19. + vec2(9., uLt * 0.7))) - .5);
+    m += roll * body * vec2(0.012 / AR, 0.012);
+  }
   vec3 c = texture(uImg, m).rgb;
   c = mix(c, texture(uImg, m - vec2(0.065, 0.)).rgb, box(m, RK, 0.004));
+  if (uLt >= 0.) {
+    // it thins as it spreads, and the flame's flicker lights it from inside (the pigment only: never the indigo ground)
+    float warm = smoothstep(0.03, 0.16, c.r - c.b);
+    float lit = exp(-length((m - vec2(0.507, 0.76)) * vec2(AR, 1.)) / 0.17);
+    c = mix(c, SKY, z * warm * 0.30 * smoothstep(0.3, 2.85, uLt) * (1. - 0.6 * lit));
+    c *= 1. + z * warm * lit * 0.55 * (flick(uT) - 0.42);
+  }
   c = mix(c, SKY * (0.94 + 0.12 * vnoise(u * vec2(40., 90.))), above);
   return c;
 }
@@ -36,27 +72,79 @@ void main(){
   vec3 prev = FBO(uPrev, P).rgb;
   vec2 uv = (P - uCamA.zw) / uCamA.xy;
   vec3 c = bgAt(uv - vec2(0., uD));
-  // the exhaust column, from the nozzles down to the (falling) pad: the plume's own brushwork, stretched and flowing
-  float yN = RK.w - 0.006, yP = 0.535 + uD;
-  float s = (uv.y - yN) / max(yP - yN, 1e-3);
-  if (s > 0. && s < 1.2) {
-    float sc = clamp(s, 0., 1.);
-    float hw = mix(0.011, 0.028, pow(sc, 0.55));
-    float cx = 0.507 + (fbm3(vec2(uv.y * 9. - uT * 2.2, 2.)) - .5) * 0.010 * sc;
-    float colm = smoothstep(hw, hw * 0.4, abs(uv.x - cx)) * (1. - smoothstep(0.92, 1.2, s));
-    vec2 src = vec2(0.504 + (uv.x - cx) * (0.024 / hw), mix(0.53, 0.64, sc));
-    vec3 pl = texture(uImg, src).rgb;
-    float flow = 0.72 + 0.56 * fbm3(vec2((uv.x - cx) * 140., uv.y * 26. - uT * 11.));
-    c = max(c, pl * flow * colm * (0.9 + 0.25 * (1. - sc)));
-  }
-  // flame tongues at the nozzles (matte gold and ember; no glow)
-  float dy = uv.y - yN;
-  if (dy > -0.004 && uFlame > 0.) {
-    float len = 0.026 * (0.8 + 0.4 * vnoise(vec2(uT * 21., 1.)));
-    float fx = abs(uv.x - 0.507);
-    float fl = smoothstep(0.016, 0.005, fx + max(dy, 0.) * 0.25) * exp(-max(dy, 0.) / len) * smoothstep(-0.004, 0.0, dy);
-    vec3 fc = mix(vec3(0.86, 0.40, 0.16), vec3(1.0, 0.84, 0.55), exp(-max(dy, 0.) / (len * 0.35)));
-    c = max(c, fc * fl * uFlame);
+  float yN = RK.w - 0.006;
+  if (uLt < 0.) {
+    // the exhaust column, from the nozzles down to the (falling) pad: the plume's own brushwork, stretched and flowing
+    float yP = 0.535 + uD;
+    float s = (uv.y - yN) / max(yP - yN, 1e-3);
+    if (s > 0. && s < 1.2) {
+      float sc = clamp(s, 0., 1.);
+      float hw = mix(0.011, 0.028, pow(sc, 0.55));
+      float cx = 0.507 + (fbm3(vec2(uv.y * 9. - uT * 2.2, 2.)) - .5) * 0.010 * sc;
+      float colm = smoothstep(hw, hw * 0.4, abs(uv.x - cx)) * (1. - smoothstep(0.92, 1.2, s));
+      vec2 src = vec2(0.504 + (uv.x - cx) * (0.024 / hw), mix(0.53, 0.64, sc));
+      vec3 pl = texture(uImg, src).rgb;
+      float flow = 0.72 + 0.56 * fbm3(vec2((uv.x - cx) * 140., uv.y * 26. - uT * 11.));
+      c = max(c, pl * flow * colm * (0.9 + 0.25 * (1. - sc)));
+    }
+    // flame tongues at the nozzles (matte gold and ember; no glow)
+    float dy = uv.y - yN;
+    if (dy > -0.004 && uFlame > 0.) {
+      float len = 0.026 * (0.8 + 0.4 * vnoise(vec2(uT * 21., 1.)));
+      float fx = abs(uv.x - 0.507);
+      float fl = smoothstep(0.016, 0.005, fx + max(dy, 0.) * 0.25) * exp(-max(dy, 0.) / len) * smoothstep(-0.004, 0.0, dy);
+      vec3 fc = mix(vec3(0.86, 0.40, 0.16), vec3(1.0, 0.84, 0.55), exp(-max(dy, 0.) / (len * 0.35)));
+      c = max(c, fc * fl * uFlame);
+    }
+  } else {
+    // ---- 4.1: the whole exhaust is live for the whole shot --------------------------------------------------------
+    vec2 w = uv - vec2(0., uD);                       // the world (image uv): it falls away under the tracked rocket
+    float fk = flick(uT);
+    float dyN = uv.y - yN;                            // below the nozzles, in the rocket's frame
+    // (1) THE TRAIL. Exhaust hangs where it was left, so it is anchored to the world and the column lengthens as the
+    //     rocket climbs. Its age at a height = the time since the nozzles passed it (D = k lt^2); it widens, drifts
+    //     and thins with age; fast streaks run down it only while it is young.
+    float kk = uD / max(uLt * uLt, 1e-4);
+    float age = uLt - sqrt(max(uD - dyN, 0.) / max(kk, 1e-5));
+    float yG = 0.80 + uD;                             // the pad's deck: there the column runs into the ground cloud
+    if (dyN > 0. && uv.y < yG + 0.03) {
+      float cx = 0.507 + (fbm3(vec2(w.y * 6., 2.)) - .5) * 0.022 * smoothstep(0., 1.6, age);
+      float dx = uv.x - cx, sd = step(0., dx);
+      float hw = (0.0145 + 0.018 * (1. - exp(-age / 0.5)) + 0.003 * age) * mix(0.42, 1., smoothstep(0.0, 0.13, dyN));
+      // each edge billows on its own: round lobes with sharp valleys between them, as the painted cloud has
+      hw *= 0.80 + 0.34 * abs(2. * vnoise(vec2(w.y * 21. + sd * 37., 1.5 + age * 0.35)) - 1.) + 0.16 * (fbm3(vec2(w.y * 60. + sd * 11., age * 0.6)) - .5);
+      float ad = abs(dx);
+      float a = (0.82 * smoothstep(hw, hw * 0.86, ad) + 0.18 * smoothstep(hw * 1.45, hw * 0.7, ad))
+              * smoothstep(0.004, 0.045, dyN) * (1. - smoothstep(yG - 0.05, yG + 0.03, uv.y));
+      // the wash inside: long streaks down the column, slowly turning over; fast streaks only while it is young
+      vec2 p = vec2(dx / hw * 2.1, w.y * 8.5);
+      float slow = fbm(p + 0.8 * vec2(fbm3(p * 1.3 + vec2(0., age * 0.5)), fbm3(p * 1.3 + vec2(7., -age * 0.42))));
+      float fast = fbm3(vec2(dx * 150., uv.y * 24. - uT * 10.));
+      float val = mix(slow, fast, exp(-age / 0.30));
+      float rimW = exp(-abs(ad - hw * 0.93) / (hw * 0.07));                            // the wet edge of a wash
+      float thin = mix(1.0, 0.66, smoothstep(0.3, 2.6, age));
+      float gran = 0.92 + 0.16 * vnoise(P * 0.45);                                     // pigment settling in the paper
+      // its pigment is the painted column's own (sampled from the picture), so the two are one column
+      vec3 pc = texture(uImg, vec2(0.505 + clamp(dx / hw, -1., 1.) * 0.020, 0.60 + 0.045 * sin(w.y * 11.))).rgb;
+      pc = max(pc, vec3(0.56, 0.44, 0.27)) * vec3(1.06, 1.0, 0.94) * (0.74 + 0.60 * val + 0.14 * rimW);
+      pc = mix(pc, vec3(0.99, 0.82, 0.52), 0.50 * exp(-age / 0.35));                   // still hot just under the flame
+      pc = mix(pc, vec3(0.92, 0.52, 0.22), 0.28 * exp(-dyN / 0.06));                   // ember
+      c = max(c, pc * a * thin * gran * (1. + 0.40 * (fk - 0.4) * exp(-dyN / 0.10)));
+    }
+    // (2) THE FLAMES: one tongue per engine cluster (matte gold and ember; no glow), each flickering on its own
+    if (dyN > -0.004 && uFlame > 0.) {
+      for (int i = -1; i <= 1; i++) {
+        float fi = float(i);
+        float len = (i == 0 ? 0.135 : 0.105) * (0.80 + 0.40 * vnoise(vec2(uT * 23., 1. + fi * 3.7)));
+        float sF = max(dyN, 0.) / len;
+        float xc = 0.507 + fi * 0.0128 * (1. - 0.45 * clamp(sF, 0., 1.)) + (vnoise(vec2(uT * 31. + fi * 5., sF * 4.)) - .5) * 0.005 * sF;
+        float hwF = (i == 0 ? 0.0062 : 0.0050) * (1. + 1.5 * sF) * pow(max(1. - sF, 0.), 0.55);
+        float fl = smoothstep(hwF, hwF * 0.25, abs(uv.x - xc)) * smoothstep(-0.004, 0.001, dyN) * step(sF, 1.);
+        fl *= 0.84 + 0.16 * sin(sF * 24. - uT * 42. + fi);
+        vec3 fc = mix(vec3(1.0, 0.87, 0.60), vec3(0.88, 0.42, 0.17), smoothstep(0.12, 0.95, sF));
+        c = max(c, fc * fl * uFlame * (0.86 + 0.28 * fk));
+      }
+    }
   }
   // the rocket: tracked by the camera, so it holds still in the frame (a hair of vibration)
   vec2 ur = uv + uShake;
@@ -74,7 +162,7 @@ function camA(cx, cy, z, ar = 2752 / 1536) {
 function lift(ctx, t, lt, o) {
   if (!ctx.tex['K_4.1']) return;
   ctx.pipe.apply(ctx.gl.program(LIFT_FS, 'hook-lift'), {
-    uImg: ctx.tex['K_4.1'], uCamA: camA(o.cx, o.cy, o.z), uD: o.D, uT: t, uFlame: o.flame ?? 1, uOpacity: 1,
+    uImg: ctx.tex['K_4.1'], uCamA: camA(o.cx, o.cy, o.z), uD: o.D, uT: t, uFlame: o.flame ?? 1, uOpacity: 1, uLt: o.live ? lt : -1,
     uShake: [Math.sin(t * 83.1) * 0.00035 * (o.shake ?? 1), Math.cos(t * 71.7) * 0.0003 * (o.shake ?? 1)],
   });
 }
@@ -176,7 +264,9 @@ function tear(ctx, t, lt) {
   const S = tearState(lt);
   ctx.pipe.apply(ctx.gl.program(TEAR_FS, 'hook-tear'), {
     uImg: ctx.tex['K_4.2'], uXf: S.xf, uSag: S.sag, uSy: S.sy, uRel: S.rel, uT: t, uFall: S.fall,
-    uLow: [0.0, 0.47, 1 / 1920, 1 / 1072],
+    // the upper part of K_4.2 (v5 staging: the family large on the left): the rip runs through the sky above their heads,
+    // never through them; rows above the picture's top repeat its sky
+    uLow: [0.0, -0.035, 1 / 1920, 1 / 1072],
   });
   // flecks of paper and loose fibres tumbling after the falling sheet
   const tau = Math.max(0, lt - XF1);
@@ -264,37 +354,51 @@ export default function shots(B, X, L) {
       scene: X.has('K_4.1') ? [] : [ph('Ignition: splashed-ink exhaust in gold and ember', 'K_4.1')],
       type(ctx, t, lt) {
         const u = smooth(0, S42 - S41, lt);
-        lift(ctx, t, lt, { cx: 0.515 - 0.008 * u, cy: 0.42 - 0.03 * u, z: 1.13 + 0.06 * u, D: D41(lt), shake: 1 + 2 * Math.exp(-lt / 0.4) });
+        lift(ctx, t, lt, { cx: 0.515 - 0.008 * u, cy: 0.42 - 0.03 * u, z: 1.13 + 0.06 * u, D: D41(lt), shake: 1 + 2 * Math.exp(-lt / 0.4), live: true });
         lyricZH(ctx, L.L10, { to: 2, size: 330, x: 690, y: 120, color: WHITE, seed: 101, until: S42 + 0.4, halo: 16 }, t, 'gold');
-        hud(ctx, 'T+00:00:0' + Math.max(0, Math.floor(t - 76.17)), 64, 1030, { size: 18, rgb: '255,255,255' }, 1);
-        gl(ctx, 'g41', 'The moon wanes,', t, 77.4, S42 + 0.05, PALE, 1040, 1380);
+        hud(ctx, 'T+00:00:0' + Math.max(0, Math.floor(t - 75.16)), 64, 1030, { size: 18, rgb: '255,255,255' }, 1);
+        gl(ctx, 'g41', 'The moon wanes,', t, 76.70, S42 + 0.05, PALE, 1040, 1380);
       } },
-    // 4.2 — the viewing crowd at the fence, long lens (Larsen framing): Kenton holds M, T holds his hand; the rocket
-    //       rises far off; 酒寒 (寒 held) in the sky's 留白 at the right, by the crescent
-    { id: '4.2', t0: S42, t1: S43, paper: 'silk', grain: 42, focus: [1000, 520], post: (t, lt) => punch(t, lt),
-      scene: [X.has('K_4.2') ? { type: 'roto', clip: 'K_4.2/take_6', paper: 'silk', lock: 0.45, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.48, y: 0.48, zoom: 1.1 } }
+    // 4.2 — the same spot as 1.6, a few minutes later (restaged Oct 7): the rocket climbs at the right; M (left arm
+    //       round Kenton's neck) points up at it with her right arm, T holds Kenton's left hand, all three heads follow
+    //       it. K_4.2/take_9 (h3), 0.5–3.0 s of the take (the rocket leaves the top of the frame at 3.3 s).
+    //       酒寒 (寒 held) stands in the empty sky right of the exhaust column, above the crescent; the gloss under it.
+    { id: '4.2', t0: S42, t1: S43, paper: 'silk', grain: 42, focus: [1150, 380], post: (t, lt) => punch(t, lt),
+      // rev3 KIDS (Oct 8, "M hair consistency"): her hair in the take lost its braid in the redraw; it
+      // is now the PAINTING's (side braid, pink elastic, curly tail), carried on the take (tools/roto_keep.py), as in 1.6.
+      scene: [X.has('K_4.2') ? { type: 'roto', clip: 'K_4.2/take_9', paper: 'silk', offset: 0.5, lock: 0, keepOcc: false, from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.5, y: 0.47, zoom: 1.07 } }
         : ph('The crowd at the fence; Kenton holds M; the rocket rises', 'K_4.2')],
       type(ctx, t) {
-        lyricZH(ctx, L.L10, { from: 2, to: 4, size: 250, x: 1880, y: 40, color: PALEC, seed: 102, until: S43 + 0.05, key: 'b', halo: 12 }, t, 'over');
-        gl(ctx, 'g42', 'the wine is cold —', t, 79.0, S43 + 0.05);
+        lyricZH(ctx, L.L10, { from: 2, to: 4, size: 190, x: 1700, y: 28, color: PALEC, seed: 102, until: S43 + 0.05, key: 'b', halo: 12 }, t, 'over');
+        gl(ctx, 'g42', 'the wine is cold —', t, 77.93, S43 + 0.05, PALE, 474, 1608);
       } },
-    // 4.3 — in the capsule under g-load: 我思念. The painted J_LS3 holds (parallax + a fine g-load tremor); only the
-    //       mouth is drawn, from the vocal stem, in sparse gold line — no redrawn face.
-    { id: '4.3', t0: S43, t1: S43b, paper: 'indigo', grain: 43, post: (t, lt) => punch(t, lt), focus: [1300, 480],
-      scene: [X.has('J_LS3') ? { name: 'singer', params: { img: 'J_LS3', grade: 'native', from: { x: 0.52, y: 0.5, zoom: 1.04 }, to: { x: 0.56, y: 0.47, zoom: 1.12 }, par: [-0.01, 0], dolly: 0.05,
-          masks: { base: [0.2, 0.4], polys: [{ pts: [[0.5, 0.0], [0.92, 0.0], [0.95, 1], [0.48, 1]], depth: 0.85, blur: 14 }] }, shake: 2.2,
-          mouth: { cL: [0.643, 0.600], cR: [0.724, 0.600], up: [0.683, 0.594] }, erase: [0.058, 0.04], eraseAt: [0.683, 0.668], lead: 0.03,
-          style: { lip: '212,168,75', lipLo: '212,168,75', fillA: 0.14, inside: '10,14,30', outline: '228,188,112', line: '236,196,120', lineW: 0.8, alpha: 0.85, soft: 0.6 } } }
-        : ph('LS3 — Jade under g-load', 'J_LS3')],
+    // 4.3 — 我思念, NOT sung (rev4 PHOTO, Oct 8 night; Jade: "a shot of me looking longingly at a picture of the kids
+    //       without singing"): the sequel of 3.8f, close. From behind her left shoulder in the capsule seat, visor down
+    //       and clear, mouth closed, her head tips toward the snapshot of M and T taped below the window; the snapshot
+    //       is the only warm colour in the frame (the focus). Keyframe media/keyframes/jade/J_4.3p.png (codex over her
+    //       photograph; PROMPTS_J43P.md); J_4.3p/take_1s = h3 take_1 with the model's camera shake taken out
+    //       (tools/take_steady.py), 0.5–1.9 s of the take. Look of the 3.8 montage: gold line, chalk-white suit, indigo.
+    //       Only she is redrawn (tools/roto_only.py); the cabin and the snapshot are the painting in every frame.
+    //       Rebuild order: take_steady.py, roto_prep.py J_4.3p/take_1s, roto_only.py (commands in media/gen/picks.json).
+    //       Earlier versions of this shot: sung LS3c/take_7pm (v6), non-singing portrait J_4.3/take_1.
+    //       rev5 VISOR (Oct 9; Jade ticked "This works" and "Make the visor gold as at 1:15, so my face is hidden"):
+    //       the visor is opaque gold, the helmet of 3.8f. J_4.3p/take_1g = the same video as take_1s; its roto key plate
+    //       has the gold visor of media/keyframes/jade/J_4.3p_gold.png laid in (media/keyframes/work/rev5_visor/
+    //       visor_gold.py key), and the whole visor with its outline is that painting carried on the tracked motion of
+    //       the helmet's frame strip and ear cup, so the gold cannot slide or shimmer. Clear visor again: clip 'J_4.3p/take_1s'.
+    { id: '4.3', t0: S43, t1: S43b, paper: 'indigo', grain: 43, post: (t, lt) => punch(t, lt), focus: [1560, 630], vignette: 0.2,
+      scene: [{ type: 'roto', clip: 'J_4.3p/take_1g', paper: 'silk', style: { ink: [0.80, 0.66, 0.38], lineA: 0.8 }, offset: 0.5, lock: 0, mouth: false, eyelock: false, keepOcc: false /* the painted gold visor rides on the tracked motion of the helmet's frame strip and ear cup (tools/roto_keep.py --track) */,
+        from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.515, y: 0.5, zoom: 1.05 } }],
       type(ctx, t) {
-        lyricZH(ctx, L.L10, { from: 5, to: 8, size: 200, x: 330, y: 150, color: WHITE, seed: 103, until: S43b + 0.05, key: 'c', halo: 12 }, t, 'gold');
+        lyricZH(ctx, L.L10, { from: 5, to: 8, size: 180, x: 290, y: 110, color: WHITE, seed: 103, until: S43b + 0.05, key: 'c', halo: 12 }, t, 'gold');
         hud(ctx, 'MAX-Q  ·  3.2 G', 64, 1030, { size: 15, rgb: '255,255,255' }, 1);
       } },
     // 4.3b — the held 你 lands on who she misses: summer, an Austin splash park (wide, then close on bar 46). The
     //        painting blooms out of the silk like water; one enormous 你, held, the ink creeping into the paper.
+    //        rev3 KIDS (Oct 8): K_4.3b v2 = T's head repainted to his v3 sheet (fuller cheeks); take_6 is from it.
     ...[['4.3b', S43b, X.has('K_4.3b_close') ? bar(46) : S44, 'K_4.3b'], ...(X.has('K_4.3b_close') ? [['4.3c', bar(46), S44, 'K_4.3b_close']] : [])].map(([id, a, b, img], i) => ({
       id, t0: a, t1: b, paper: 'silk', grain: 431 + i, focus: i ? [1150, 470] : [760, 560],
-      scene: [i === 0 && X.has(img) ? { type: 'roto', clip: 'K_4.3b/take_2', paper: 'silk', lock: 0.5, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.52, y: 0.48, zoom: 1.1 } }
+      scene: [X.has(img) ? { type: 'roto', clip: i ? 'K_4.3b_close/take_2' : 'K_4.3b/take_6', paper: 'silk', offset: i ? 2.45 : 0.6, lock: 0, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: i ? 0.73 : 0.5, y: i ? 0.53 : 0.5, zoom: i ? 1.62 : 1.04 }, to: { x: i ? 0.73 : 0.52, y: i ? 0.60 : 0.48, zoom: i ? 1.62 : 1.1 } }
         : X.has(img) ? kf(img, { from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.52, y: 0.48, zoom: 1.12 }, dolly: 0.06,
         mist: { color: [0.97, 0.97, 0.96], amount: 0.16, y0: 300, y1: 1000, speed: 26 }, ...(i === 0 ? { reveal: (t, lt) => 0.25 + smooth(0, 0.42, lt) * 1.4 } : {}) })
         : ph('Summer at an Austin splash park: M runs through the water arcs; T grins in the spray', img)],
@@ -302,8 +406,8 @@ export default function shots(B, X, L) {
         if (i === 0 && lt < 0.45) ctx.pipe.apply(ctx.gl.program(BLOOM_FS, 'hook-bloom'), { uP: 0.25 + smooth(0, 0.42, lt) * 1.4, uSeed: 4.31 });
         // the held 你 sits in the 留白 away from the children: top right over the trees while M runs left (4.3b), top
         // left over the arc of water in the close (4.3c)
-        lyricZH(ctx, L.L10, { from: 8, size: 540, x: i ? 650 : 1900, y: 40, color: INKC, seed: 104, until: S44 + 0.05, key: 'd', early: 0.45, spread: (tt) => 30 * smooth(83.3, 86.1, tt) }, t, 'ink');
-        gl(ctx, 'g43', 'I miss you.', t, 83.4, S44 + 0.05, INK, 1040, 1380);
+        lyricZH(ctx, L.L10, { from: 8, size: 540, x: i ? 650 : 1900, y: 40, color: INKC, seed: 104, until: S44 + 0.05, key: 'd', early: 0.45, spread: (tt) => 30 * smooth(82.10, 84.15, tt) }, t, 'ink');
+        gl(ctx, 'g43', 'I miss you.', t, 82.20, S44 + 0.05, INK, 1040, 1380);
       },
     })),
     // 4.4 — first-stage separation = THE SCROLL TEARS: the lower sheet (the crowd, Earth, family) rips away and falls
@@ -318,7 +422,7 @@ export default function shots(B, X, L) {
       } },
     // 4.5 — the kids in the mission family room at Wenchang, faces lit by the big screen
     { id: '4.5', t0: S45, t1: S46, paper: 'silk', grain: 45,
-      scene: [X.has('K_4.5') ? { type: 'roto', clip: 'K_4.5/take_2', paper: 'silk', lock: 0.4, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.49, zoom: 1.1 } }
+      scene: [X.has('K_4.5') ? { type: 'roto', clip: 'K_4.5/take_2', paper: 'silk', offset: 0.6, lock: 0, keepOcc: false /* rev3 KIDS: T's repainted profile (fuller cheek) is carried, tools/roto_keep.py */, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: 0.5, y: 0.5, zoom: 1.03 }, to: { x: 0.53, y: 0.49, zoom: 1.1 } }
         : ph('The kids in the family viewing room, faces lit by the big screen; T’s hand on the glass', 'K_4.5')],
       type(ctx, t) { lyricEN(ctx, L.L11, { ...huge, key: 'b', size: 120, x: 1860, y: 850, align: 'right', color: PALE, w0: 4, hold: 1.2, panel: 'dark' }, t, 'over'); } },
     // 4.6 — orbit: Earth fills the frame for the first time — a 青绿 painting
@@ -327,10 +431,10 @@ export default function shots(B, X, L) {
       type(ctx, t) { hud(ctx, 'ORBIT  ·  200 KM  ·  7.8 KM/S', 64, 1030, { size: 15, rgb: '255,255,255' }, 1); } },
     // 4.7 — after TLI: in free fall Jade lifts a drink pouch toward the Moon — 举杯; the calligraphy floats too
     { id: '4.7', t0: S47, t1: S48, paper: 'indigo', grain: 47,
-      scene: [X.has('K_4.7') ? { type: 'roto', clip: 'K_4.7/take_2', paper: 'silk', lock: 0.5, from: { x: 0.47, y: 0.5, zoom: 1.03 }, to: { x: 0.44, y: 0.47, zoom: 1.12 } }
+      scene: [X.has('K_4.7') ? { type: 'roto', clip: 'K_4.7/take_4', paper: 'silk', offset: 0.6, lock: 0, from: { x: 0.47, y: 0.5, zoom: 1.03 }, to: { x: 0.44, y: 0.47, zoom: 1.12 } }
         : ph('After TLI: in free fall Jade lifts a drink pouch toward the Moon; the toy Earth floats beside her', 'K_4.7', { dark: true })], focus: [520, 420],
       type(ctx, t) {
-        lyricZH(ctx, L.L12, { size: 128, x: 1880, y: 110, color: WHITE, seed: 104, dy: (tt) => -26 * Math.sin((tt - 92.2) * 1.3) }, t, 'gold');
+        lyricZH(ctx, L.L12, { size: 128, x: 1880, y: 110, color: WHITE, seed: 104, dy: (tt) => -26 * Math.sin((tt - 90.87) * 1.3) }, t, 'gold');
         hud(ctx, 'TLI COMPLETE  ·  10.9 KM/S', 64, 72, { size: 15, rgb: '255,255,255' }, 1);
       } },
     // 4.8 — the Moon grows from a dot to a wall of ink: a disc of xuan inlaid in the indigo, until the ink paper is the
@@ -347,8 +451,8 @@ export default function shots(B, X, L) {
     // 4.9 — drums re-hit: DAY 4 · DESCENT. The lander's plume blasts regolith in flat radial sheets that stop the
     //       instant the engine cuts (K_4.9 take_2 redrawn in ink)
     { id: '4.9', t0: S49, t1: END, paper: 'xuan', grain: 49, flash: true, post: (t, lt) => bump(lt, 0.012),
-      scene: [X.has('K_4.9') ? { type: 'roto', clip: 'K_4.9/take_2', paper: 'ink', lock: 0.35, from: { x: 0.52, y: 0.46, zoom: 1.12 }, to: { x: 0.52, y: 0.5, zoom: 1.03 } }
+      scene: [X.has('K_4.9') ? { type: 'roto', clip: 'K_4.9/take_2', paper: 'ink', offset: 0.55, lock: 0, subject: false, maskGain: 8, from: { x: 0.52, y: 0.46, zoom: 1.12 }, to: { x: 0.52, y: 0.5, zoom: 1.03 } }
         : ph('Descent: the lander’s plume blasts regolith flat', 'K_4.9')],
-      type(ctx, t) { hud(ctx, 'DAY 4  ·  DESCENT', 64, 72, { size: 15, rgb: '30,30,32', a: 0.9 }, 1, 'ink'); hud(ctx, `ALT ${Math.max(0, Math.round(120 * (1 - (t - 97.73) / 2.5))).toString().padStart(3, '0')} M`, 64, 98, { size: 13, rgb: '30,30,32', a: 0.8 }, 1, 'ink'); } },
+      type(ctx, t) { hud(ctx, 'DAY 4  ·  DESCENT', 64, 72, { size: 15, rgb: '30,30,32', a: 0.9 }, 1, 'ink'); hud(ctx, `ALT ${Math.max(0, Math.round(120 * (1 - (t - 96.31) / 2.5))).toString().padStart(3, '0')} M`, 64, 98, { size: 13, rgb: '30,30,32', a: 0.8 }, 1, 'ink'); } },
   ];
 }

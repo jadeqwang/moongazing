@@ -1,6 +1,6 @@
 // Guanghan Station blockout — geometry. All numbers come from layout.js.
 import * as THREE from 'three';
-import { L, P, R_MOON } from './layout.js';
+import { L, P, R_MOON, lampList } from './layout.js';
 
 const D2R = Math.PI / 180;
 
@@ -86,7 +86,7 @@ const C = {
   earth: 0x5b7fae, glass: 0x9fb4c8, crew: 0xf2efe8, crewShirt: 0xf4f2ee, suit: 0xf0eee8, interior: 0xd9d2c4, floor: 0x8c8378,
   wood: 0xa48a6a, screen: 0x2a3340, vessel: 0x9a948c, tank: 0xc9ccd0, vault: 0x7d766e, lander: 0xc9a65a, rover: 0xd8d6cf,
 };
-const WARM = 0xffb35a, MAGENTA = 0xd65ab4, EMBER = 0xff6a1a;
+const WARM = 0xffb35a, MAGENTA = 0xd65ab4, EMBER = 0xff6a1a, LAMP = 0xf4f1e6, POOL = 0x8d8c88;   // LAMP: a work lamp's lens; POOL: its light on the regolith
 
 // ------------------------------------------------------------------ helpers
 const g = (...kids) => { const o = new THREE.Group(); kids.forEach((k) => k && o.add(k)); return o; };
@@ -353,13 +353,18 @@ function footprints() {
   grp.add(lines(st));
   return grp;
 }
-function mast(bearing, deploy = 1, sunBearing = 200) {
+function mast(bearing, deploy = 1, sunBearing = 200, lamp = false, legTurn = 0) {
   const M = L.masts, grp = new THREE.Group(); grp.userData.tag = 'mast' + bearing;
   const [x, , z] = P(bearing, M.ringR); grp.position.set(x, 0, z);
   const mm = mat(C.mast);
+  // work lamp (L.lamps.mast): a cut-off head on a short arm toward the hub, lens down
+  if (lamp && deploy >= 1) { const A = L.lamps.mast, hx = -Math.sin(bearing * D2R), hz = Math.cos(bearing * D2R), ry = Math.atan2(hx, hz);
+    const arm = mesh(new THREE.BoxGeometry(0.1, 0.1, A.arm), mm); arm.position.set(hx * A.arm / 2, A.y + 0.2, hz * A.arm / 2); arm.rotation.y = ry; grp.add(arm);
+    const head = mesh(new THREE.BoxGeometry(0.5, 0.22, 0.6), mm, 'lampHead'); head.position.set(hx * A.arm, A.y + 0.11, hz * A.arm); head.rotation.y = ry; grp.add(head);
+    const lens = mesh(new THREE.PlaneGeometry(0.4, 0.5), mat(0x55554f, { emis: LAMP }), 'lampLens'); lens.rotation.x = Math.PI / 2; lens.rotation.z = -ry; lens.position.set(hx * A.arm, A.y - 0.01, hz * A.arm); lens.userData.noEdges = true; grp.add(lens); }
   // tripod base
   const legPts = [];
-  for (let i = 0; i < 3; i++) { const a = (i * 120 + bearing) * D2R; const lx = M.tripodR * Math.sin(a), lz = -M.tripodR * Math.cos(a);
+  for (let i = 0; i < 3; i++) { const a = (i * 120 + bearing + legTurn) * D2R; const lx = M.tripodR * Math.sin(a), lz = -M.tripodR * Math.cos(a);
     const leg = mesh(new THREE.CylinderGeometry(0.08, 0.08, Math.hypot(M.tripodR, 3), 6), mm); leg.position.set(lx / 2, 1.5, lz / 2);
     leg.lookAt(lx, 0, lz); leg.rotateX(Math.PI / 2); leg.userData.noEdges = true; grp.add(leg);
     const foot = mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.12, 12), mm); foot.position.set(lx, 0.06, lz); grp.add(foot); }
@@ -469,6 +474,27 @@ function printer() { // gantry regolith printer, 14 m span
   for (const sz of [-d, d]) { const b = mesh(new THREE.BoxGeometry(2 * w, 0.4, 0.4), m); b.position.set(0, h, sz); grp.add(b); }
   const bridge = mesh(new THREE.BoxGeometry(0.5, 0.5, 2 * d), m); bridge.position.set(1, h, 0); grp.add(bridge);
   const head = mesh(new THREE.BoxGeometry(0.6, 3.2, 0.6), m); head.position.set(1, h - 1.8, 0); grp.add(head);
+  return grp;
+}
+// Work lamps other than the masts' own heads (those ride on the masts), and every lamp's pool of light on the ground.
+// The pools are emissive discs: they show in the 'flat' render when the shot's lights are on, and never in 'line'.
+function workLamps(state, padW) {
+  const grp = new THREE.Group(); grp.userData.tag = 'workLamps';
+  const mm = mat(C.metal), lensM = mat(0x55554f, { emis: LAMP }), poolM = mat(C.ground, { emis: POOL });
+  const padEdge = padW.r - L.pad.bermR * (padW.scale ?? 1);
+  for (const l of lampList()) {
+    if (l.kind === 'road' && l.head[0] > padEdge - 6) continue;      // jiehua compression: the pad is drawn 100 m out, the road is short
+    const [hx, hy, hz] = l.head;
+    if (l.kind === 'road') {
+      const post = mesh(new THREE.CylinderGeometry(0.1, 0.12, hy, 8), mm, 'lampPost'); post.position.set(hx, hy / 2, hz); grp.add(post);
+      const cap = mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.1, 10), mm); cap.position.set(hx, hy + 0.05, hz); grp.add(cap);
+      const lens = mesh(new THREE.CircleGeometry(0.22, 10), lensM, 'lampLens'); lens.rotation.x = Math.PI / 2; lens.position.set(hx, hy - 0.01, hz); lens.userData.noEdges = true; grp.add(lens);
+    } else if (l.kind !== 'mast') {
+      const head = mesh(new THREE.BoxGeometry(0.5, 0.25, 0.5), mm, 'lampHead'); head.position.set(hx, hy + 0.13, hz); grp.add(head);
+      const lens = mesh(new THREE.PlaneGeometry(0.4, 0.4), lensM, 'lampLens'); lens.rotation.x = Math.PI / 2; lens.position.set(hx, hy - 0.01, hz); lens.userData.noEdges = true; grp.add(lens);
+    }
+    const pool = mesh(new THREE.CircleGeometry(l.r, 40), poolM, 'lampPool'); pool.rotation.x = -Math.PI / 2; pool.position.set(l.pool[0], 0.1, l.pool[2]); pool.userData.noEdges = true; pool.userData.lamp = l.id; grp.add(pool);
+  }
   return grp;
 }
 function roads(state, padW, reacW) {
@@ -714,8 +740,12 @@ export function buildScene(state) {
   scene.add(mounds(state));
   for (const b of L.masts.bearings) {
     const d = state.masts === 'all' ? 1 : (state.masts[b] ?? 0);
-    if (d > 0 || state.mastBases) scene.add(mast(b, d, state.sunBearing ?? 200));
+    if (d > 0 || state.mastBases) { const nd = state.mastNudge?.[b], mk = mast(b, d, state.sunBearing ?? 200, !!state.lights, nd?.legTurn ?? 0);
+      if (state.mastDraw) mk.scale.setScalar(state.mastDraw);   // drawing conventions of the 5.2 plan only (shots.js '5.2o'): the layout's mast is 20 m on the ring
+      if (nd) mk.position.x += nd.dx ?? 0;
+      scene.add(mk); }
   }
+  if (state.lights) scene.add(workLamps(state, padW));           // fitted at stage 5, "lights on"
   if (state.comms) scene.add(commsTower());
   scene.add(reactor(state, reacW));
   scene.add(pad(state, padW));

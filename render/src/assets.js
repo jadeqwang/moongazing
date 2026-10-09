@@ -17,6 +17,8 @@ const STATIC = {
   S3: 'assets/plates/S3_indigo_gpt_v1.jpg', S4: 'assets/plates/S4_jiehua_gpt_v1.jpg', goldline: 'assets/plates/A_goldline.jpg',
   gongbi: 'assets/plates/A_gongbi.jpg',
   pole: 'assets/moon/lroc_south_pole_wac_400m.jpg', bm4k: 'assets/earth/black_marble_2016_4k.jpg', bmChina: 'assets/earth/black_marble_2016_east_china_3km.jpg',
+  bmDay: 'assets/earth/blue_marble_200409_4k.jpg', bmClouds: 'assets/earth/clouds_2048.jpg',
+  bmDayChina: 'assets/earth/blue_marble_200409_east_china_1km.jpg', bmDayDelta: 'assets/earth/blue_marble_200409_yangtze_delta_500m.jpg',
 };
 
 export class AssetStore {

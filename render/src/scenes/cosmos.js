@@ -11,7 +11,7 @@ const RM = 1737.4, RE = 6371.0, DEM = 384400;
 const STATION = [-38.0, 26.0]; // km from the pole on the polar plane: the Shackleton–de Gerlache ridge (89.5°S)
 
 // [time, km/px] keyframes, interpolated in log space with eased segments
-const SCALE = [[181.11, 0.0022], [182.30, 0.035], [183.80, 2.4], [184.60, 14], [185.30, 250], [186.36, 300], [187.50, 9500], [189.86, 11000]];
+const SCALE = [[178.66, 0.0022], [179.84, 0.035], [181.33, 2.4], [182.12, 14], [182.81, 250], [183.86, 300], [184.99, 9500], [187.32, 11000]];
 export function scaleAt(t) {
   if (t <= SCALE[0][0]) return SCALE[0][1];
   for (let i = 1; i < SCALE.length; i++) {
@@ -22,7 +22,7 @@ export function scaleAt(t) {
 }
 // where the camera looks (km): station → pole → between Earth and Moon → Earth
 export function centerAt(t) {
-  const a = smooth(182.0, 184.0, t), b = smooth(184.5, 185.3, t), c = smooth(186.36, 187.5, t);
+  const a = smooth(179.54, 181.53, t), b = smooth(182.02, 182.81, t), c = smooth(183.86, 184.99, t);
   let x = STATION[0] * (1 - a), y = STATION[1] * (1 - a);
   x = x * (1 - b) + Math.max(-DEM * 0.5, -820 * scaleAt(t)) * b; y *= 1 - b; // never lose the Moon before Earth arrives
   x = x * (1 - c) + (-DEM) * c;
@@ -97,7 +97,7 @@ export const cosmos = {
     });
     // Earth, to scale; at the end a single pale-blue pixel in a slanted band of scattered sunlight
     const ex = 960 + (-DEM - c[0]) / s, ey = 540 + (0 - c[1]) / s, er = RE / s;
-    const beam = smooth(186.9, 188.0, t);
+    const beam = smooth(184.39, 185.48, t);
     ctx.pipe.layer((g) => {
       if (beam > 0) {
         g.save(); g.translate(ex + 40, ey); g.rotate(-0.32);
@@ -109,7 +109,7 @@ export const cosmos = {
       else if (er > 1.3) earthDisc(g, ex, ey, er, 5);
       else if (ex > -20 && ex < 1940) { g.fillStyle = '#b9d6ee'; g.beginPath(); g.arc(ex, ey, 1.7, 0, Math.PI * 2); g.fill(); }
       // Earth and Moon to scale: a ruled dimension line between them (jiehua), quietly labelled
-      const dl = smooth(185.2, 185.6, t) * (1 - smooth(186.5, 186.9, t));
+      const dl = smooth(182.71, 183.11, t) * (1 - smooth(184.00, 184.39, t));
       if (dl > 0) {
         const mx = 960 + (0 - c[0]) / s, my = 540 + (0 - c[1]) / s, yy = ey + 70;
         g.globalAlpha = dl * 0.8; g.strokeStyle = 'rgba(212,168,75,1)'; g.lineWidth = 1;
@@ -119,18 +119,18 @@ export const cosmos = {
         g.textAlign = 'left'; g.globalAlpha = 1;
       }
       // the frame becomes the emblem: a gold ring drawn round the dot
-      const ring = smooth(188.55, 189.35, t);
+      const ring = smooth(186.03, 186.82, t);
       if (ring > 0) { g.strokeStyle = 'rgba(212,168,75,0.85)'; g.lineWidth = 2.2; g.beginPath(); g.arc(ex - 40, ey + 10, 250, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * ring); g.stroke(); }
     }, { mode: 'over', seed: 69 });
     // a ruled scale bar (jiehua), bottom-left
     const km = nice(s * 220), px = km / s;
-    const fade = 1 - smooth(187.4, 187.9, t);
+    const fade = 1 - smooth(184.89, 185.39, t);
     if (fade > 0) ctx.pipe.layer((g) => {
       g.globalAlpha = 0.85 * fade; g.strokeStyle = '#fff'; g.lineWidth = 1.4;
       g.beginPath(); g.moveTo(64, 1030); g.lineTo(64 + px, 1030); g.moveTo(64, 1022); g.lineTo(64, 1038); g.moveTo(64 + px, 1022); g.lineTo(64 + px, 1038); g.stroke();
       g.font = '14px PlexMonoMedium'; g.letterSpacing = '2px'; g.fillStyle = '#fff'; g.fillText(fmt(km), 64, 1010);
     }, { mode: 'gold', seed: 70 });
-    const q = smooth(187.95, 188.35, t) * (1 - smooth(189.15, 189.55, t));   // quiet, and gone before the cut
+    const q = smooth(185.44, 185.83, t) * (1 - smooth(186.62, 187.02, t));   // quiet, and gone before the cut
     if (q > 0) {
       const card = ctx.type.card('sagan', { lines: [[{ t: 'That’s here. That’s home. That’s us.', font: 'CormorantItalic' }]], size: 30, x: 960, y: 850, align: 'center', color: '#efe7d6' });
       ctx.pipe.layer((g) => card.draw(g, 1, q * 0.62), { mode: 'over', seed: 71 });

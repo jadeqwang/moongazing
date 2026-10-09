@@ -12,6 +12,19 @@ export const SHOTS = [
     sun: { bearing: 250, elev: 0.8 }, shadowY: 10.0, lights: true, depthNear: 60, depthFar: 2500 },
   { id: '5.2', paper: 'JIEHUA plan', label: 'Site plan, north (= Earth) up, seal-stamp moment',
     state: S(5, { rovers: true }), cam: { orthoTop: 262, target: [0, 0, -20] }, sun: { bearing: 230, elev: 35 }, lights: false },
+  // rev 3 (Oct 8): the 5.2 plate redrawn as a plan-oblique: same plan, 5.8 px per metre on a 1920 frame, hub at (1040, 700)
+  // so the drawing clears the roundel (upper left) and the label (lower left); heights drawn up the page at plan scale
+  { id: '5.2o', paper: 'JIEHUA plan-oblique', label: 'Site plan, north (= Earth) up, heights drawn up the page (the K_5.2 plate, rev 3)',
+    // rev 4 (Oct 8): `mastDraw` — on this sheet only, each mast is drawn 1.4 times its plan-scale size from its true foot,
+    // so that it stands over the mounds as it does in every side view (a mound seen from above shows its whole 22 m
+    // footprint; a 20 m mast at plan scale is shorter than that on the page). The layout's mast is still 20 m. 1.4 is
+    // the most the sheet takes: beyond it the two south masts' panels touch the SE and SW mounds in front of them.
+    // `mastNudge`: drawn that large, M2's south-west foot would stand on the edge of the pad road, so on this sheet M2's
+    // tripod is turned 60 degrees (one leg toward the hub); the mast itself stays on its true spot.
+    // rev 5 (Oct 9): 1.6. Jade chose "Larger still, about 1.6 times: the two lower masts' panels would overlap the edges
+    // of the mounds in front, as masts do in the side views". On this sheet south is toward the viewer, so M3 and M4
+    // (bearings 150, 210) stand IN FRONT of the SE and SW mounds: their panels are drawn over the mounds' edges.
+    state: S(5, { rovers: true, mastDraw: 1.6, mastNudge: { 90: { legTurn: 60 } } }), cam: { orthoTop: 331, target: [-13.8, 0, -27.6], shear: 1 }, sun: { bearing: 180, elev: 35 }, lights: false },
   { id: '6.2', paper: 'RUBBING/INK', label: 'Shackleton rim overlook, 2.6 km ENE of base, looking north to Earth (base is behind-left: NOT in frame)',
     state: S(5), cam: { rim: true, hfov: 55 }, sun: { bearing: 15, elev: 0.3 }, depthNear: 2, depthFar: 30000 },
   { id: '7.A', paper: 'GOLD', label: 'Complete station (stage 5) — the K_7.A plate', state: S(5, { compress: true }), cam: JIEHUA_CAM, sun: { bearing: 200, elev: 25 } },

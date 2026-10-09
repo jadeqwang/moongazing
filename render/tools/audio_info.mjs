@@ -10,13 +10,15 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = path.resolve(ROOT, '..');
 const FFMPEG = process.env.FFMPEG || path.join(REPO, '.venv/bin/ffmpeg');
-const candidates = ['media/audio/moongazing_master.wav', 'media/audio/moongazing_master.mp3', 'inputs/moongazing.mp3'];
+// Oct 9: the film is cut to the lower-key recording (two semitones down); its master is media/audio/moongazing_2down_master.*
+const SOURCE = 'inputs/Moongazing - 2 semitones down.mp3', SOURCE_LEN = 208.36;
+const candidates = ['media/audio/moongazing_2down_master.wav', 'media/audio/moongazing_2down_master.mp3', SOURCE];
 const file = candidates.find((f) => fs.existsSync(path.join(REPO, f)));
 const r = spawnSync(FFMPEG, ['-hide_banner', '-i', path.join(REPO, file)], { encoding: 'utf8' });
 const m = /Duration: (\d+):(\d+):([\d.]+)/.exec(r.stderr || '');
-const probed = m ? +m[1] * 3600 + +m[2] * 60 + +m[3] : 212.0;
+const probed = m ? +m[1] * 3600 + +m[2] * 60 + +m[3] : SOURCE_LEN;
 // the original mp3's container reports 212.04 (encoder padding); the song is 212.0 s on the analysis time base
-const duration = file === 'inputs/moongazing.mp3' ? 212.0 : probed;
-const out = { file, duration: +duration.toFixed(3), original: 'inputs/moongazing.mp3', master: file !== 'inputs/moongazing.mp3' };
+const duration = file === SOURCE ? SOURCE_LEN : probed;
+const out = { file, duration: +duration.toFixed(3), original: SOURCE, master: file !== SOURCE };
 fs.writeFileSync(path.join(ROOT, 'data/audio.json'), JSON.stringify(out, null, 1) + '\n');
 console.log(out);
