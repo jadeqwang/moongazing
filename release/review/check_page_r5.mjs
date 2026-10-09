@@ -115,7 +115,7 @@ for (const m of markup.matchAll(/\b(?:src|poster)="([^"]+)"/g)) refs.add(m[1].sp
 for (const ref of refs) {
   assert(!ref.includes('..') && !path.isAbsolute(ref), `Unsafe media path ${ref}`);
   if (published.some((prefix) => ref.startsWith(prefix))) continue;
-  assert(ref.startsWith('clips8/') || ref.startsWith('img8/'), `Unexpected media path ${ref}`);
+  assert(ref.startsWith('clips8/') || ref.startsWith('img8/') || ref.startsWith('lyric8/'), `Unexpected media path ${ref}`);
   if (!dry) assert(fs.existsSync(path.join(mediaRoot, ref)) && fs.statSync(path.join(mediaRoot, ref)).size > 0, `Missing media ${ref}`);
 }
 const expected = data.FILM.parts.length + (data.FILM.full ? 1 : 0);

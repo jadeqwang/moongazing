@@ -5,8 +5,10 @@ import pathlib
 import subprocess
 import sys
 import numpy as np
+import soundfile as sf
 from PIL import Image,ImageDraw,ImageFont
 from lyrics import ROOT,OUT,log
+from recording import DURATION, BEATGRID, MASTER, TIMING, RECORDING, OLD_OUT
 
 def run(cmd):
     if pathlib.Path(cmd[0]).name=='ffmpeg' and '-filter_threads' not in cmd:
@@ -17,17 +19,94 @@ def gold_mask(rgb):
     rgb=rgb.astype(np.int16); r,g,b=rgb[:,:,0],rgb[:,:,1],rgb[:,:,2]
     return (r>100)&(r-g>12)&(g-b>25)&(b<170)
 
+
+def verify_audio():
+    """Independently check sample preservation, protected vocals and lead removal."""
+    from fix_checks import digest
+    master, sr = sf.read(MASTER, dtype='int32', always_2d=True)
+    karaoke, kr = sf.read(OUT/'Moongazing_karaoke_audio.wav', dtype='int32', always_2d=True)
+    alternate, ar = sf.read(OUT/'Moongazing_karaoke_audio_nohumming.wav', dtype='int32', always_2d=True)
+    assert sr == kr == ar == 48000
+    assert master.shape == karaoke.shape == alternate.shape == (round(DURATION*sr), 2)
+    report = json.loads((OUT/'audio_checks.json').read_text())
+    modified = np.zeros(len(master), dtype=bool)
+    for region in report['regions']:
+        modified[round(region['splice_start']*sr):round(region['splice_end']*sr)] = True
+    assert np.array_equal(master[~modified], karaoke[~modified])
+    timeline = json.loads(TIMING.read_text())
+    protected = [(r['start'], r['end'], r['type']) for r in timeline['vocalise_and_humming']
+                 if not any(s in r['type'].lower() for s in ['ad-lib', 'falsetto'])]
+    if RECORDING == '2down':
+        protected += [(160., 171.2, 'Requested wordless lead'),
+                      (176., 192., 'Requested voice-like lead')]
+    for a, b, label in protected:
+        assert np.array_equal(master[round(a*sr):round(b*sr)],
+                              karaoke[round(a*sr):round(b*sr)]), label
+    for line in timeline['lines']:
+        a, b = round(line['start']*sr), round(line['end']*sr)
+        assert np.array_equal(karaoke[a:b], alternate[a:b]), line['id']
+    for name in ['Moongazing_karaoke_audio.wav', 'Moongazing_karaoke_audio_nohumming.wav']:
+        assert sf.info(OUT/name).subtype == 'PCM_24'
+    assert report['native_reconstruction_residual_dbfs'] < -100
+    assert report['raw_model_reconstruction_residual_relative_db'] < -50
+    assert max(report['karaoke_peak'], report['no_humming_peak']) < 1
+    assert report['max_splice_jump_ratio'] < 2
+    alternate_splices=[]
+    if RECORDING=='2down':
+        from audio import read
+        from recording import ALL_VOCALS
+        original_float=read(MASTER)
+        alternate_float=read(OUT/'Moongazing_karaoke_audio_nohumming.wav')
+        sources={'BS-RoFormer':read(ALL_VOCALS,len(master)),
+                 'htdemucs_ft':read(ROOT/'analysis/work/v2/demucs/htdemucs_ft/new_mix/vocals.wav',len(master))}
+        for r in report['nohumming_wordless_regions']:
+            a,b=round(r['start']*sr),round(r['end']*sr)
+            expected_float=original_float[a:b]-sources[r['source']][a:b]
+            assert np.max(np.abs(expected_float-alternate_float[a:b])) < 1.21e-7
+            assert r['removed_component_dbfs'] < -10 and r['removed_component_dbfs'] > -45
+            for t in [round(r[k]*sr) for k in ['splice_start','start','end','splice_end']]:
+                local=np.max(np.abs(np.diff(alternate_float[t-1:t+2],axis=0)))
+                neighbourhood=np.max(np.abs(np.diff(alternate_float[max(0,t-2400):t+2400],axis=0)),axis=1)
+                ratio=float(local/max(np.quantile(neighbourhood,.99),1e-12))
+                alternate_splices.append(dict(time=t/sr,ratio=ratio))
+        assert max(r['ratio'] for r in alternate_splices)<2
+    expected = json.loads((OUT/'fix_audio_hashes.json').read_text())
+    assert all(digest(OUT/name) == sha for name, sha in expected.items())
+    if RECORDING == '2down':
+        snapshot=json.loads((OUT/'original_output_snapshot.json').read_text())
+        current={str(p.relative_to(OLD_OUT)):p for p in OLD_OUT.rglob('*') if p.is_file()}
+        assert set(current)==set(snapshot), 'Original output folder contents changed'
+        for name, expected_file in snapshot.items():
+            p=current[name]
+            assert (p.stat().st_size,p.stat().st_mtime_ns)==(expected_file['bytes'],expected_file['mtime_ns']), name
+            if 'sha256' in expected_file:
+                assert digest(p)==expected_file['sha256'], name
+    (OUT/'independent_audio_checks.json').write_text(json.dumps(dict(
+        duration=DURATION, unchanged_outside_splices=True,
+        protected_wordless_regions=protected, lyric_samples_equal_nohumming=True,
+        wav_hashes_unchanged=True, reconstruction_pass=True,
+        nohumming_wordless_subtraction_pass=True, nohumming_splices=alternate_splices,
+        original_output_untouched=RECORDING=='2down'), indent=2))
+    log('Independent audio verification passed: exact wordless preservation, lyric lead removal, WAV format, reconstruction and hashes.')
+
 def main():
     preflight='--preflight' in sys.argv
+    if not preflight:
+        verify_audio()
+        if '--audio-only' in sys.argv:
+            return
     ffmpeg=ROOT/'.venv/bin/ffmpeg'; ffprobe=OUT/'ffprobe'
-    probes={}
+    probes={}; decodes={}
     for name in ([] if preflight else ['Moongazing_lyric_video.mp4','Moongazing_lyric_video_karaoke.mp4']):
         data=json.loads(run([ffprobe,'-v','error','-show_streams','-show_format','-of','json',OUT/name]).stdout)
         (OUT/(name+'.ffprobe.json')).write_text(json.dumps(data,indent=2))
         video=next(s for s in data['streams'] if s['codec_type']=='video'); audio=next(s for s in data['streams'] if s['codec_type']=='audio')
-        assert float(data['format']['duration'])==216 and float(video['duration'])==216 and float(audio['duration'])==216
+        expected_frames=math.ceil(DURATION*24-1e-8)
+        assert abs(float(video['duration'])-expected_frames/24)<.001
+        assert abs(float(data['format']['duration'])-DURATION)<=1/24+.001
+        assert abs(float(audio['duration'])-DURATION)<.001
         assert video['codec_name']=='h264' and video['profile']=='High' and video['pix_fmt']=='yuv420p'
-        assert (video['width'],video['height'],video['r_frame_rate'],int(video['nb_frames']))==(1920,1080,'24/1',5184)
+        assert (video['width'],video['height'],video['r_frame_rate'],int(video['nb_frames']))==(1920,1080,'24/1',expected_frames)
         assert all(video[k]=='bt709' for k in ['color_space','color_transfer','color_primaries'])
         assert (audio['codec_name'],audio['profile'],audio['sample_rate'],audio['channels'])==('aac','LC','48000',2)
         atoms={}
@@ -41,9 +120,15 @@ def main():
         assert atoms['moov']<atoms['mdat'],'faststart missing'
         probes[name]=dict(duration=data['format']['duration'],video_profile=video['profile'],frames=video['nb_frames'],audio_bitrate=audio['bit_rate'],faststart=True)
         log('ffprobe pass '+name+' '+json.dumps(probes[name]))
+        decoded=run([ffmpeg,'-v','error','-xerror','-threads','4','-i',OUT/name,'-f','null','-'])
+        assert not decoded.stderr, decoded.stderr
+        decodes[name]={'full_audio_video_decode_pass':True}
+    if not preflight:
+        (OUT/'decode_checks.json').write_text(json.dumps(decodes,indent=2))
     lines=json.loads((OUT/'lyric_manifest.json').read_text())
     folder=OUT/('preflight' if preflight else 'verification'); folder.mkdir(exist_ok=True)
-    samples=[('title',2),('humming',20),('count-in',30.75)]+[(l['id'],(l['start']+l['end'])/2) for l in lines]+[('credits',209)]
+    beats=[b['t'] for b in json.loads(BEATGRID.read_text())['beats'] if b['t']<lines[0]['start']]
+    samples=[('title',2),('humming',20),('count-in',beats[-2])]+[(l['id'],(l['start']+l['end'])/2) for l in lines]+[('credits',DURATION-6)]
     times=[(kind,name,t) for kind in ['A','B'] for name,t in samples]
     if preflight: times=[]
     tiles=[]

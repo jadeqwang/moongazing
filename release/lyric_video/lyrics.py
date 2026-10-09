@@ -14,14 +14,9 @@ from fontTools.ttLib import TTFont
 from fontTools.varLib.instancer import instantiateVariableFont
 from pypinyin import pinyin, Style
 
-ROOT = pathlib.Path(__file__).resolve().parents[2]
-OUT = ROOT / 'render/out/lyric_video'
+from recording import ROOT, OUT, TIMING, BEATGRID, DURATION, log
 GOLD = '&H006AB3D8&'
 PALE = '&H00D0E2E9&'
-
-def log(s):
-    with (OUT / 'job.log').open('a') as f:
-        f.write(f'{datetime.datetime.now().isoformat()} {s}\n')
 
 def prepare_fonts():
     folder = OUT / 'fonts'
@@ -64,7 +59,7 @@ def prepare_fonts():
     return fonts
 
 def load_lines():
-    timing=json.loads((ROOT/'analysis/lyrics_timing.json').read_text())
+    timing=json.loads(TIMING.read_text())
     lookup={l['id']:l for l in timing['lines']}
     tree=ast.parse((ROOT/'release/subs/make_subs.py').read_text())
     node=next(n.value for n in tree.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='LYRICS' for t in n.targets))
@@ -272,12 +267,12 @@ def main():
                 ass.add(max(prev['start'],l['start']-2.5),appear,sung,130,933,key,42,.25)
             gap=l['start']-(prev['end'] if prev else 0)
             if gap>4:
-                beats=[x['t'] for x in json.loads((ROOT/'analysis/beatgrid.json').read_text())['beats'] if x['t']<l['start']][-3:]
+                beats=[x['t'] for x in json.loads(BEATGRID.read_text())['beats'] if x['t']<l['start']][-3:]
                 begin=beats[0]-(beats[1]-beats[0])
                 for j,end in enumerate(beats): ass.add(begin,end,'●',137+j*29,600,'zh',13,.8,GOLD,extra=r'\fad(120,80)')
             if not karaoke: manifest.append({**l,'tokens':tokens,'appear':appear,'leave':leave,'main_y':main_y,'initial_y':initial_y,'rise':rise,'rise_end':rise_end,'size':size})
         for region in timing['vocalise_and_humming']:
-            label='♪ humming ♪' if 'hum' in region['type'] else '♪ vocalise ♪'
+            label='♪ humming ♪' if 'hum' in region['type'].lower() else '♪ vocalise ♪'
             # Noto contains music-note glyphs, unlike Cormorant.
             ass.add(region['start'],region['end'],label,130,945,'zh',26,.5,extra=r'\fad(200,300)')
         notes=(ROOT/'inputs/望明月, Moongazing lyrics and notes.md').read_text()
@@ -288,7 +283,7 @@ def main():
             cf=ImageFont.truetype(fonts['en']['path'],27)
             # Long verbatim lines fit the clear lower half at 27px.
             size=min(27,math.floor(1660/cf.getlength(line)*27))
-            ass.add(204,216,line,130,640+j*53,'en',size,.65,extra=r'\fad(1200,1300)')
+            ass.add(DURATION-12,DURATION,line,130,640+j*53,'en',size,.65,extra=r'\fad(1200,1300)')
         ass.write(OUT/('karaoke.ass' if karaoke else 'lyrics.ass'))
     (OUT/'lyric_manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2))
     log('ASS built from literal Jade LYRICS; L07/L10 splits retained; original timing, pypinyin tones, unique static 400-weight font families verified by cmap.')

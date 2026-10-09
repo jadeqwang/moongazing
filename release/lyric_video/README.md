@@ -1,39 +1,59 @@
 # 望明月 · Moongazing lyric videos
 
-Outputs are in `render/out/lyric_video/` and are never committed:
+The default recording is now the two-semitones-lower master. Its outputs go to **`render/out/lyric_video_2down/`**. The original Oct 8 outputs in `render/out/lyric_video/` are retained unchanged. Generated media are never committed.
 
-- `Moongazing_lyric_video.mp4`: full, untouched master audio.
-- `Moongazing_lyric_video_karaoke.mp4`: lead removed from lyric phrases and their held/ad-lib tails; original wordless passages retained.
-- `Moongazing_karaoke_audio.wav`: 48 kHz stereo, 24-bit, 216.000 seconds.
-- `Moongazing_karaoke_audio_nohumming.wav`: lead removed throughout; audio-only alternative, same WAV format.
-- `bg_1080.png`, `lyrics.ass`, `karaoke.ass`, `sheet.jpg`, `pinyin_check.jpg`, `spacing_check.jpg`, verification frames, JSON measurements, and `job.log`.
+- `Moongazing_lyric_video.mp4`: untouched selected master audio.
+- `Moongazing_lyric_video_karaoke.mp4`: lead removed during sung phrases and their held/ad-lib tails; wordless passages remain original samples.
+- `Moongazing_karaoke_audio.wav`: 48 kHz stereo, 24-bit; 210.860 seconds for the new recording.
+- `Moongazing_karaoke_audio_nohumming.wav`: lead removed throughout, including humming; audio-only alternative in the same WAV format.
+- `bg_1080.png`, `lyrics.ass`, `karaoke.ass`, `sheet.jpg`, native pinyin/spacing crops, verification frames, measurements, `BUILD_REPORT.json`, and `job.log`.
 
 ## Rebuild
 
-Run from the repository root. Keep every generated file, cache, model and intermediate under `render/out/lyric_video/`. No step edits the live renderer, shared tools, media or git metadata. Scripts are limited to this directory. Use the existing `.venv/bin/python`; dependencies and their versions are recorded in `render/out/lyric_video/environment_versions.json`.
+Run from the repository root with the existing `.venv/bin/python`. Every script accepts `--recording 2down` (default) or `--recording original`; child stages inherit this choice. The selected recording determines the master, timing JSON, beatgrid, vocal comparison stem, duration and output directory. The original option uses `analysis/v1/` timings and the original 216-second master. Selecting it deliberately rebuilds the old outputs.
 
 ```bash
-nice -n 10 .venv/bin/python -B release/lyric_video/setup.py
-nice -n 10 .venv/bin/python -B release/lyric_video/background.py
-nice -n 10 render/out/lyric_video/venv/bin/python -B release/lyric_video/separate.py --download
-nice -n 10 render/out/lyric_video/venv/bin/python -B release/lyric_video/separate.py
-nice -n 10 .venv/bin/python -B release/lyric_video/audio.py
-nice -n 10 .venv/bin/python -B release/lyric_video/lyrics.py
-nice -n 10 .venv/bin/python -B release/lyric_video/review.py
-nice -n 10 .venv/bin/python -B release/lyric_video/fix_checks.py
-nice -n 10 .venv/bin/python -B release/lyric_video/verify.py --preflight
-nice -n 10 .venv/bin/python -B release/lyric_video/encode.py
-nice -n 10 .venv/bin/python -B release/lyric_video/verify.py
-nice -n 10 .venv/bin/python -B release/lyric_video/fix_checks.py --encoded
+nice -n 10 .venv/bin/python -B release/lyric_video/build.py
+# After completed CPU separation, to repeat assembly/layout/encodes/checks:
+nice -n 10 .venv/bin/python -B release/lyric_video/build.py --reuse-separation
+# Rebuild the original recording instead:
+nice -n 10 .venv/bin/python -B release/lyric_video/build.py --recording original
 ```
 
-Review the contact sheet and native-resolution frames after verification. Only then append `LYRIC_DONE` as one unadorned line to the log. On an unrecoverable failure, append `LYRIC_FAILED: reason` instead.
+`build.py` runs setup, plate reuse, CPU separation, audio assembly, subtitles, reviews, spacing/pinyin checks, encoded-fill preflight, both encodes and final verification. `--reuse-separation` checks the selected master hash and CPU separation metadata. Build stages keep logs in the selected output directory. After successful automated checks, inspect `sheet.jpg`, `fix_checks/native_*.jpg`, `fix_checks/pinyin_A.jpg`, `fix_checks/pinyin_B.jpg`, and `spacing_check.jpg`. After that visual review, run `.venv/bin/python -B release/lyric_video/complete.py --reviewed` (add `--recording original` for the original). It writes the final report, appends both MP4 paths and byte sizes as `LYRIC_OUTPUT:` lines to `render/out/retime/jobs.log`, then appends `LYRIC_DONE`. A failed build records `LYRIC_FAILED: reason`.
 
-For a visual-only correction, run `nice -n 10 .venv/bin/python -B release/lyric_video/rebuild_visuals.py`. This retains the existing background and WAVs, records WAV hashes, regenerates subtitles and review evidence, runs the encoded fill preflight, encodes both videos sequentially, and reruns verification. `fix_checks.py --encoded` checks audio hashes against `fix_audio_hashes.json`. After viewing the final evidence, append `LYRIC_FIX_DONE` (or `LYRIC_FIX_FAILED: reason`) to the log. No separation or audio assembly is repeated.
+Individual stages remain available. Run `setup.py`, `background.py`, the selected output directory's `venv/bin/python -B release/lyric_video/separate.py`, then `audio.py`, `lyrics.py`, `review.py`, `fix_checks.py`, `verify.py --preflight`, `encode.py`, `verify.py`, and `fix_checks.py --encoded`. All other stages use `.venv/bin/python -B`. `encode.py --kind A` or `--kind B` encodes just the full-vocal or karaoke variant. `verify.py --audio-only` runs independent PCM checks without a video encode.
 
-The background script uses `git archive HEAD render`, changes only the archived entry point, and renders one still through the committed paper/inkmoon shaders. Ignored fonts are copied in and node_modules/media/analysis/inputs are linked read-only. It uses one Chrome worker and deletes its archive afterwards. The original plate was rendered from commit `a8755e1919a4f515778cc6486fbf8175d624b037` (the full commit is recorded in `job.log`). Moon centre is (1401.6,313.2), with diameter 324 px. No frame-compositing fallback was used. In the managed sandbox, the local rendering server/Chrome and GPU inference require execution approval outside the sandbox.
+For a visual-only correction, `nice -n 10 .venv/bin/python -B release/lyric_video/rebuild_visuals.py` retains the plate and WAVs, records audio hashes, rebuilds subtitle/review evidence, encodes both variants and reruns verification. Add `--recording original` for the old recording. Review the evidence before logging `LYRIC_FIX_DONE` or `LYRIC_FIX_FAILED: reason`.
 
-The supplied ffmpeg has libass. `verify.py` expects `render/out/lyric_video/ffprobe`; the matching static probe was extracted from [John Van Sickle's static ffmpeg release](https://johnvansickle.com/ffmpeg/). A rebuild on another machine can copy its installed ffprobe there. Encoders run sequentially, with six ffmpeg codec/filter threads, H.264 High, CRF 16, preset slow, yuv420p, BT.709 conversion and tags, 24 fps, AAC-LC 320 kb/s, 48 kHz stereo, and faststart.
+All execution is CPU-only inside the sandbox. `separate.py` explicitly sets `torch.device('cpu')`, disables autocast and keeps four CPU threads. It uses the same cached **MelBand RoFormer karaoke lead-only model**, `mel_band_roformer_karaoke_aufr33_viperx_sdr_10.1956.ckpt`, with native 44.1 kHz, eight-second chunks, overlap 4 and batch 1. The supplied BS-RoFormer stems separate all vocals; they are used for the backing-vocal energy comparison and for wordless removal in the audio-only no-humming alternate. They do not replace the lead-only model during lyrics. No normalization, gain, EQ or compression is added. Model/config files are copied from the original local cache; no network request is permitted. Missing cache files produce `NEED: <model/file>` in `jobs.log`.
+
+`background.py` copies the previously verified plate and ffprobe byte-for-byte. It runs no git, Chrome or renderer. The original plate was rendered on Oct 8 from commit `a8755e1919a4f515778cc6486fbf8175d624b037`; Moon centre is (1401.6, 313.2), diameter 324 px. Encodes retain the original look and settings: 1920×1080, 24 fps, H.264 High/CRF 16/slow/yuv420p, BT.709 conversion and tags, AAC-LC/320 kb/s/48 kHz/stereo, faststart, sequential six-thread ffmpeg.
+
+For the new recording, audio remains exactly 210.860 seconds. At 24 fps this requires 5,061 frames (video duration 210.875 seconds); verification allows only that final partial-frame difference. Credits occupy the last twelve seconds, 198.860–210.860, and count-ins use the selected beatgrid. Lyric wording, translations, punctuation, L07/L10 splits, font choices and sweep rules remain unchanged.
+
+New-track lyric tails use the new timing metadata: the second “you” ad-lib through 90.740 seconds and the 乡 octave-flip/decay through 121.650 seconds, followed by measured lead decay. Old absolute tail extensions are applied only to the original recording. The new wordless leads at 160.0–171.2 and 176.0–192.0 seconds, intro vocalise, outro humming and final solo hum are preserved sample-for-sample in the main karaoke. The `_nohumming` variant starts with the MelBand lead-removed mix throughout. Because that model barely removes the intro vocalise or final solo hum, the alternate uses BS-RoFormer vocal subtraction during the identified wordless passages, plus the supplied `htdemucs_ft` vocals for the final solo hum (202.790–204.150), which BS-RoFormer also misses. Outro humming includes its faint tail to 198.500 seconds. These substitutions use 100 ms linear crossfades, affect only the alternate WAV, and retain the MelBand lead-only mix during lyrics. No normalization is applied.
+
+Independent verification checks 24-bit WAV duration/format, exact master identity outside lyric splices, exact identity through every protected wordless passage, equality to the no-humming mix during timed lyrics, stem reconstruction, peaks, splice jumps and WAV hashes. It independently checks the alternate's wordless stem subtraction to within one 24-bit sample unit, including all transition edges. It also compares the original output folder's file metadata and deliverable hashes to a pre-build snapshot. Stream/faststart, encoded gold-onset, font selection, spacing and native pinyin checks run again on the final MP4s.
+
+## New recording: final verification (Oct 9)
+
+Both videos decoded cleanly from start to finish and passed final stream and faststart verification: 1920×1080 H.264 High/yuv420p/BT.709, 24 fps, 5,061 frames, 210.875-second video and 210.860-second AAC-LC/48 kHz/stereo audio. All 19 encoded word/character onsets passed, from −4 to +37 ms (within one 41.667 ms frame). The 42-panel final A/B contact sheet, all 34 native lyric-segment crops, 14 pinyin-row crops, English spacing comparisons and dense line transitions were inspected. No overlaps, clipping, tofu or fallback fonts were found. All ten English lines remain pixel-identical to their plain single-run layout.
+
+- `Moongazing_lyric_video.mp4`: 25,619,067 bytes.
+- `Moongazing_lyric_video_karaoke.mp4`: 25,620,897 bytes.
+- `Moongazing_karaoke_audio.wav`: 60,727,724 bytes.
+- `Moongazing_karaoke_audio_nohumming.wav`: 60,727,724 bytes.
+
+Both karaoke WAVs are exactly 210.860 seconds, 48 kHz stereo/24-bit. The main karaoke retains 6,820,992 stereo sample frames exactly outside the lyric splices, including both new wordless leads and all humming. Native reconstruction is below the numerical floor; raw reconstruction error is -82.61 dBFS (-64.05 dB relative to master RMS). The main karaoke peak is 0.672183; no-humming peak is 0.592443. Maximum splice-jump ratios are 0.847 for the main karaoke and 1.232 for the no-humming substitutions, both below 2. Integrated loudness is −15.6 LUFS full-vocal and −16.0 LUFS karaoke; true peaks are −4.4 and −3.5 dBFS respectively.
+
+The original lead-only alternate barely changed the solo hum. The corrected no-humming alternate uses the supplied Demucs vocal estimate there: interval RMS changes from −25.35 to −35.79 dBFS over 202.790–204.150 seconds. The supplied BS-RoFormer estimates remove the other identified wordless passages. These are separator estimates; residual voice or instrumental leakage can remain. Their subtraction was independently checked to within one 24-bit sample unit, and every alternate transition passed the splice check. The main karaoke remains unmodified through those passages.
+
+The original output folder's 1,363 file metadata records and deliverable hashes match the pre-build snapshot. All work used the sandbox and CPU; no model download was needed. See `audio_checks.json`, `independent_audio_checks.json`, `fill_checks.json`, `video_checks.json`, `decode_checks.json`, `spacing_checks.json`, `pinyin_checks.json`, `environment_versions.json`, and `BUILD_REPORT.json` in the new output directory.
+
+## Original recording: Oct 8 measurements and review
+
+The following measurements and visual-review history describe the retained 216-second original exports; they are not measurements of the new recording.
 
 ## Audio method and measurements
 

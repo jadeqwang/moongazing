@@ -21,8 +21,8 @@ answers call for; render a small version of the whole film and commit.
   visor (`J_4.3p/take_1g`); 1:43 masts at 1.6x (`K_5.2.jpg`, last round's kept as `K_5.2_v3.jpg`); 2:53 toast without
   the two-cup shot (7.E1, 7.E1b, 7.E1d: group, Adaeze, group); 3:11 reunion version B (`K_8.2a` pick `take_10`);
   3:16 the ending re-fitted (8.3 one bar, 8.4 from bar 111 to the last chord at 204.19, inscription faster).
-- **Page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp, published as "Round five" (version 8): the whole film
-  (one file and six parts), seven cards (`r5_sync, r5_ending, r5_desk, r5_photo, r5_plan, r5_toast, r5_reunion`), earlier
+- **Page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp, published as "Round five" (version 9): the whole film
+  (one file and six parts), the two lyric videos in the new key, seven cards (`r5_sync, r5_ending, r5_desk, r5_photo, r5_plan, r5_toast, r5_reunion`), earlier
   rounds under a fold. Answers: ArtifactData, collection `decisions`. Source: `release/review/cards_r5.json` (edit by
   hand), `page_r5_body.html`, `page_r5.css`; `bash release/review/build_page_r5.sh` cuts
   `render/out/rev_page/v8/{clips8,img8}/` and rewrites `decisions.html`; publish that file to the same URL with
@@ -58,7 +58,10 @@ answers call for; render a small version of the whole film and commit.
 2. A watch at speed by a person. Soft spots I know of: the second group view of the toast is close to the first; the
    roof deck is 1.8 s; the inscription's English has about 2.5 s; the desk shot's face is softer than its neighbours;
    the lyric at 1:03 leaves about 0.4 s before the cut.
-3. Lyric videos on the new recording (`release/lyric_video/`, codex): not redone; the ones on the page are the old key.
+3. Lyric videos on the new recording: made by codex (`render/out/lyric_video_2down/Moongazing_lyric_video.mp4` and
+   `…_karaoke.mp4`; the scripts in `release/lyric_video/` now take the recording as a parameter, `recording.py`). Small
+   copies are on the page as `lyric8/*` (cut by hand with ffmpeg, 960 wide, crf 27; `build_page_r5.sh` does not make
+   them). I looked at eight frames at sung lines: the words are on the new syllables. Nobody has listened.
 4. 1080p: `TMPDIR=… bash render/tools/render_verified.sh 0 215.19 out/frames_v8_1080 1 3`, then encode.
 5. Items 2–5 of the round-three list below still stand (thumbnails, social cut, upload copies).
 

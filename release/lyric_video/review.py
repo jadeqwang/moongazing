@@ -5,10 +5,12 @@ import pathlib
 import subprocess
 from PIL import Image,ImageDraw,ImageFont
 from lyrics import ROOT,OUT,log
+from recording import DURATION, BEATGRID
 
 def main():
     rows=json.loads((OUT/'lyric_manifest.json').read_text())
-    times=[('title',2),('humming',20),('count-in',30.75)]+[(l['id'],(l['start']+l['end'])/2) for l in rows]+[('credits',209),('karaoke title',2)]
+    beats=[b['t'] for b in json.loads(BEATGRID.read_text())['beats'] if b['t']<rows[0]['start']]
+    times=[('title',2),('humming',20),('count-in',beats[-2])]+[(l['id'],(l['start']+l['end'])/2) for l in rows]+[('credits',DURATION-6),('karaoke title',2)]
     folder=OUT/'review'; folder.mkdir(exist_ok=True)
     tiles=[]
     for i,(name,t) in enumerate(times):
