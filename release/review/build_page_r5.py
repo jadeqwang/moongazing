@@ -3,7 +3,7 @@
 from __future__ import annotations
 import argparse
 import hashlib
-import json
+import json, shutil
 import math
 import os
 from pathlib import Path
@@ -234,7 +234,14 @@ def build(framedir):
             (stage/'clips8/film_full.mp4').unlink()
             print(f"Continuous film omitted: {full_size/1_000_000:.2f} MB at the CRF 34 quality limit. All {len(spec['film']['parts'])} parts are included.", flush=True)
         page = stage/'decisions.html'; page.write_text(make_page(spec, full))
-        check_page(page, stage)
+        # The lyric videos (lyric8/) are made elsewhere and stay in place: the check sees them through a link.
+        link = stage/'lyric8'
+        if (OUT/'lyric8').is_dir(): link.symlink_to(OUT/'lyric8', target_is_directory=True)
+        if (OUT/'img8/lyric.jpg').is_file(): shutil.copy2(OUT/'img8/lyric.jpg', stage/'img8/lyric.jpg')   # its poster
+        try:
+            check_page(page, stage)
+        finally:
+            if link.is_symlink(): link.unlink()
         if source_hash != hashlib.sha256((REVIEW/'cards_r5.json').read_bytes()).hexdigest():
             raise ValueError('cards_r5.json changed during encoding; rerun to build the current cards')
         files = sorted(str(p.relative_to(stage)) for p in stage.rglob('*') if p.is_file() and p.name != 'decisions.inline.js')

@@ -10,8 +10,11 @@ answers call for; render a small version of the whole film and commit.
 ### Where things stand
 - **Cut v8** `render/out/fullcut_v8_540p.mp4` (frames `render/out/frames_v8_540/`, 5,165 frames, 0..5164, 215.19 s) is the
   whole film on the new recording with every round-five change in it. Rendered twice and compared
-  (`render/out/v8_render.log`: 226 frames differed, all settled by a third pass; flicker check passed). **Nobody has
-  watched it at speed with sound**; I looked at two contact sheets of the whole cut and one comparison image per fix.
+  (`render/out/v8_render.log`: 226 frames differed, all settled by a third pass; flicker check passed). After the
+  3:30 reset two agents reviewed it cut by cut on frames (`docs/reviews/rev5_review_a.md`, `rev5_review_b.md`; sheets
+  in `render/out/retime/review_v8/`): nothing broken, three corrections made and re-rendered (ink drop at 0:02 now on
+  the audible strum, "wine" at 1:36 given time, a one-frame take skip at 0:15.7), the rest left for Jade's ear: see
+  "After the 3:30 reset" in `docs/REVISION_NOTES_OCT9.md`. **Nobody has watched it at speed with sound.**
 - **Audio:** `media/audio/moongazing_2down_master.wav/.mp3` (210.86 s), release copy
   `release/audio/Moongazing_master_2_semitones_down.mp3`. Not in git. The old-key masters are untouched beside them.
 - **Timing:** `analysis/beatgrid.json` and `lyrics_timing.json` are the new recording's (`analysis/v2/`); the first
@@ -21,11 +24,11 @@ answers call for; render a small version of the whole film and commit.
   visor (`J_4.3p/take_1g`); 1:43 masts at 1.6x (`K_5.2.jpg`, last round's kept as `K_5.2_v3.jpg`); 2:53 toast without
   the two-cup shot (7.E1, 7.E1b, 7.E1d: group, Adaeze, group); 3:11 reunion version B (`K_8.2a` pick `take_10`);
   3:16 the ending re-fitted (8.3 one bar, 8.4 from bar 111 to the last chord at 204.19, inscription faster).
-- **Page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp, published as "Round five" (version 9): the whole film
+- **Page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp, published as "Round five" (version 10 after the review corrections): the whole film
   (one file and six parts), the two lyric videos in the new key, seven cards (`r5_sync, r5_ending, r5_desk, r5_photo, r5_plan, r5_toast, r5_reunion`), earlier
   rounds under a fold. Answers: ArtifactData, collection `decisions`. Source: `release/review/cards_r5.json` (edit by
   hand), `page_r5_body.html`, `page_r5.css`; `bash release/review/build_page_r5.sh` cuts
-  `render/out/rev_page/v8/{clips8,img8}/` and rewrites `decisions.html`; publish that file to the same URL with
+  `render/out/rev_page/v8/{clips8,img8}/` and rewrites `decisions.html` (it waits until `render/out/v8_render.log` ends with a line ending in ` V8_DONE`); publish that file to the same URL with
   `clips8/*` and `img8/*` as files (root `render/out/rev_page/v8`).
 - **Git:** committed and pushed on `round2-v5` (PR #5). Not committed, on purpose: `:memory:.ses` (stray) and
   `inputs/Moongazing - 2 semitones down.mp3` (the first recording IS in the public repository as `inputs/moongazing.mp3`,

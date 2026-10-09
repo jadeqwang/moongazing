@@ -444,7 +444,10 @@ export default function shots(B, X, L) {
       type(ctx, t, lt) {
         // the lyric is brushed in ink on the xuan; outside the Moon the pass turns that ink into gold on indigo, so the
         // line changes paper exactly where the limb passes under it
-        lyricEN(ctx, L.L13, { ...huge, size: 118, x: 960, y: 960, align: 'center', color: INK, hold: 0.8 }, t, 'ink');
+        // "wine" is sung 0.43 s before the cut on the lower-key recording (it was 1.0 s): it is brushed 0.4 s ahead of the
+        // voice, during the held "lonely", so that it stands whole for half a second before the lander takes the frame
+        const L13 = { ...L.L13, words: L.L13.words.map((w, i) => (i === 3 ? { ...w, start: w.start - 0.4 } : w)) };
+        lyricEN(ctx, L13, { ...huge, size: 118, x: 960, y: 960, align: 'center', color: INK, hold: 0.8 }, t, 'ink');
         const R = R48(lt);
         if (R < 1500) ctx.pipe.apply(ctx.gl.program(MOONIN_FS, 'hook-moonin'), { uC: [960, 540, R], uSeed: 4.8 });
       } },

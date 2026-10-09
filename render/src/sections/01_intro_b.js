@@ -12,7 +12,7 @@ export default function shots(B, X, L) {
     // 1.1 — the night turns to indigo; a gold line traces Earth → Moon
     { id: '1.1', t0: LIFT, t1: TAIKO[0], paper: 'indigo', grain: 7,
       // the terrace keeps moving (K_0.6/take_5 continues from 0.6, same framing and clock) while the night turns to indigo over it
-      scene: [{ type: 'roto', clip: 'K_0.6/take_5', paper: 'silk', style: { snapAmt: 0.12, lineA: 0 }, offset: 0.6 + 0.75 * (LIFT - 13.10), rate: 0.75, lock: 0, subject: false, maskGain: 8, from: { x: 0.58, y: 0.575, zoom: 1.25 }, to: { x: 0.585, y: 0.57, zoom: 1.27 } },
+      scene: [{ type: 'roto', clip: 'K_0.6/take_5', paper: 'silk', style: { snapAmt: 0.12, lineA: 0 }, offset: 0.6 + 0.75 * (LIFT - 13.15), rate: 0.75, lock: 0, subject: false, maskGain: 8, from: { x: 0.58, y: 0.575, zoom: 1.25 }, to: { x: 0.585, y: 0.57, zoom: 1.27 } },
         { name: 'paperfade', params: { paperTo: 'indigo', fade: (t, lt) => 0.5 + 0.5 * smooth(0.0, 0.6, lt) } },
         // (TYPE, Oct 8: the Moon used to arrive whole on the first frame of this shot, in the middle of a continuous take; it now comes up over 0.9 s with the indigo)
         { name: 'inkmoon', params: { mode: 'photo', place: { x: 1470, y: 330, R: 118 }, pale: (t, lt) => smooth(0.0, 0.9, lt), paleColor: [0.80, 0.80, 0.80] } }, 'trajectory'] },

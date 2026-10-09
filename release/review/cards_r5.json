@@ -42,8 +42,8 @@
    "at": 0,
    "clips": [],
    "asked": "Can you make Moongazing - 2 semitones down.mp3 fade out evenly again and time the video to the resulting track?",
-   "body": "Every cut sits on a beat, a sung word or a marked hit of the new recording, and the lyric type follows the new sung syllables. Four places are worth your ear, because the singing moved against the beat there or the hit itself changed: the ink drop landing on the opening strum (0:02; the strum is a longer roll now), <span class='zh'>月缺酒寒</span> (1:16; the line starts a beat later than before), <span class='zh'>低头思故乡</span> into the drop (1:54 to 2:01), and the last chord (3:24).",
-   "short": "The checks so far are measurements against the audio and stills, not a viewing at speed.",
+   "body": "Every cut sits on a beat, a sung word or a marked hit of the new recording, and the lyric type follows the new sung syllables. After the first render two reviewers went through it cut by cut, on frames and measurements. They found two things off, both corrected in the film above: the ink drop at 0:02 landed a quarter of a second before the strum can be heard, and “wine” at 1:36 was on screen for under half a second before the cut (it is now brushed 0.4 seconds ahead of the voice, so it stands about a second). Five places are worth your ear, because the singing moved against the beat there or the hit itself changed: the ink drop landing on the opening strum (0:02; the strum is a longer roll now), the wash to white at 0:22 (it used to sit on the voice swelling in; the voice now sings from 0:17 and leaps up at 0:23, so the wash comes about 0.4 seconds before the leap), <span class='zh'>月缺酒寒</span> (1:16; the line starts a beat later than before, and “The moon wanes,” is up for 1.2 seconds where it had 1.6), <span class='zh'>低头思故乡</span> into the drop (1:54 to 2:01), and the last chord (3:24).",
+   "short": "The checks so far are measurements against the audio and frame-by-frame viewing, not a viewing at speed with sound.",
    "q": "Watching with sound: does it land?",
    "opts": [
     [
@@ -74,7 +74,7 @@
    ],
    "asked": "now it’s basically the same but somewhat shorter and some of the timings have shifted",
    "body": "The new recording ends differently: the humming comes in under the reunion, the plucked run slows down sooner, and the last chord falls at 3:24 where the last pluck used to fall at 3:30. So the roof deck with the two toy globes is now one bar (1.8 seconds, it was 2.7), and the tea cup with the inscription runs six seconds (it was 8.4). <span class='zh'>海上生明月，天涯共此时</span> is brushed a little faster, the English comes in while the second column is still being written, and the picture goes dark on the last chord as before. The credits then run eleven seconds; the music has faded out after the first six and a half.",
-   "short": "The English line is fully readable for about two and a half seconds before the fade begins. The last four and a half seconds of the credits are silent (five before).",
+   "short": "The finished inscription stands for about one second before the fade begins (it had two), and the English line is at full strength for about a second and a half. The last four and a half seconds of the credits are silent (five before).",
    "q": "Does the ending work?",
    "multi": true,
    "opts": [

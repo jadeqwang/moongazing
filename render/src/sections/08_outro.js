@@ -117,7 +117,7 @@ export default function shots(B, X, L) {
     { id: '8.3', t0: S83, t1: S84, paper: 'silk', grain: 83,
       // K_8.3/take_4 (h3, rev Oct 7): everyone stays back to camera (take_3 turned Jade to a blank profile); all four move
       scene: [X.has('K_8.3') ? { type: 'roto', clip: 'K_8.3/take_4', paper: 'silk', offset: 0.6, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: { x: 0.53, y: 0.46, zoom: 1.12 } } : ph('The family on the roof deck; toy Earth and toy Moon on the parapet', 'K_8.3')] },
-    // 8.4 — the solo hum: the Moon in the tea; the closing inscription; dark on the last pluck
+    // 8.4 — the Moon in the tea; the closing inscription; the short solo hum (203.0) under the fade; dark on the last chord
     { id: '8.4', t0: S84, t1: END, paper: 'silk', grain: 84,
       scene: [X.has('K_8.4') ? kf('K_8.4', { from: { x: 0.43, y: 0.654, zoom: 1.48 }, to: { x: 0.56, y: 0.56, zoom: 1.2 }, dolly: 0.06, // opens on the Moon where 8.3 left it (match cut), tilts down to the Moon in the tea
        

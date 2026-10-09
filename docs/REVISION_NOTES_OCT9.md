@@ -40,7 +40,7 @@
 - **Fixed times.** About 140 literal song times in `render/src/sections/*.js`, `scenes/cosmos.js` and
   `release/subs/make_subs.py` were rewritten by `analysis/v2/retime/convert.py`: a measured event takes its measured new
   time, anything else the beat warp, and `overrides.json` holds the values set by hand (the opening strum, which is a
-  longer roll now: the ink drop lands on its first finger at 2.24 s; the hook glosses, which follow the sung syllables;
+  longer roll now: the ink drop was set to land at 2.24 s, corrected to 2.48 after the review, see below; the hook glosses, which follow the sung syllables;
   the verse-two start). `ACCENTS` in `_lib.js`: the tail was rewritten for the new ending.
 - **Ending, by hand** (`08_outro.js`): the new recording is 3.3 s shorter between bar 110 and the last note. 8.3 (roof
   deck) is one bar (1.83 s, was 2.73); 8.4 (tea cup, inscription) runs bar 111 → 204.19 (6.05 s, was 8.44); the
@@ -53,6 +53,39 @@
   differed between the passes, all settled by a third; flicker check passed); the fix owners' own double renders are
   byte-identical to the cut's frames; two contact sheets of the whole cut looked at. **Nobody has watched it at speed
   with sound.**
+
+## After the 3:30 reset: the cut-by-cut review, and three corrections
+Two review agents went through v8 after the usage window reset, one per half, on material made for them in
+`render/out/retime/review_v8/` (`render/tools/review_sheets.py`: three frames either side of every cut, four frames a second of the
+whole film, the type strips). Reports: `docs/reviews/rev5_review_a.md` (0 to 110.3 s), `rev5_review_b.md` (to the end).
+Neither found anything broken: every cut within 10 ms of its beat, onset or accent; no popped, wrong-shot or frozen
+frames; subtitle cues agree with `lyrics_timing.json`. What they found, and what was done:
+
+- **0:02, the ink drop (fixed).** `HIT` was 2.24, the first of the onsets I had read off the new strum. Measured on the
+  master (400 Hz to 2 kHz, 20 ms steps) the roll is a soft swell from 2.3 with audible fingers at 2.48 and 2.60 and the
+  chord at 2.69: the drop landed a quarter second before anything could be heard and the blot then sat for nine
+  frames. Now `HIT = 2.48`, `ROLL` 2.48 / 2.60 / 2.69 / 2.95 (`00_intro.js`). First wet frame is 60. The other
+  literals of that shot that the conversion had missed (seal fade, camera glide start, `resolveAt`) moved by the same
+  +0.08 s as the cut they lead to.
+- **1:36, "wine" (fixed).** On the new recording "wine" is sung 0.43 s before the cut to the lander (it was 1.0 s), so
+  it was whole for 0.15 s. In shot 4.8 its onset is pulled 0.4 s ahead of the voice (`04_hook.js`, a local copy of the
+  line; the shared reveal code is untouched): it now arrives during the held "lonely" and stands about 0.75 s.
+- **0:15.7, the terrace take (fixed, was not visible).** `01_intro_b.js` still subtracted the old start of shot 0.6
+  (13.10, now 13.15) when continuing the take across the cut: one frame of skip.
+- **0:22.66, the wash to white (left, on the sync card).** `VOICE` was the first recording's voice swelling in. In the
+  new one the voice has sung since 16.8 s and the event is a pitch leap on the bar-12 downbeat (23.05). The wash is
+  still 65 ms after beat 4 of bar 11, so it reads as a cut on the beat; moving it to 23.05 would leave the walkout
+  0.9 s. Jade's ear decides.
+- **1:16.7, "The moon wanes," (left).** 1.2 s on screen, it had 1.6: the gloss follows the sung syllable as designed.
+- **The ending (left, on the ending card).** The finished inscription stands 1.05 s before the fade begins (2.04 in
+  v7), the English about 1.5 s at full strength, and the short solo hum (203.02) now sits under the fade. The card's
+  text had said two and a half seconds for the English: corrected.
+- **Subtitle wording.** "to gaze" in the subtitle against "and gaze" on screen is deliberate: with "and" the cue is 43
+  characters and `make_subs.py` refuses anything over 42.
+
+Frames 0-143, 376-421 and 2243-2311 were re-rendered twice and compared (no differences), the cut re-encoded, the page
+media rebuilt. `ranges_verified.sh` no longer passes a negative start time for a range beginning at frame 0. The page
+builder waits for the render log to END with `V8_DONE`: after a range re-render, append a line ending in ` V8_DONE`.
 
 ## Things learned
 - `/tmp` is a 16 GB tmpfs and was full (other projects' caches): Chrome then crashes at start with more than one
