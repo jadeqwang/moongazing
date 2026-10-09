@@ -32,6 +32,57 @@
    ]
   },
   {
+   "id": "r4_env",
+   "bp": 1400,
+   "when": "0:58",
+   "title": "The envelope: sealed, opened, and a letter unfolded",
+   "at": 57.5,
+   "clips": [
+    [
+     "envelope",
+     "Now",
+     "0:57 – 1:02",
+     57.0,
+     62.0,
+     1425
+    ]
+   ],
+   "more": [
+    [
+     1449,
+     "The folded letter comes out"
+    ],
+    [
+     1473,
+     "Unfolded: top panel up, bottom panel down"
+    ]
+   ],
+   "asked": "also make the words stick to the envelope better, and when the letter emerges from the envelope, it's a folded trifold, and then she has to open it. do the image models not know how this works? I'd like to not have to film it, but I can offer to if you and the other computers literally can't figure it out.",
+   "body": "You do not need to film it. The image and video models do get paper wrong when left to invent it, so this time the envelope and the letter were first built to measure as a paper model (a real business envelope, a letter page folded in three), the paintings were made over that, and the video model was given both the first and the last picture of each action. <b>The words:</b> they slid for the first half second because they were pinned to where the envelope ended up while it was still settling out of Kenton's hand; they are now tracked to the envelope's four corners in every frame, through the tilt. <b>The 0:59 jump:</b> the old cut skipped 1.7 seconds inside one movement. Handing over, turning it and landing on the sealed back is now one continuous take. <b>The seal:</b> a pale-blue-dot sticker holds the flap. <b>The letter:</b> after the cut the flap is open, a folded packet a third of a page tall comes out toward you, and you open it, top panel up and bottom panel down, with print showing only once it is open.",
+   "short": "Breaking the seal is not shown: the cut goes from the sealed back to the flap already lifted, with the sticker left on the envelope's body. The envelope is true size now, so it is smaller in frame and its words are smaller. The work on this passage was stopped before its last review: the turn, the seal and the words were checked frame by frame, the unfolding only on every fourth frame.",
+   "q": "Tick what applies.",
+   "multi": true,
+   "opts": [
+    [
+     "ok",
+     "This works"
+    ],
+    [
+     "seal",
+     "Show the seal being broken"
+    ],
+    [
+     "fold",
+     "The unfolding still looks wrong",
+     "Say what in the note."
+    ],
+    [
+     "words",
+     "The words still slide"
+    ]
+   ]
+  },
+  {
    "id": "r4_desk",
    "bp": 1552,
    "when": "1:05",

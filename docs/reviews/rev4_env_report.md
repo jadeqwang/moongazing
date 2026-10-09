@@ -10,9 +10,22 @@ how this works? I'd like to not have to film it, but I can offer to if you and t
 figure it out." Chat: "0:59, yes fix the envelope glitch".
 
 ## Status
-WORK IN PROGRESS (this line is replaced when the passage is wired and rendered). Until then the film's section file
-still holds the v6 wiring, but the keyframes `K_3.5_front`, `K_3.5_back`, `K_3.5_letter`, `K_3.5_letter_end` have
-already been replaced (old ones kept as `_v2` / `_v1`), so the v6 picks for 3.5 no longer apply.
+**Wired, rendered and on the page; the owner's own review was cut short.** The ENV agent was stopped (Oct 8, about
+23:50) before it wrote sections 4 onward, so this status and the "For Jade" section were written by the main session
+from what was on disk. What is true:
+- `03_verse2.js` wires two takes over the three old shots (the lists `AB35` and `C35` and their comment say which of
+  each take's drawings play): **3.5a** is `K_3.5_front/take_6`, one continuous action from Kenton's hand letting go,
+  through the turn, to the sealed back; **3.5c** is `K_3.5_letter/take_7`, the packet coming out and the Z-fold
+  opening. Both are prepped (`media/gen/K_3.5_{front,letter}/roto/`); `media/gen/picks.json` carries the takes, the
+  rejected takes with reasons, and the re-run commands (`tools/paper_quad.py` for the type on the envelope's front).
+- Frames **1389–1479** differ from v6. They were rendered twice and compared (`render/out/v7_ranges.sh 1384-1486`,
+  unresolved=0) and are byte-identical to the agent's own test render (`render/out/rev4_env/frames/`, clip
+  `render/out/rev4_env/envelope.mp4`).
+- Looked at by the agent as consecutive frames: the type on the envelope 1389–1413 and the turn and seal 1409–1436
+  (`render/out/rev4_env/strips/`). Looked at by the main session: every fourth frame 1389–1477. **Not looked at
+  frame by frame: the unfolding, 1437–1479.**
+- Unjudged leftovers: `K_3.5_letter/take_8` (downloaded) and `take_9` (submitted 04:44 UTC, never downloaded; its
+  job id is in `take_9.json`) were further tries at the unfolding. Video spend on this passage: 5.70 of 8 USD.
 
 ## 1. What the v6 frames show (rule 2: find it first)
 
@@ -65,4 +78,15 @@ letter (the open page is 279 mm tall and needs the room). Every keyframe is pain
 (continued below as the work is done)
 
 ## For Jade
-(being written; nothing has changed in the film yet)
+- **0:58, the words on the envelope.** They slid for the first half second because they were pinned to where the
+  envelope came to rest while it was still settling out of Kenton's hand. They are now tracked to the envelope's four
+  corners in every frame, through the tilt. Frames 1389–1413.
+- **0:59, the jump.** The old cut skipped 1.7 seconds inside one movement. Handing over, turning and landing on the
+  sealed back is now one continuous take. Frames 1409–1436.
+- **The seal.** A pale-blue-dot sticker holds the flap of a true-size business envelope. Frame 1425.
+- **1:00, the letter.** After the cut the flap is open; a packet folded in three comes out toward you and you open
+  it, top panel up, bottom panel down, with print showing only when it is open. Frames 1437–1479; 1449 and 1473.
+- **What falls short.** Breaking the seal is not shown (the cut goes from the sealed back to the lifted flap, the
+  sticker left on the envelope's body). The envelope is true size, so it and its words are smaller in frame. The
+  unfolding was checked only on every fourth frame.
+- Clip: `render/out/rev4_env/envelope.mp4` (0:57–1:02, with the song).

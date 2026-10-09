@@ -102,6 +102,39 @@ SPECS = {
               "or pointed flap; it never stretches, grows or passes through a finger; nothing is printed on its "
               "outside. The envelope stays where it is, flap open, with its round navy sticker. Exactly two hands, "
               "five fingers each. The globe stays still. The printed lines never become readable words.")),
+        'd': dict(text=(
+              "Top-down on a walnut desk in warm lamplight: a woman takes a folded letter out of an opened envelope "
+              "and unfolds it. The motion is already under way in the first frame and never pauses. The letter is "
+              "ONE sheet of white paper folded in three: a compact flat packet almost the size of the envelope itself "
+              "(nearly as wide and nearly as tall as the envelope), blank white outside. Within the first second her right hand draws the packet the rest of "
+              "the way out of the envelope and brings it down toward herself, while her left hand leaves the "
+              "envelope and takes the packet's left end. Then she unfolds it in two clear movements. One: her thumbs "
+              "lift the near edge of the top layer, and that third of the page swings up and away from her, hinged "
+              "on the far crease, and lies open: two thirds of the page now show, printed inside with a small round "
+              "emblem and rows of fine grey lines. Two: the last third, folded back underneath, swings down toward "
+              "her and opens. Now the whole page is open in her hands, three flat panels divided by two straight "
+              "horizontal creases; she holds it by its side edges, reading. The page is open by three seconds. Real "
+              "paper: its width never changes and each of the three panels is exactly as tall as the closed packet "
+              "was; flat rectangles with straight edges, never a curved or pointed flap; nothing stretches, grows "
+              "or passes through a finger; nothing is printed outside. The envelope stays where it is, flap open, with its round navy sticker. Exactly two hands, "
+              "five fingers each. The globe stays still. The printed lines never become readable words.")),
+        'e': dict(text=(
+              "Top-down on a walnut desk in warm lamplight: a woman takes a folded letter out of an opened envelope "
+              "and unfolds it. The motion is already under way in the first frame and never pauses. The letter is "
+              "ONE sheet of white paper folded in three: a plain white rectangular packet, as wide as the page and "
+              "exactly a third of its height, so only a little smaller than the envelope's body; smooth and blank "
+              "outside, with no seams or diagonal lines. Within the first second her right hand draws the packet the rest of "
+              "the way out of the envelope and brings it down toward herself, while her left hand leaves the "
+              "envelope and takes the packet's left end. Then she unfolds it in two clear movements. One: her thumbs "
+              "lift the near edge of the top layer, and that third of the page swings up and away from her, hinged "
+              "on the far crease, and lies open: two thirds of the page now show, printed inside with a small round "
+              "emblem and rows of fine grey lines. Two: the last third, folded back underneath, swings down toward "
+              "her and opens. Now the whole page is open in her hands, three flat panels divided by two straight "
+              "horizontal creases; she holds it by its side edges, reading. Real "
+              "paper: its width never changes; every panel is a flat rectangle with straight edges, never a curved "
+              "or pointed flap; it never stretches, grows or passes through a finger; nothing is printed on its "
+              "outside. The envelope stays where it is, flap open, with its round navy sticker. Exactly two hands, "
+              "five fingers each. The globe stays still. The printed lines never become readable words.")),
     }),
 }
 

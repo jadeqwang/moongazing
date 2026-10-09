@@ -10,28 +10,22 @@ and push". Her answers verbatim, the owner of each fix and the round's rules: th
 each ending with "For Jade" and its shortfalls.
 
 ### Where things stand
-- **Eight fixes are done, rendered and on the page; she has not looked yet.** 0:20 card in her wording; 1:05 throat;
-  1:10 M's hair; 1:22 new shot (she looks at a snapshot of the children; replaces the sung close-up); 1:45 masts 1.4x
-  on the plan; 2:23 work lamps (HUD now `STATION · LIGHTS 21 / 21`); 2:59 two-cup hands; 3:13 reunion with Kenton's
-  arm round them (`K_8.2a/take_8`, cut to the close moved one beat later, to 197.50).
-- **The envelope (0:58–1:01, shots 3.5a/b/c) is NOT done.** The ENV agent was still working when these notes were
-  written (keyframes repainted, takes of the unfolding being made). Read the Status line at the top of
-  `docs/reviews/rev4_env_report.md` first: if it still says WORK IN PROGRESS, the agent was cut off by the restart.
-  In that state `03_verse2.js` still wires the v6 takes for 3.5 while `media/keyframes/K_3.5_{front,back,letter,
-  letter_end}` are already the new paintings (old ones kept as `_v2` / `_v1`), so **the 3.5 passage does not render
-  as v6 any more** until the new takes are wired. Finish it from the report (design in §3: a measured paper blockout
-  in `render/scenes/blockouts/3.5/`, a #10 envelope, a sticker on the flap, a trifold packet that she unfolds; type
-  tracked with `tools/paper_track.py` / `tools/paper_quad.py`), brief as in the round-four rules. Then: render its
-  frame range with `render/out/v7_ranges.sh`, add its card as `release/review/card_r4_env.json` (same fields as the
-  cards in `release/review/cards_r4.py`, which inserts that file as the second card), rebuild and republish the page,
-  commit and push.
+- **All nine fixes are rendered and on the page; she has not looked yet.** 0:20 card in her wording; 0:58 envelope;
+  1:05 throat; 1:10 M's hair; 1:22 new shot (she looks at a snapshot of the children; replaces the sung close-up);
+  1:45 masts 1.4x on the plan; 2:23 work lamps (HUD now `STATION · LIGHTS 21 / 21`); 2:59 two-cup hands; 3:13
+  reunion with Kenton's arm round them (`K_8.2a/take_8`, cut to the close moved one beat later, to 197.50).
+- **The envelope (0:58–1:01, shots 3.5a and 3.5c; 3.5b is gone) is wired but its review was cut short.** The ENV
+  agent was stopped before it finished its report; the Status block at the top of `docs/reviews/rev4_env_report.md`
+  (written by the main session) says exactly what was and was not checked. Not looked at frame by frame: the
+  unfolding, frames 1437–1479. Two further takes of the unfolding (`K_3.5_letter/take_8`, and `take_9`, never
+  downloaded) are unjudged. Her card is `r4_env` (source `release/review/card_r4_env.json`).
 - **Frames.** `render/out/frames_v7_540/` is cut v6 with only the fixed passages re-rendered:
-  frames 421–511, 1524–1577, 1654–1707, 1956–1989, 2519–2582, 3443–3543, 4284–4346, 4642–4772. Each range was
+  frames 421–511, 1389–1479, 1524–1577, 1654–1707, 1956–1989, 2519–2582, 3443–3543, 4284–4346, 4642–4772. Each range was
   rendered twice and compared (`bash render/out/v7_ranges.sh FIRST-LAST …`, log `render/out/v7_render.log`; all
   unresolved=0). **No v7 film file exists**: she asked for the fixes only. Nobody has watched any of it at speed
   with sound.
-- **Page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp. Round-four cards are ids `r4_card, r4_desk, r4_chin,
-  r4_photo, r4_plan, r4_lights, r4_toast, r4_reunion` (and `r4_env` when made); answers in ArtifactData, collection
+- **Page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp. Round-four cards are ids `r4_card, r4_env, r4_desk,
+  r4_chin, r4_photo, r4_plan, r4_lights, r4_toast, r4_reunion`; answers in ArtifactData, collection
   `decisions`. Source: `release/review/cards_r4.py` → `cards_r4.json`; `page_r4_body.html`, `page_r4.css`;
   `bash release/review/build_page_r4.sh` cuts `render/out/rev_page/v7/{clips7,img7}/` and rewrites `decisions.html`;
   publish that file to the same URL with `clips7/*` and `img7/*` as files (root `render/out/rev_page/v7`). The
@@ -43,6 +37,7 @@ each ending with "For Jade" and its shortfalls.
 ### Choices waiting for her on the page
 | Card | If she chooses… | Then |
 |---|---|---|
+| `r4_env` 0:58 | show the seal being broken / unfolding still wrong | `rev4_env_report.md` §3 (the paper blockout `render/scenes/blockouts/3.5/`); look at `K_3.5_letter/take_8` first; a new take needs first and last keyframes. |
 | `r4_reunion` 3:13 | B (opens both arms; his profile shows about a second) | one word in `media/gen/picks.json`: `K_8.2a` → `take_10`; its close painting `K_8.2b_wrap10` and take are made (`rev4_home_report.md`). Re-render 4642–4772. |
 | | one hand | `K_8.2a` → `take_9` reproduces v6 byte for byte. |
 | `r4_photo` 1:22 | gold visor / repaint 1:15 to match / splash-park photo | `rev4_photo_report.md`; the 1:15 snapshot is shot 3.8f. Rebuild order for `J_4.3p/take_1s` is in `picks.json` (`roto_prep` wipes `roto_only` and `roto_keep` data). |
@@ -61,12 +56,12 @@ each ending with "For Jade" and its shortfalls.
   survive as text in `picks.json` notes and `docs/production_tracker.md`.
 - A frame number divided by 24 and printed to six decimals can round across a frame: `v7_ranges.sh` pads half a
   frame either side.
-- The five finished agents used about 1.5 M tokens between them (250–370 k each), 18 to 42 minutes each; ENV was still running.
-- Spend this round, up to the eight fixes: about 4 USD of video and 1.4 USD of images; ENV's takes come on top
-  (`media/gen/spend.jsonl`).
+- The five agents that finished used about 1.5 M tokens between them (250–370 k each), 18 to 42 minutes each; ENV ran about 75 minutes before it was stopped.
+- Spend this round: about 9.7 USD of video (5.7 of it on the envelope) and about 1.4 USD of images, not counting
+  ENV's images (`media/gen/spend.jsonl`).
 
 ### Next, in order
-1. Finish the envelope (above) and put it on the page.
+1. Look at the envelope's unfolding (1437–1479) as consecutive frames, since its owner did not get to.
 2. Her answers on the `r4_*` cards, then those fixes.
 3. A watch at speed, a full verified render (v7), then 1080p. Items 2–5 of the round-three list below still stand.
 
