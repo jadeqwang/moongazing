@@ -1,0 +1,309 @@
+{
+ "id": "K_1.4a",
+ "title": "walkout, front view: four cross the wet apron toward the rocket (screen left)",
+ "people": {
+  "adaeze": {
+   "headTurnDeg": 3,
+   "headPitchDeg": 5,
+   "arms": {
+    "R": {
+     "reach": 0.94,
+     "handBehind": -0.11,
+     "elbowBehind": 0.04,
+     "target": "point"
+    },
+    "L": {
+     "reach": 1.03,
+     "handBehind": -0.02,
+     "elbowBehind": 0,
+     "target": "point"
+    }
+   },
+   "eye": [
+    -0.43,
+    1.57,
+    -0.09
+   ]
+  },
+  "anastasia": {
+   "headTurnDeg": 25,
+   "headPitchDeg": 0,
+   "arms": {
+    "R": {
+     "reach": 0.58,
+     "handBehind": -0.18,
+     "elbowBehind": -0.05,
+     "target": "point"
+    },
+    "L": {
+     "reach": 1.04,
+     "handBehind": -0.02,
+     "elbowBehind": 0,
+     "target": "point"
+    }
+   },
+   "eye": [
+    -2,
+    1.58,
+    0.72
+   ]
+  },
+  "arjun": {
+   "headTurnDeg": 22,
+   "headPitchDeg": 22,
+   "arms": {
+    "R": {
+     "reach": 0.97,
+     "handBehind": -0.01,
+     "elbowBehind": 0.05,
+     "target": "point"
+    },
+    "L": {
+     "reach": 1.07,
+     "handBehind": -0.02,
+     "elbowBehind": 0,
+     "target": "point"
+    }
+   },
+   "eye": [
+    -3.27,
+    1.65,
+    2.13
+   ]
+  },
+  "lucia": {
+   "headTurnDeg": 3,
+   "headPitchDeg": -1,
+   "arms": {
+    "R": {
+     "reach": 0.93,
+     "handBehind": 0.16,
+     "elbowBehind": 0.09,
+     "target": "point"
+    },
+    "L": {
+     "reach": 1,
+     "handBehind": -0.03,
+     "elbowBehind": 0,
+     "target": "point"
+    }
+   },
+   "eye": [
+    -4.99,
+    1.52,
+    3.16
+   ]
+  }
+ },
+ "screens": {},
+ "cameras": {
+  "hero": {
+   "people": {
+    "adaeze": {
+     "faceAngleDeg": 36,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1086.1,
+      392.3
+     ],
+     "inFrame": true
+    },
+    "anastasia": {
+     "faceAngleDeg": 9,
+     "view": "front",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1426.4,
+      462.3
+     ],
+     "inFrame": true
+    },
+    "arjun": {
+     "faceAngleDeg": 51,
+     "view": "three-quarter",
+     "headVisibleFrac": 0.71,
+     "blockedBy": [
+      "arjun.undefined",
+      "anastasia.upperarmL"
+     ],
+     "headPx": [
+      1530.2,
+      518.3
+     ],
+     "inFrame": true
+    },
+    "lucia": {
+     "faceAngleDeg": 14,
+     "view": "front",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1693.2,
+      574.8
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {}
+  },
+  "eye": {
+   "people": {
+    "adaeze": {
+     "faceAngleDeg": 41,
+     "view": "three-quarter",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1451.6,
+      320.1
+     ],
+     "inFrame": true
+    },
+    "anastasia": {
+     "faceAngleDeg": 6,
+     "view": "front",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1995.6,
+      316
+     ],
+     "inFrame": false
+    },
+    "arjun": {
+     "faceAngleDeg": 52,
+     "view": "three-quarter",
+     "headVisibleFrac": 0.86,
+     "blockedBy": [
+      "arjun.undefined"
+     ],
+     "headPx": [
+      2220.6,
+      309.3
+     ],
+     "inFrame": false
+    },
+    "lucia": {
+     "faceAngleDeg": 17,
+     "view": "front",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      2526,
+      339.3
+     ],
+     "inFrame": false
+    }
+   },
+   "screens": {}
+  },
+  "top": {
+   "people": {
+    "adaeze": {
+     "faceAngleDeg": 93,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      794.6,
+      808.7
+     ],
+     "inFrame": true
+    },
+    "anastasia": {
+     "faceAngleDeg": 92,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1050.8,
+      669.9
+     ],
+     "inFrame": true
+    },
+    "arjun": {
+     "faceAngleDeg": 59,
+     "view": "three-quarter",
+     "headVisibleFrac": 0.86,
+     "blockedBy": [
+      "arjun.undefined"
+     ],
+     "headPx": [
+      1269,
+      446.5
+     ],
+     "inFrame": true
+    },
+    "lucia": {
+     "faceAngleDeg": 73,
+     "view": "profile",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      1546.3,
+      271.6
+     ],
+     "inFrame": true
+    }
+   },
+   "screens": {}
+  },
+  "rear": {
+   "people": {
+    "adaeze": {
+     "faceAngleDeg": 172,
+     "view": "back",
+     "headVisibleFrac": 0.8,
+     "blockedBy": [
+      "anastasia.forearmR"
+     ],
+     "headPx": [
+      76.6,
+      410.4
+     ],
+     "inFrame": true
+    },
+    "anastasia": {
+     "faceAngleDeg": 169,
+     "view": "back",
+     "headVisibleFrac": 0,
+     "blockedBy": [
+      "arjun.upperarmR",
+      "arjun.torso"
+     ],
+     "headPx": [
+      -151.1,
+      326.8
+     ],
+     "inFrame": false
+    },
+    "arjun": {
+     "faceAngleDeg": 139,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      -285.7,
+      143.4
+     ],
+     "inFrame": false
+    },
+    "lucia": {
+     "faceAngleDeg": 136,
+     "view": "three-quarter back",
+     "headVisibleFrac": 1,
+     "blockedBy": [],
+     "headPx": [
+      -1788.6,
+      -529.3
+     ],
+     "inFrame": false
+    }
+   },
+   "screens": {}
+  }
+ }
+}

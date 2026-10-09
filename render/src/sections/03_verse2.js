@@ -43,7 +43,14 @@ export default function shots(B, X, L) {
   const bar = (n, b = 1) => B.bar(n, b);
   const W = (id, i) => L[id].words[i].start;
   const S31 = L.L05.start, S32 = L.L06.start, S33 = W('L06', 2), S34 = L.L07.start, S34b = W('L07', 3), S34c = bar(30);   // 3.4: wide | side view from 明 | close from the bar-30 downbeat
-  const S35b = W('L08', 4), SEAL_BREAK = 0.85;   // 3.5b starts on "homesick"; her thumb lifts the flap at 0.85 s of the back take
+  // 3.5 (rev 4, ENV): each take holds its drawings two or three frames, so both shots show one of the take's own drawings
+  // for every two film frames (the take's frame numbers, in order). AB35: his hand lets go (7-19), she holds both ends
+  // (21-26), turns it over (28 tilted, 31 steep, 34 edge-on, 37-51 the sealed back coming round), it lands (54) and settles.
+  // C35: the packet comes out and down to her (4-24), two drawings of her hold, the top panel up and the bottom panel down
+  // at the take's own speed (40-56), the open page.
+  const AB35 = [7, 10, 12, 13, 15, 16, 18, 19, 21, 24, 26, 28, 31, 34, 37, 40, 42, 45, 48, 51, 54, 57, 60, 63];
+  const C35 = [4, 8, 12, 14, 16, 18, 20, 22, 24, 30, 36, 40, 42, 44, 46, 48, 50, 52, 54, 56, 60, 64];
+  const drawings35 = (D) => (lt) => (D[Math.min(D.length - 1, Math.max(0, Math.floor(lt * 12 + 1e-3)))] + 0.25) / 24;
   const S35 = L.L08.start, S36 = bar(33), S37 = L.L09.start, S38 = bar(38, 2), HOOK = bar(41);
   const mid = { size: 66, font: 'Cormorant', tracking: 0.02 };
   const FINE = { lineA: 0.3, lineW: 0.09, snapAmt: 0.2, shade: 0.2 };   // 3.4 wide + side view: small faces, so a thin quiet line and the take's own colour
@@ -107,22 +114,21 @@ export default function shots(B, X, L) {
     // 3.3 — "That line—": the inscription 举杯邀明月 is old ink on the teahouse wall from the first frame; Jade's finger
     //       reads down the column beside it. K_3.3_hand/take_6 (a hand moving down a BLANK wall) is redrawn on the clean
     //       wall plate K_3.3_wall (tools/wallread_prep.py: the subject matte is the hand and its shadow only); the JS
-    //       column is laid on the wall just left of the fingertip's path, clear of the hand. The take is retimed to
-    //       reading pace: at each character the fingertip lingers (still drifting down), then glides to the next;
-    //       it is already moving at the cut and still moving at the end.
+    //       column is laid on the wall just left of the fingertip's path, clear of the hand. Rev 3 (Jade: "let the hand
+    //       move smoothly down"): ONE glide, no dwell at each character. take_6g = take_6 resampled offline
+    //       (tools/glide_resample.py, optical-flow in-betweens) so that its frame PAD + n is film frame n and the
+    //       fingertip falls from beside 举 to the foot of 月 at an even pace that eases off a little (speed 120% -> 80%
+    //       of the mean); drawn on ONES (twos: false): a new drawing every film frame. Beside 杯 at 0.42 s, 邀 0.82,
+    //       明 1.27, 月 1.74; moving at the cut, still moving at the end.
     (() => {
-      const dur = S34 - S33, N = 5, D = dur / N;
-      const SZ = 116, LEAD = 1.06, PITCH = SZ * LEAD / 1.5;            // column pitch in take px (design px / 1.5)
+      const dur = S34 - S33, N = 5;
+      const SZ = 116, LEAD = 1.06;                                       // column pitch in take px = SZ * LEAD / 1.5 = 82
       const YTOP = 79.4, XR = 626;                                       // take px: column top; its right edge (fingertip x 638–651, minus a gap)
-      // fingertip y (take px) every 8 frames of take_6, from meta.read.tip (monotonic)
-      const TIP = [84, 96, 113, 137, 168, 201, 233, 274, 307, 345, 380, 416, 455, 495, 536, 572];
-      const frameAtY = (y) => { for (let i = 1; i < TIP.length; i++) if (y <= TIP[i] || i === TIP.length - 1) return 8 * (i - 1 + Math.min(1.2, Math.max(0, (y - TIP[i - 1]) / (TIP[i] - TIP[i - 1])))); return 0; };
-      const sm = (x) => { x = Math.min(1, Math.max(0, x)); return x * x * x * (x * (x * 6 - 15) + 10); };
-      const pos = (lt) => { const k = Math.min(N - 1, Math.floor(lt / D)), f = lt / D - k; return k + 0.3 * f + 0.7 * sm((f - 0.45) / 0.55); };   // in characters
-      const time = (lt) => frameAtY(YTOP + (0.3 + pos(Math.max(0, lt))) * PITCH) / 24;
+      const PAD = 3;                                                     // glide_resample --pad: the clip's frame 3 is the shot's first frame
+      const time = (lt) => (PAD + Math.max(0, Math.floor(lt * 24 + 1e-3)) + 0.5) / 24;
       const from = { x: 0.5, y: 0.47, zoom: 1.0 }, to = { x: 0.5, y: 0.47, zoom: 1.06 };
       return { id: '3.3', t0: S33, t1: S34, paper: 'silk', grain: 33, focus: [1000, 430], needs: ['K_3.3_wall'],
-        scene: [{ type: 'roto', clip: 'K_3.3_hand/take_6', paper: 'silk', time, lock: 0, from, to, style: { snapAmt: 0.05, lineTh: 0.62, lineA: 0.6 } }],
+        scene: [{ type: 'roto', clip: 'K_3.3_hand/take_6g', paper: 'silk', time, twos: false, lock: 0, from, to, style: { snapAmt: 0.05, lineTh: 0.62, lineA: 0.6 } }],
         type(ctx, t, lt) {
           // the column follows the roto view (16:9 take: screen = ((p / size − centre) · zoom + 0.5) · frame)
           const u = easeInOutSine(lt / dur), z = from.zoom + (to.zoom - from.zoom) * u, h = 0.5 / z;
@@ -132,46 +138,58 @@ export default function shots(B, X, L) {
             g.translate((0.5 - cx * z) * 1920, (0.5 - cy * z) * 1080); g.scale(z, z);
             g.globalAlpha = 0.86; it.draw(g, N + 0.25, 1);                 // complete from the first frame: old, dry ink
           }, { mode: 'ink', absorb: 0.6, seed: 332 });
-          lyricEN(ctx, L.L06, { ...mid, key: 'b', size: 60, x: 150, y: 900, color: INK, w0: 2, italic: [0, 1], text: { 1: 'line—' } }, t);
+          lyricEN(ctx, L.L06, { ...mid, key: 'b', size: 60, x: 150, y: 900, color: INK, w0: 2, italic: [0, 1], text: { 1: 'line—' }, until: S34 + 0.02 }, t);   // faded out by the cut (it used to be cut off half-faded)
         } };
     })(),
     // 3.4 — the Copernican lesson, three views of ONE staging and ONE light (3D blockout: render/scenes/blockouts/3.4_lesson;
     //       the flashlight is the only lamp; the Moon ball's shadow shaft ends as a dark round spot on the globe; the
     //       children's plain cast shadows stand in the pool of light on the wall; no corona disc anywhere).
     //       举杯邀 = the wide (K_3.4_lesson); 明月，对影 = the side view (K_3.4_wall); 成三人 = close along the beam
-    //       (K_3.4_beam: the spot slides on the globe, T grins at his sister; this replaces the lip-sync shot LS2).
+    //       (K_3.4_beam: the spot rests on Anatolia, T grins at his sister; this replaces the lip-sync shot LS2).
     //       Every take is cut in with the motion under way (offset >= 0.5, lock 0). The calligraphy crosses the dim wall
     //       above their heads, each character on its sung onset.
     ...[['3.4a', S34, S34b, 'K_3.4_lesson', 0.6, { x: 0.5, y: 0.52, zoom: 1.05 }, { x: 0.53, y: 0.5, zoom: 1.12 }, [1060, 470], FINE],
       ['3.4b', S34b, S34c, 'K_3.4_wall', 0.6, { x: 0.5, y: 0.52, zoom: 1.03 }, { x: 0.54, y: 0.53, zoom: 1.11 }, [1090, 500], FINE],
-      // 2.7 s: T watches the spot, then turns to his sister and grins; the take is left before her ponytail flicks (f106)
-      ['3.4c', S34c, S35, 'K_3.4_beam', 2.7, { x: 0.52, y: 0.54, zoom: 1.03 }, { x: 0.55, y: 0.55, zoom: 1.1 }, [1130, 640], {}]].map(([id, a, b, key, offset, from, to, focus, style], j) => ({
+      // 2.5 s (frame 60, even: the take is on twos): T watches the spot, tilts his head and grins at his sister.
+      // rev3 KIDS (Oct 8): the globe has real coastlines and the Moon's shadow sits on central Anatolia (Jade's Easter egg
+      // for the Battle of Halys film); in all three views the painted globe is CARRIED on the take (tools/roto_keep.py), so
+      // its map and the spot cannot drift, and in the two wider views T's repainted head (fuller cheeks) is carried too.
+      ['3.4c', S34c, S35, 'K_3.4_beam', 2.5, { x: 0.52, y: 0.54, zoom: 1.03 }, { x: 0.55, y: 0.55, zoom: 1.1 }, [1130, 640], {}]].map(([id, a, b, key, offset, from, to, focus, style], j) => ({
       id, t0: a, t1: b, paper: 'silk', grain: 340 + j, focus, vignette: 0.22,
       // the whole picture is redrawn from the take (redrawAll): the children move against a plain wall, and a held keyframe
       // under a moving child leaves ghosts of hair and face
-      scene: [X.pick(key) ? { type: 'roto', clip: X.pick(key).clip, paper: 'silk', offset, lock: 0, from, to, redrawAll: 1, style }
+      scene: [X.pick(key) ? { type: 'roto', clip: X.pick(key).clip, paper: 'silk', offset, lock: 0, from, to, redrawAll: 1, keepOcc: false, style }
         : X.has(key) ? kf(key, { from, to, dolly: 0.05, masks: { base: [0.15, 0.6] } }) : ph('The Copernican lesson', key)],
       type(ctx, t) {
         // pale brush on the dim wall, in all three views; no wash
-        lyricZH(ctx, L.L07, { size: 104, vertical: false, lead: 1.0, x: 300, y: 28, color: PALEC, seed: 70, until: S35 + 0.05 }, t, 'over');
+        lyricZH(ctx, L.L07, { size: 104, vertical: false, lead: 1.0, x: 300, y: 28, color: PALEC, seed: 70, until: S35 + 0.05 }, t, 'over');   // 人 is sung 0.3 s before the cut: it is brushed with 三 (lyricZH joins a late last character)
         gloss(ctx, t, S34 + 0.6, S35 + 0.05, PALE);
       },
     })),
-    // 3.5 — the mission assignment (docs/research_mission_assignment.md): the formal signed copy, hand-delivered after
-    //       the chief's call. 3.5a: her fingertips on the envelope FRONT (MISSION ASSIGNMENT / 飞行任务通知书 / Dr. Jade
-    //       Wang). 3.5b from "homesick": the BACK: her thumb breaks the 廣寒 seal on the flap, the flap opens, she draws the
-    //       memorandum part-way out. The takes only ever show blank paper: every glyph (and the seal) is set in JS on the
-    //       tracked paper (scenes/papertype.js, tools/paper_track.py), so type cannot warp. The back take runs at 1.6x.
-    ...[['3.5a', S35, S35b, 'K_3.5_front', { offset: 0.5, redrawAll: 1 }, { x: 0.5, y: 0.5, zoom: 1.03 }, { x: 0.5, y: 0.5, zoom: 1.08 }, [1060, 520],
-        [{ sheet: 'envelopeFront', track: 'env' }]],
-      ['3.5b', S35b, S36, 'K_3.5_back', { offset: 0.6, rate: 1.6, redrawAll: 1 }, { x: 0.49, y: 0.535, zoom: 1.09 }, { x: 0.49, y: 0.545, zoom: 1.12 }, [1010, 430],
-        [{ sheet: 'sealWhole', track: 'env', showUntil: SEAL_BREAK }, { sheet: 'sealBroken', track: 'env', showFrom: SEAL_BREAK }, { sheet: 'memo', track: 'letter', alpha: 0.9 }]]].map(([id, a, b, key, clock, from, to, focus, sheets], j) => ({
-      id, t0: a, t1: b, paper: 'silk', grain: 35 + j * 315, focus, vignette: 0.2, needs: ['emblem_final_small', 'seal_guanghan'],
+    // 3.5 — the mission assignment (docs/research_mission_assignment.md): the formal signed copy, handed to her after the
+    //       chief's call. Rev 4 (Jade on v6: a sticker seal, the words must stay on the envelope, a real trifold that she
+    //       opens, no jump at 0:59). A real US No. 10 envelope and US Letter sheet, painted over the true-size blockout
+    //       scenes/blockouts/3.5/blockout.py. TWO shots (3.5b is now part of 3.5a: the turn is one continuous take, so
+    //       there is no cut inside it), each with a painted first AND last frame:
+    //       3.5a to the bar-32 downbeat: Kenton's larger hand (navy cuff, from the right) lets go and leaves; the FRONT is
+    //            legible (MISSION ASSIGNMENT / 飞行任务通知书 / Dr. Jade Wang, set in JS on the paper, which is measured
+    //            in every drawing: scenes/papertype.js sheet envelopeFront10, tools/paper_quad.py); she takes both ends
+    //            and turns it over sideways; the type goes round with the face; the back lands, its flap SEALED with the
+    //            pale-blue-dot sticker (K_3.5_front/take_6, first frame K_3.5_front, last K_3.5_back).
+    //       3.5c the flap is open (the cut stands for her breaking the seal; the sticker stays on the envelope's body):
+    //            the letter comes out as a folded packet a third of the page tall, she brings it to her, opens the top
+    //            panel up and away, the bottom panel down toward her; the print is inside (grey lines too small to read,
+    //            baked into the take) (K_3.5_letter/take_7, first frame K_3.5_letter, last K_3.5_letter_end).
+    ...[['3.5a', S35, bar(32), 'K_3.5_front', { offset: AB35[0] / 24, time: drawings35(AB35), redrawAll: 1 }, { x: 0.5, y: 0.5, zoom: 1.04 }, { x: 0.5, y: 0.495, zoom: 1.09 }, [1000, 480],
+        [{ sheet: 'envelopeFront10', track: 'env' }]],
+      ['3.5c', bar(32), S36, 'K_3.5_letter', { offset: C35[0] / 24, time: drawings35(C35), redrawAll: 1 }, { x: 0.5, y: 0.5, zoom: 1.03 }, { x: 0.505, y: 0.51, zoom: 1.08 }, [1000, 470], []]].map(([id, a, b, key, clock, from, to, focus, sheets], j) => ({
+      id, t0: a, t1: b, paper: 'silk', grain: 35 + j * 315, focus, vignette: 0.2, needs: ['emblem_final_small'],
       scene: X.pick(key) ? [{ type: 'roto', clip: X.pick(key).clip, paper: 'silk', ...clock, lock: 0, from, to, style: FINE },
         ...sheets.map((sh) => ({ name: 'papertype', params: { clip: X.pick(key).clip, ...clock, from, to, ...sh } }))]
         : [X.has(key) ? kf(key, { from, to, par: [0, 0], dolly: 0 }) : ph('The mission assignment', key)],
-      // the lyric stacks in the empty right margin of the desk, clear of the envelope, the flap and her hands
-      type(ctx, t) { lyricEN(ctx, L.L08, { ...mid, size: 48, x: 1866, y: 150, align: 'right', color: PALE, breaks: [2, 4, 5], text: { 3: 'you —' }, until: S36 + 0.05 }, t, 'over'); } })),
+      // the lyric stacks on the bare desk at the top left, the one area clear of the envelope, the flap, the letter and all
+      // three hands in 3.5a, b and c (TYPE, Oct 8: the right margin now holds Kenton's hand and cuff, then her sleeve)
+      type(ctx, t) { lyricEN(ctx, L.L08, { ...mid, size: 48, x: 250, y: 112, color: PALE, breaks: [4, 5], text: { 3: 'you —' }, until: S36 + 0.05 }, t, 'over'); } })),
     // 3.6 — BAND LIFT: training montage, one frame per beat
     ...montage,
     ...(HAS_F ? [{ id: '3.6f', t0: mt[5], t1: S37, paper: 'silk', grain: 366, post: (t, lt) => bump(lt, 0.012),
@@ -185,7 +203,10 @@ export default function shots(B, X, L) {
       // on silk. These takes hold the light constant (the old ones rippled cyan projection light over skin, which the
       // palette snap turned into a flickering fringe) and the two FACES are the painted keyframe itself, carried on each
       // head's tracked motion (meta.keep from tools/roto_keep.py), never redrawn from the take. No lock: moving at the cut.
-      scene: [X.pick(img) ? { type: 'roto', clip: X.pick(img).clip, paper: 'silk', offset: 0.5, lock: 0, eyelock: false, style: { snapAmt: 0.12, lineTh: 0.62, lineA: 0.62 },
+      // 3.7b, rev4 FACE: M's WHOLE painted head (hair, braid, face) is carried too, in front of Jade's painted head, and
+      // Jade's layer carries a strip of M's painted hair beside her cheek, so the two paintings meet hair on hair;
+      // keepOcc off there (3.7b only), so the take can never show through either head.
+      scene: [X.pick(img) ? { type: 'roto', clip: X.pick(img).clip, paper: 'silk', offset: 0.5, lock: 0, eyelock: false, ...(id === '3.7b' ? { keepOcc: false } : {}), style: { snapAmt: 0.12, lineTh: 0.62, lineA: 0.62 },
         from: { x: 0.52, y: 0.5, zoom: 1.03 }, to: { x: 0.56, y: 0.48, zoom: 1.12 } }
         : X.has(img) ? kf(img, { from: { x: 0.52, y: 0.5, zoom: 1.03 }, to: { x: 0.56, y: 0.48, zoom: 1.12 }, dolly: 0.06, masks: { base: [0.1, 0.5] } }) : ph('Jade holds M; both look down at a glowing relief of the Earth', img)],
       type(ctx, t) { lyricEN(ctx, L.L09, { ...mid, size: 80, x: 110, y: 480, color: PALE, breaks: [2], hold: 1.6 }, t, 'over'); },   // pale on the dark museum wall

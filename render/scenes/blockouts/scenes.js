@@ -137,3 +137,37 @@ two({ id: 'K_7.C5d', title: 'airlock bench: Layla shows Jade her father’s falc
   SCENES.toy_dog_rear = { title: 'M’s toy robot dog, reared up to dance (headless Go2 miniature)', bg: null, sun: [-2, 4, 3], set: [{ type: 'toydog', pose: REAR }], tablets: [], figures: [], cams: cams(0.215) };
   SCENES.toy_dog_stand = { title: 'M’s toy robot dog, standing (30 cm long, 20 cm at the back)', bg: null, sun: [-2, 4, 3], set: [{ type: 'toydog', pose: STAND }], tablets: [], figures: [], cams: cams(0.11) };
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// 1.4a — THE WALKOUT, front view (rev3, Oct 8): the counterpart of 3.8b's rear view. Four crew (Adaeze leading,
+// Anastasia, Arjun, Lúcia) cross the wet apron toward the floodlit rocket; the camera is low, ahead of them and to
+// their left, so they come toward us and move to screen left, where the rocket stands small on the horizon. A loose
+// file, uneven gaps, every pair of legs at a different point of the stride. Each carries a portable ventilation unit
+// (35 x 20 x 20 cm, as Soyuz crews do: media/ref/rev3_astro/) in the LEFT hand; the right hand is free (Anastasia
+// lifts hers). The far plane of the blockout camera is 80 m, so the rocket (62 m tall, 520 m off) is drawn at 1/8
+// scale at 65 m: the same size in the picture.
+{
+  const YAW = 125, a = YAW * Math.PI / 180, F = [Math.sin(a), Math.cos(a)], R = [-Math.cos(a), Math.sin(a)];   // forward, own right (x, z)
+  const at = (back, side) => [-0.55 - F[0] * back + R[0] * side, 0.0 - F[1] * back + R[1] * side];
+  const P = (p, r, u, f) => [p[0] + R[0] * r + F[0] * f, u, p[1] + R[1] * r + F[1] * f];                          // own right / up / forward
+  const who = [
+    { who: 'adaeze', p: at(0, 0), step: { L: 0.34, R: -0.30 }, look: [40, 9, -32], wave: 0 },
+    { who: 'anastasia', p: at(1.75, -0.2), step: { L: -0.22, R: 0.30 }, look: [2.5, 1.5, -7], wave: 1 },   // glances at the people seeing them off, hand up
+    { who: 'arjun', p: at(3.6, 0.15), step: { L: 0.12, R: -0.10 }, look: [40, 34, -8], wave: 0 },           // looks up at the sky
+    { who: 'lucia', p: at(5.6, 0.05), step: { L: -0.30, R: 0.26 }, look: [30, 0.6, -24], wave: 0 },
+  ];
+  const figures = who.map((w) => ({ who: w.who, pose: 'stand', at: w.p, yaw: YAW, lean: 4, crouch: 0.03, step: w.step, look: w.look,
+    L: P(w.p, -0.30, 0.74, 0.06), R: w.wave ? P(w.p, 0.42, 1.62, 0.22) : P(w.p, 0.27, 0.80, -w.step.R * 0.5) }));
+  const units = who.map((w) => { const c = P(w.p, -0.31, 0.55, 0.06); return { type: 'box', size: [0.20, 0.20, 0.35], at: c, rot: [0, YAW, 0], color: 0xb9bcc4, name: 'ventilation unit' }; });
+  SCENES['K_1.4a'] = {
+    title: 'walkout, front view: four cross the wet apron toward the rocket (screen left)', hero: 'hero', bg: 0x141c3c, sun: [6, 3, -4],
+    set: [{ type: 'box', size: [400, 0.02, 400], at: [0, -0.01, 0], color: 0x25305c, name: 'wet apron' },
+      { type: 'cyl', r: 0.42, h: 7.8, at: [10, 3.9, 60], color: 0xf2d9a0, name: 'rocket (1/8 scale at 1/8 distance)' },
+      { type: 'box', size: [1.3, 8.6, 1.3], at: [12.4, 4.3, 60], color: 0xc9a660, name: 'tower' },
+      { type: 'box', size: [9, 3.2, 0.3], at: [-16, 1.6, 24], rot: [0, 30, 0], color: 0x394a80, name: 'crew building (where they came from)' },
+      ...units],
+    tablets: [], figures,
+    cams: { hero: { pos: [1.0, 0.55, -4.3], target: [-0.29, 1.2, 0.53], hfov: 60 }, eye: { pos: [0.4, 1.5, -4.6], target: [0.6, 1.0, 0.6], hfov: 50 },
+      top: { pos: [-1.5, 14, 1.5], target: [-1.5, 0, 1.6], hfov: 50 }, rear: { pos: [-5.5, 0.8, 5.2], target: [3, 1.2, 2], hfov: 55 } },
+  };
+}

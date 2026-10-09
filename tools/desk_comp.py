@@ -161,7 +161,7 @@ def screen_content():
     for ln in ["Ballistic Lunar Transfers and Station-Keeping", "Budgets for a South-Polar Surface Base"]:
         f = font("b", 43); d.text((cx - f.getlength(ln) / 2, y), ln, font=f, fill=INK); y += 54
     y += 10
-    f = font("r", 25); ln = "Guanghan Station Trajectory Working Group"
+    f = font("r", 25); ln = "International Moonbase Trajectory Working Group"
     d.text((cx - f.getlength(ln) / 2, y), ln, font=f, fill=INK); y += 34
     f = font("i", 21); ln = "Preprint, submitted to Acta Astronautica"
     d.text((cx - f.getlength(ln) / 2, y), ln, font=f, fill=INK); y += 46

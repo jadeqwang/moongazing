@@ -15,19 +15,30 @@ export const BENCH = { x: 0, n: 2.42, w: 1.5, d: 0.42, h: 0.45 };   // a two-sea
 
 // arm poses: 'cup' (the toast; raise 0 = cup at the chest, 1 = at / just above eye level), 'hang', 'pocket', 'hip',
 // 'waist' (forearm folded across the waist), 'eye' (knuckle to the eye), 'knee' (seated), { w: [x, y, z] } world target
+// rev3 (Oct 8, round three): Jade's note "the wrist angles are unnatural/uncomfortable for the direction the people are
+// facing ... they should be held in a natural way" (her reference: inputs/astronauts_toasting_fullEarth.png; real
+// photographs: media/ref/rev3_crew/). Everyone FACES THE GLASS and lifts one arm FORWARD AND UP from the shoulder toward
+// the Earth: `toast: { el, out, reach }` = elevation of the shoulder→wrist line above level (deg), its swing outward
+// from straight ahead (deg, toward the raising arm's own side), and how straight the arm is (1 = locked; 0.95 = elbow
+// bent about 35°). The forearm carries on in line with the hand; the cup stays upright in a neutral wrap grip (thumb
+// toward the holder, back of the hand outward), never a cocked wrist. Heights differ on purpose (nobody in lockstep).
+// ONE staging for the three shots: who raises which arm is fixed here and nowhere else.
+//   Kenji R · Anastasia R · Arjun R (highest) · Jade R (inner) · Lúcia L (inner) · Layla L · Adaeze L · Chen Yu R.
+//   Adaeze: cup in her LEFT hand, right arm down at her side (no sip, no hand at her face: the wide and the close agree).
+//   Chen Yu: left hand on Adaeze's NEAR (right) shoulder, so her raised left arm is free; his cup in his right hand.
+//   Layla raises her LEFT arm, so no second cup crowds Adaeze's in the close view.
 export const CREW = [
   // west standing group
-  { id: 'kenji', name: 'Kenji', h: 1.71, accent: 0x2f6690, skin: 0xe2c4a4, hair: 'short', x: -2.12, n: 0.8, face: 14, R: 'cup', L: 'pocket', lag: 0.5, top: 0.9 },
-  { id: 'anastasia', name: 'Anastasia', h: 1.72, accent: 0x6b4c9a, skin: 0xf0d4c0, hair: 'braid', x: -1.52, n: 1.5, face: 9, R: 'cup', L: 'waist', lag: 0.3, top: 0.85, tilt: 0.04 },
-  { id: 'arjun', name: 'Arjun', h: 1.75, accent: 0x1b1b1f, skin: 0xa87850, hair: 'short', x: -0.98, n: 1.36, face: 4, R: 'cup', L: 'hang', lag: 0.1, top: 1.0, tilt: -0.04 },
-  // the bench: Jade (her celadon tea cup) and Lúcia; their cups meet under the Earth (7.E1c)
-  { id: 'jade', name: 'Jade', h: 1.65, accent: 0x9cc5b0, skin: 0xe6c8a8, hair: 'ponytail', x: -0.36, n: BENCH.n, face: 3, seated: true, R: 'cup', L: 'knee', lag: 0.2, top: 1.0, clink: 1, celadon: true },
-  { id: 'lucia', name: 'Lúcia', h: 1.62, accent: 0xe3a6a0, skin: 0xdcb694, hair: 'tied', x: 0.36, n: BENCH.n, face: -3, seated: true, L: 'cup', R: 'knee', lag: 0.0, top: 1.0, clink: -1 },
-  // east standing group: Layla; Adaeze (cup in her LEFT hand, kept a little lower than Layla's so the two never read
-  // as one hand with two cups) with Chen Yu's arm round her shoulders (the faces of 7.E1b)
-  { id: 'layla', name: 'Layla', h: 1.67, accent: 0xd4a84b, skin: 0xd2a67e, hair: 'bun', x: 0.98, n: 1.42, face: -5, R: 'cup', L: 'hip', lag: 0.4, top: 0.9, tilt: 0.03 },
-  { id: 'adaeze', name: 'Adaeze', h: 1.68, accent: 0x3a8a6e, skin: 0x5a3a2a, hair: 'short', x: 1.62, n: 1.56, face: -8, L: 'cup', R: 'eye', lag: 0.5, top: 0.4, tilt: 0.05 },
-  { id: 'chen', name: 'Chen Yu', h: 1.78, accent: 0xc8312b, skin: 0xe0be9c, hair: 'short', x: 2.2, n: 1.3, face: -14, R: 'cup', L: { around: 'adaeze' }, lag: 0.0, top: 1.0, tilt: -0.05 },
+  { id: 'kenji', name: 'Kenji', h: 1.71, accent: 0x2f6690, skin: 0xe2c4a4, hair: 'short', x: -2.12, n: 0.8, face: 14, R: 'cup', L: 'pocket', lag: 0.5, top: 0.9, toast: { el: 36, out: 10, reach: 0.95 } },
+  { id: 'anastasia', name: 'Anastasia', h: 1.72, accent: 0x6b4c9a, skin: 0xf0d4c0, hair: 'braid', x: -1.52, n: 1.5, face: 9, R: 'cup', L: 'hang', lag: 0.3, top: 0.85, tilt: 0.04, toast: { el: 28, out: 6, reach: 0.9 } },
+  { id: 'arjun', name: 'Arjun', h: 1.75, accent: 0x1b1b1f, skin: 0xa87850, hair: 'short', x: -0.98, n: 1.36, face: 4, R: 'cup', L: 'hang', lag: 0.1, top: 1.0, tilt: -0.04, toast: { el: 50, out: 14, reach: 0.975 } },
+  // the bench: Jade (her celadon tea cup) and Lúcia; their cups rise to either side of the Earth (7.E1c)
+  { id: 'jade', name: 'Jade', h: 1.65, accent: 0x9cc5b0, skin: 0xe6c8a8, hair: 'ponytail', x: -0.36, n: BENCH.n, face: 3, seated: true, R: 'cup', L: 'knee', lag: 0.2, top: 1.0, celadon: true, toast: { el: 25, out: 14, reach: 0.93 } },
+  { id: 'lucia', name: 'Lúcia', h: 1.62, accent: 0xe3a6a0, skin: 0xdcb694, hair: 'tied', x: 0.36, n: BENCH.n, face: -3, seated: true, L: 'cup', R: 'knee', lag: 0.0, top: 1.0, toast: { el: 27, out: 14, reach: 0.93 } },
+  // east standing group: Layla; Adaeze with Chen Yu's hand on her near shoulder (the faces of 7.E1b)
+  { id: 'layla', name: 'Layla', h: 1.67, accent: 0xd4a84b, skin: 0xd2a67e, hair: 'bun', x: 0.98, n: 1.42, face: -5, L: 'cup', R: 'hang', lag: 0.4, top: 0.9, tilt: 0.03, toast: { el: 44, out: 12, reach: 0.96 } },
+  { id: 'adaeze', name: 'Adaeze', h: 1.68, accent: 0x3a8a6e, skin: 0x5a3a2a, hair: 'short', x: 1.62, n: 1.56, face: -8, L: 'cup', R: 'hang', lag: 0.5, top: 0.4, tilt: 0.05, toast: { el: 30, out: 6, reach: 0.94 } },
+  { id: 'chen', name: 'Chen Yu', h: 1.78, accent: 0xc8312b, skin: 0xe0be9c, hair: 'short', x: 2.2, n: 1.3, face: -14, R: 'cup', L: { onShoulder: 'adaeze' }, lag: 0.0, top: 1.0, tilt: -0.05, toast: { el: 48, out: 12, reach: 0.97 } },
 ];
 
 // Cameras. pos / target in plan coords [x, y(up, absolute), n]; hfov in degrees. `raise` = how far the toast has got.
@@ -44,27 +55,37 @@ export const VIEWS = {
   E1c_close: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 0.52, label: '7.E1c two cups and the Earth (first frame)' },
   E1c_close_end: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 1, label: '7.E1c two cups and the Earth (end pose: check clearance)' },
   E1_wide_end: { pos: [0.2, 8.22, -2.3], target: [0, 8.2, 6], hfov: 66, raise: 1, label: '7.E1 wide (end pose: check Earth clearance)' },
-  // rev2 (Oct 8): the same cameras with ARTICULATED cup hands (thumb + four fingers), because ball hands let the image
-  // model paint the wrong hand. `hands: true` switches them on; `over` moves a cup / turns a grip per person.
-  // (cups placed where the painted keyframe has them: Adaeze's at uv 0.79, 0.37 and Layla's at 0.95, 0.37)
-  E1b_hands: { pos: [1.95, 8.16, 2.8], target: [1.66, 8.17, 1.4], hfov: 47, raise: 0.62, hands: true, label: '7.E1b with real hands',
-    over: { adaeze: { C: [1.46, 1.64, 1.8] }, layla: { C: [1.26, 1.63, 1.75] } } },
-  // 7.E1c restaged (rev2): no clink. Each woman lifts her cup with her INNER arm: Jade's RIGHT arm comes from her right
-  // shoulder at the bottom left, Lúcia's LEFT arm from her left shoulder at the bottom right, and we see the BACKS of
-  // both hands. Two grips were looked at from this camera:
-  //   E1c_hands_side  neutral grip (palm on the inner side of the cup): back of the hand on the inner side, the thumb
-  //                   lies over the near face pointing OUTWARD, fingertips show at the outer edge of the cup;
-  //   E1c_hands       wrist cocked back (palm on the near side of the cup, yaw -70): the back of the hand faces the
-  //                   camera, the fingers run INWARD across / round the cup (Jade's to screen-right, Lúcia's to
-  //                   screen-left), index finger on top. This is the grip of the painted keyframe K_7.E1c (v2).
-  E1c_hands: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 0.52, hands: true, label: '7.E1c first frame, real hands (grip of the keyframe)',
-    over: { jade: { C: [-0.08, 1.26, 2.95], pole: [-0.35, -1, -0.15], up: 0.1, out: 0.06, yaw: -70 }, lucia: { C: [0.08, 1.27, 2.95], pole: [0.35, -1, -0.15], up: 0.1, out: 0.06, yaw: -70 } } },
-  E1c_hands_end: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 1, hands: true, label: '7.E1c end pose, real hands',
-    over: { jade: { C: [-0.105, 1.35, 3.0], pole: [-0.35, -1, -0.15], up: 0.1, out: 0.06, yaw: -70 }, lucia: { C: [0.105, 1.36, 3.0], pole: [0.35, -1, -0.15], up: 0.1, out: 0.06, yaw: -70 } } },
-  E1c_hands_side: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 0.52, hands: true, label: '7.E1c first frame, neutral grip',
-    over: { jade: { C: [-0.15, 1.26, 2.98], pole: [-0.35, -1, -0.15], up: 0.1, out: 0.06 }, lucia: { C: [0.15, 1.275, 2.98], pole: [0.35, -1, -0.15], up: 0.1, out: 0.06 } } },
-  hands_high: { pos: [0, 9.6, 1.7], target: [0, 7.7, 2.75], hfov: 34, raise: 0.52, hands: true, over: { jade: { C: [-0.08, 1.26, 2.95], pole: [-0.35, -1, -0.15], up: 0.1, out: 0.06, yaw: -70 }, lucia: { C: [0.08, 1.27, 2.95], pole: [0.35, -1, -0.15], up: 0.1, out: 0.06, yaw: -70 } }, label: 'check: the bench pair from above and behind' },
-  hands_front: { pos: [0, 7.9, 4.3], target: [0, 7.75, 2.6], hfov: 36, raise: 0.52, hands: true, over: { jade: { C: [-0.08, 1.26, 2.95], pole: [-0.35, -1, -0.15], up: 0.1, out: 0.06, yaw: -70 }, lucia: { C: [0.08, 1.27, 2.95], pole: [0.35, -1, -0.15], up: 0.1, out: 0.06, yaw: -70 } }, label: 'check: the bench pair from the glass' },
+  // rev2's hand views (E1b_hands, E1c_hands, E1c_hands_end, E1c_hands_side, hands_high, hands_front: the cocked-wrist grip
+  // of keyframe K_7.E1c v2) are in toast_v2_rev2.js.bak; their PNGs stay in views/ for the record.
+  // rev3 (Oct 8, round three): ONE staging (CREW above), three cameras, articulated hands, natural arms.
+  // 7.E1 wide: same camera as before (the painted dome, masts and plain are reused).
+  E1_wide_r3: { pos: [0.2, 8.22, -2.3], target: [0, 8.2, 6], hfov: 66, raise: 0.9, hands: true, label: '7.E1 wide, rev3: arms forward and up toward the Earth' },
+  // 7.E1b: SIDE-ON. From any camera in front of her a forward-and-up arm is foreshortened into "straight up" or a cup
+  // thrust at the lens (views tried: from the glass, from her right front, from her left front); the natural arm reads
+  // from the side and from behind, as in Jade's reference. So the camera stands where Layla stands (Layla is behind
+  // the lens: `hide`), a long lens looking east along the row: Adaeze in near-profile facing screen-left, her LEFT
+  // (near) arm forward and up to the upper left, the BACK of her left hand on the cup, her eye line following it to
+  // the Earth, off screen left; earthlight on her face. Chen Yu is behind her, almost hidden: a shoulder and his
+  // vermilion collar. One person, one cup, one hand.
+  E1b_r3: { pos: [-0.25, 8.0, 2.4], target: [1.38, 8.2, 1.8], hfov: 30, raise: 1, hands: true, hide: ['layla'], label: '7.E1b rev3: Adaeze side-on, cup raised toward the Earth' },
+  E1b_r3_start: { pos: [-0.25, 8.0, 2.4], target: [1.38, 8.2, 1.8], hfov: 30, raise: 0.72, hands: true, hide: ['layla'], label: '7.E1b rev3, first frame (cup still coming up)' },
+  // 7.E1c: same camera as before (the painted heads, tower and mountains are reused). KEY = first frame, END = last.
+  E1c_r3: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 0.55, hands: true, label: '7.E1c rev3 first frame: neutral grip, arms from the shoulders',
+    over: { jade: { up: 0.1, out: 0.06 }, lucia: { up: 0.1, out: 0.06 } } },
+  E1c_r3_end: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 1, hands: true, label: '7.E1c rev3 end pose',
+    over: { jade: { up: 0.1, out: 0.06 }, lucia: { up: 0.1, out: 0.06 } } },
+  // rev4 (Oct 8 night): Jade: "hands are weird in the 2 cup shot, but correct in the group shot ... fix the 2 hand shot
+  // using the hands in the group shot as guidance". The group shot's grip from THIS camera: fist round the lower half of
+  // the cup, knuckles on the outer side, thumb up the near face, wrist straight. KEY = first frame; END = a small rise.
+  E1c_r4: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 0.62, hands: true, label: '7.E1c rev4 first frame: the wide shot\'s grip',
+    over: { jade: { up: 0.1, out: 0.06, thumb: 'up', gripH: -0.034 }, lucia: { up: 0.1, out: 0.06, thumb: 'up', gripH: -0.034 } } },
+  E1c_r4_end: { pos: [0, 7.87, 1.3], target: [0, 8.02, 6], hfov: 36, raise: 0.8, hands: true, label: '7.E1c rev4 end pose (a small rise, then hold)',
+    over: { jade: { up: 0.1, out: 0.06, thumb: 'up', gripH: -0.034 }, lucia: { up: 0.1, out: 0.06, thumb: 'up', gripH: -0.034 } } },
+  r4_side: { pos: [-5.5, 8.0, 2.2], target: [0, 7.9, 2.0], hfov: 50, raise: 0.62, hands: true, label: 'check: rev4 grip from the west side',
+    over: { jade: { thumb: 'up', gripH: -0.034 }, lucia: { thumb: 'up', gripH: -0.034 } } },
+  // checks: the same pose from the side and from above
+  r3_side: { pos: [-5.5, 8.0, 2.2], target: [0, 7.9, 2.0], hfov: 50, raise: 1, hands: true, label: 'check: rev3 from the west side' },
+  r3_front: { pos: [0, 8.2, 4.6], target: [0, 7.9, 1.2], hfov: 80, raise: 1, hands: true, label: 'check: rev3 from the glass' },
   // checks only
   top: { ortho: 12.6, raise: 1, label: 'plan (north up)' },
   front: { pos: [0, 8.2, 3.3], target: [0, 7.9, 0], hfov: 86, raise: 1, label: 'check: from the glass, looking back at the faces' },
@@ -116,7 +137,10 @@ export function cupGrip(C, side, fh, o = {}) {
     for (let j = 0; j < pts.length - 1; j++) caps.push({ a: pts[j], b: pts[j + 1], r: (i === 3 ? 0.0075 : 0.0088) * k, part: 'finger' + i });
   });
   const tl = Math.sin((o.roll || 0) * D2R) * 0.045 * k;   // the thumb lies level over the near face even when the hand is cocked
-  const th = [Pt(-30, H[0] - 0.006 * k + tl * 0.5, 0.024), Pt(-74, H[0] + 0.002 * k + tl * 0.95, 0.013), Pt(-120, H[0] + 0.006 * k + tl * 0.85, 0.010)];
+  let th = [Pt(-30, H[0] - 0.006 * k + tl * 0.5, 0.024), Pt(-74, H[0] + 0.002 * k + tl * 0.95, 0.013), Pt(-120, H[0] + 0.006 * k + tl * 0.85, 0.010)];
+  // rev4 (opt-in, `thumb: 'up'`): the grip of the wide painting K_7.E1: the fist closes round the LOWER half of the cup
+  // and the thumb runs diagonally UP the near face (not level across it), its tip below the rim
+  if (o.thumb === 'up') th = [Pt(-28, H[1] + tl * 0.5, 0.022), Pt(-58, H[0] + 0.010 * k + tl * 0.9, 0.012), Pt(-84, H[0] + 0.026 * k + tl * 0.85, 0.009)];
   caps.push({ a: palmC.clone().addScaledVector(tan, -0.035 * k).addScaledVector(axis, 0.015 * k), b: th[0], r: 0.013 * k, part: 'thumb' });
   caps.push({ a: th[0], b: th[1], r: 0.0115 * k, part: 'thumb' }, { a: th[1], b: th[2], r: 0.010 * k, part: 'thumb' });
   const wrist = palmC.clone().addScaledVector(tan, -0.07 * k).addScaledVector(axis, -0.004 * k);
@@ -156,7 +180,17 @@ export function joints(p, raise, all = {}, opt = {}) {
   for (const side of ['R', 'L']) {
     const sg = side === 'R' ? 1 : -1, pose = p[side] || 'hang';
     let tgt, pole = V(0, -1, 0).addScaledVector(R, 0.55 * sg).addScaledVector(F, -0.25);
-    if (pose === 'cup') {
+    if (pose === 'cup' && p.toast) {
+      // rev3: the arm goes forward and up from the shoulder toward the Earth (see CREW). `over[id].toast` adjusts a view.
+      const o2 = (opt.over && opt.over[p.id]) || {};
+      if (opt.hands && (o2.up || o2.out)) { J.sh[side] = J.sh[side].clone().addScaledVector(Y, o2.up || 0).addScaledVector(R, sg * -(o2.out || 0)); J.shMoved = true; }
+      const T = { ...p.toast, ...(o2.toast || {}) }, el = T.el * D2R, out = T.out * D2R, arm = 0.56 * s;
+      const dHi = F.clone().multiplyScalar(Math.cos(el) * Math.cos(out)).addScaledVector(R, sg * Math.cos(el) * Math.sin(out)).addScaledVector(Y, Math.sin(el));
+      const dLo = F.clone().multiplyScalar(0.93).addScaledVector(R, sg * 0.05).addScaledVector(Y, -0.36).normalize();   // cup at the chest, forearm level
+      const d = dLo.lerp(dHi, u).normalize(), len = (0.62 + (T.reach - 0.62) * u) * arm;
+      tgt = J.sh[side].clone().addScaledVector(d, len); J.wristWant = tgt.clone();   // the WRIST goes here; the cup follows from the grip
+      pole = V(0, -1, 0).addScaledVector(R, 0.2 * sg).addScaledVector(F, -0.15);
+    } else if (pose === 'cup') {
       const top = p.top ?? 1;
       // chest (forearm level) → at / just above eye level, elbow still bent. A clinking pair lean their cups together.
       const eyeY = J.eye.y - FLOOR, lowY = eyeY - 0.40 * s, highY = eyeY + (0.02 + 0.07 * top) * s;
@@ -176,7 +210,7 @@ export function joints(p, raise, all = {}, opt = {}) {
     if (pose === 'cup' && opt.hands) {
       // `up`: the painted keyframe seats the bench pair about 10 cm higher than this model and ~6 cm further apart (their
       // shoulders show in the bottom corners of the painting): `up` / `out` move the root of the guide's arm to match
-      { const o2 = (opt.over && opt.over[p.id]) || {}; if (o2.up || o2.out) J.sh[side] = J.sh[side].clone().addScaledVector(Y, o2.up || 0).addScaledVector(R, sg * -(o2.out || 0)); }
+      { const o2 = (opt.over && opt.over[p.id]) || {}; if (!J.shMoved && (o2.up || o2.out)) J.sh[side] = J.sh[side].clone().addScaledVector(Y, o2.up || 0).addScaledVector(R, sg * -(o2.out || 0)); }
       // the CUP is the given thing (where the ball-hand version had it); the hand wraps it and the wrist follows
       const ov = (opt.over && opt.over[p.id]) || {};
       const C = tgt.clone().addScaledVector(Y, 0.045 * s).addScaledVector(F, 0.02 * s);
@@ -185,7 +219,9 @@ export function joints(p, raise, all = {}, opt = {}) {
       if (ov.pole) pole = V(ov.pole[0], ov.pole[1], -ov.pole[2]);
       let fh = F.clone(), g;
       let roll = 0;
-      for (let it = 0; it < 8; it++) { g = cupGrip(C, side, fh, { s, yaw: ov.yaw, tilt: ov.tilt, gripH: ov.gripH ?? -0.02, roll }); r = ik(J.sh[side], g.wrist, 0.29 * s, 0.27 * s, pole); const d = g.wrist.clone().sub(r.joint); roll = Math.min(40, Math.max(0, Math.asin(d.clone().normalize().y) / D2R - 12)); d.y = 0; if (d.lengthSq() > 1e-8) fh = d.normalize(); }
+      for (let it = 0; it < 8; it++) { g = cupGrip(C, side, fh, { s, yaw: ov.yaw, tilt: ov.tilt, gripH: ov.gripH ?? -0.02, roll, thumb: ov.thumb });
+        if (J.wristWant && !ov.C) { C.add(J.wristWant.clone().sub(g.wrist)); g = cupGrip(C, side, fh, { s, yaw: ov.yaw, tilt: ov.tilt, gripH: ov.gripH ?? -0.02, roll, thumb: ov.thumb }); }
+        r = ik(J.sh[side], g.wrist, 0.29 * s, 0.27 * s, pole); const d = g.wrist.clone().sub(r.joint); roll = Math.min(40, Math.max(0, Math.asin(d.clone().normalize().y) / D2R - 12)); d.y = 0; if (d.lengthSq() > 1e-8) fh = d.normalize(); }
       const fa = g.wrist.clone().sub(r.joint).normalize();
       J.grip = g; J.cupC = C; J.gripRep = { side, roll: +roll.toFixed(0), forearmElev: +(Math.asin(fa.y) / D2R).toFixed(0), wristGap: +(r.end.distanceTo(g.wrist) * 100).toFixed(1) };
     }

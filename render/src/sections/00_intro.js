@@ -61,7 +61,7 @@ export default function shots(B, X, L) {
   const dropCam = (t) => { now = t; return moonRiseCam(t); };
   const bloom = () => ({ hang: true, tFall: FIRST, get tImpact() { return now < HIT ? HIT : now - bloomClock(now); }, resolveAt: [3.58, 5.1] });
   const SHANGHAI = /shanghai|pudong|puxi/i.test(X.text('K_0.6'));
-  const K06_OFF = 1.3, K06_END = { x: 0.58, y: 0.52, zoom: 1.18 };   // shared with 1.1 (01_intro_b.js)
+  const K06_OFF = 1.3, K06_END = { x: 0.58, y: 0.575, zoom: 1.25 };   // shared with 1.1 (01_intro_b.js). rev3: the painted Moon (whole at the cut in) has left the top of the frame by LIFT, before 1.1's ink Moon appears
   return [
     // 0.1 — a drop of ink falls on xuan and blooms into a full Moon
     //       (its shadow gathers in the silence; it falls on the first sound and lands on the first strum, 2.44)
@@ -99,9 +99,12 @@ export default function shots(B, X, L) {
       } },
 
     // 0.5 — every Mid-Autumn, a billion people… (K_0.5)
-    //       K_0.5/take_1 (h3: lantern light and mist drifting over the roofs) redrawn on silk
+    //       rev3 (Oct 8): K_0.5/take_5 (Seedance 2.0, from the rev3 keyframe) redrawn on silk: the crowd on the festival
+    //       street walks, sky lanterns rise; the low amber Moon sits whole at about (154, 137), R 73–79, left of the card.
+    //       style lineA 0 (here and in 0.6/1.1): the takes carry the painting's own outlines; the redrawn iron-wire line
+    //       broke into heavy dashes at 1080p and blackened the sightseeing boat's strings of light.
     { id: '0.5', t0: S05, t1: S06, paper: 'silk', grain: 5, focus: [900, 420],
-      scene: [{ type: 'roto', clip: 'K_0.5/take_1', paper: 'silk', offset: 0.6, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.52, zoom: 1.05 }, to: { x: 0.47, y: 0.5, zoom: 1.13 } }],
+      scene: [{ type: 'roto', clip: 'K_0.5/take_5', paper: 'silk', style: { snapAmt: 0.12, lineA: 0 }, offset: 0.6, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.52, zoom: 1.05 }, to: { x: 0.47, y: 0.5, zoom: 1.13 } }],
       type(ctx, t) {
         // Li Bai, 静夜思 — traditionally dated 726 CE (开元十四年), Yangzhou
         card(ctx, 'c05', { lines: [[{ t: 'In 726, Li Bai looked up at the ' }, { t: 'Moon', size: 112 }], [{ t: 'and wrote about ' }, { t: 'missing home.', size: 112 }]],
@@ -112,8 +115,10 @@ export default function shots(B, X, L) {
     // 0.6 — the roof-deck shot. The keyframe is read live; if the new Shanghai/Pudong take has landed (K_0.6.txt says so)
     // use a generic city split (sky far, skyline mid, deck near, lights alive); else the Mei/mother split.
     { id: '0.6', t0: S06, t1: LIFT, paper: 'silk', grain: 6, focus: [1150, 470],
-      // Continue the same drawing clock through 1.1; 0.55 + 0.75 * 4.44 stays inside the four-second take.
-      scene: [{ type: 'roto', clip: 'K_0.6/take_3', paper: 'silk', offset: 0.55, rate: 0.75, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.5, zoom: 1.04 }, to: K06_END },
+      // rev3 (Oct 8): K_0.6/take_5 (Seedance 2.0, 6 s; real Huangpu traffic gliding, Jade settles and turns her head a
+      // little to M). Continue the same drawing clock through 1.1: 0.6 + 0.75 * 4.44 = 3.93 s. Keep rate 0.75: what is
+      // still visible under the indigo ends at 2.98 s of the take, before Jade's profile comes round (no glasses drawn).
+      scene: [{ type: 'roto', clip: 'K_0.6/take_5', paper: 'silk', style: { snapAmt: 0.12, lineA: 0 }, offset: 0.6, rate: 0.75, lock: 0, subject: false, maskGain: 8, from: { x: 0.5, y: 0.485, zoom: 1.04 }, to: K06_END },
         { name: 'paperfade', params: { paperTo: 'indigo', fade: (t) => 0.5 * smooth(LIFT - 0.7, LIFT, t) } }],
     },
 

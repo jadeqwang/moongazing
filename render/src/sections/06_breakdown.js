@@ -21,7 +21,7 @@
 // the roto scene plays them as they are (RUB below). Takes generated FROM a held pose are played reversed, so the
 // shot ends exactly on the painted keyframe. No take → the painted still (plate, grade 'rubbing').
 // THE EARTH is never painted: scenes/earthview.js draws it (the only colour on the Moon), same sky in every shot.
-import { lyricZH, card, hud, ph, PALE, WHITE, smooth, clamp, easeInOutSine } from './_lib.js';
+import { lyricZH, card, hud, ph, typeLayer, cardUnits, PALE, WHITE, smooth, clamp, easeInOutSine } from './_lib.js';
 import { earthView, EARTH_KEYS, EARTH_INSETS, EARTH_INSET_KEYS } from '../scenes/earthview.js';
 
 export const range = [111.95, 122.77];
@@ -38,7 +38,7 @@ const E62B = { uv: [0.400, 0.218], r: 0.0314 };          // J_6.2: horizon at v 
 const E62C = { uv: [0.326, 0.194], r: 0.0256 };          // K_6.2c: horizon top at v 0.41, lens HFOV ~48°
 const E62D = { uv: [0.325, 0.200], r: 0.0225 };          // K_6.2d: horizon top at v 0.39, lens HFOV ~55°
 // Jade's face before 乡: one beat (true), or not at all (false: 6.2d then runs to 乡)
-const FACE = true;
+const FACE = false;   // Jade, Oct 8 (round three): her face comes out of the passage
 // the reflection on the clear visor in J_6.2_visor: on the glass between her eyes and the bubble's front edge, where a
 // convex mirror shows something far off to her front-left; squashed toward the bubble's limb, mirrored, a little dimmer
 const R63 = { uv: [0.500, 0.3826], r: 0.0265, squash: [0.56, 1], rot: -8, mirror: true, gain: 0.8, opacity: 0.7, haze: 0.9 };
@@ -85,19 +85,19 @@ export default function shots(B, X, L) {
   // cuts: 低 (line onset) | bar 63 beat 3 | bar 64 | bar 64 beat 3 (only with FACE) | 乡 sung (118.8) | bar 66 | drop
   const S61 = L.L14a.start, S62 = L.L14b.start, S62c = bar(63, 3), S62d = bar(64), S63 = 118.8, S62b = FACE ? bar(64, 3) : S63, S64 = bar(66), DROP = bar(67);
   const gloss = (ctx, key, s, t, a, b) => card(ctx, key, { lines: [[{ t: s, font: 'CormorantItalic' }]], size: 32, x: 960, y: 1040, align: 'center', color: PALE }, t, a, b, 'over');
-  const edge = (ctx, s, lt, dur) => hud(ctx, s, 64, 72, { size: 13, rgb: '240,232,214', a: 0.8 }, smooth(0.15, 0.6, lt) * (1 - smooth(dur - 0.35, dur - 0.05, lt)));
   const XX = 470, XY = 230; // the held 乡 stays put across 6.3 → 6.4
   const xiang = (ctx, t) => lyricZH(ctx, L.L14b, { from: 4, key: 'xiang', size: 560, x: XX, y: XY, color: WHITE, seed: 130, until: 122.62, shake: 2.2 * smooth(118.8, 119.6, t), early: 0.0, halo: 18 }, t, 'over');
   // ---- type shared by the four Moon shots before 乡 (6.2a, c, d, b): it stays put across their cuts
   // 低头思故: one small column in the black sky at the left, where 乡 will stand; no sinking (home, not down)
   const column = (ctx, t) => lyricZH(ctx, L.L14b, { to: 4, key: 'col', size: 76, x: 238, y: 118, color: WHITE, seed: 132, until: S63 + 0.05, halo: 8 }, t, 'over');
   // a card drawn pale with a soft dark halo of its own shape (the ground under it changes with every cut)
-  const haloed = (ctx, draw, seed) => {
+  const haloed = (ctx, draw, seed, info) => {
     ctx.pipe.layer((g) => { g.filter = 'brightness(0) blur(9px)'; g.globalAlpha = 0.9; draw(g); draw(g); }, { mode: 'ink', seed: seed + 1 });
-    ctx.pipe.layer((g) => draw(g), { mode: 'over', seed });
+    typeLayer(ctx, info, (g) => draw(g), { mode: 'over', seed });
   };
-  // "I think of home": one baseline under the 乡. "I think" is brushed on 思, "of" on 故 (the whispered onsets);
-  // "home" (larger) is brushed with the sung 乡 and held with it; "I think of" leaves once the line has been read
+  // "I think of home": one baseline under the 乡. "I think" fades in on 思, "of" on 故 (the whispered onsets);
+  // "home" (larger) fades in with the sung 乡 and is held with it; "I think of" leaves once the line has been read.
+  // (Oct 8, round three: eased fades of 0.4 s, no wipe.)
   const EN = { font: 'CormorantItalic', x: 70, y: 892, align: 'left', color: PALE, tracking: 0.02, leading: 1.1 };
   const iThink = (ctx) => ctx.type.card('en62-i', { ...EN, size: 46, lines: [[{ t: 'I think' }]] });
   const ofCard = (ctx) => ctx.type.card('en62-of', { ...EN, size: 46, x: iThink(ctx).runEdges()[0][0].x1 + 15, lines: [[{ t: 'of' }]] });
@@ -105,19 +105,18 @@ export default function shots(B, X, L) {
     const W = L.L14b.words, a = 1 - smooth(S63 + 0.9, S63 + 1.6, t);
     if (a <= 0) return;
     [[iThink(ctx), W[2].start], [ofCard(ctx), W[3].start]].forEach(([c, on], i) => {
-      const w = smooth(on - 0.04, on + 0.28, t);
-      if (w > 0) haloed(ctx, (g) => c.draw(g, w, a), 51 + 4 * i);
+      const w = clamp((t - (on - 0.12)) / 0.42);
+      if (w > 0) haloed(ctx, (g) => c.draw(g, w, a), 51 + 4 * i, { key: `en62-${i ? 'of' : 'i'}`, kind: 'card', end: S63 + 1.6, units: cardUnits(c, () => on - 0.12) });
     });
   };
   const home = (ctx, t) => {
-    const a = 1 - smooth(122.62 - 0.4, 122.62, t), w = smooth(S63 + 0.02, S63 + 0.42, t);
+    const a = 1 - smooth(122.62 - 0.45, 122.62, t), w = clamp((t - S63) / 0.45);
     if (w <= 0 || a <= 0) return;
     const c = ctx.type.card('en62-home', { ...EN, x: ofCard(ctx).runEdges()[0][0].x1 + 18, size: 88, lines: [[{ t: 'home' }]] });
-    haloed(ctx, (g) => c.draw(g, w, a), 53);
+    haloed(ctx, (g) => c.draw(g, w, a), 53, { key: 'en62-home', kind: 'card', end: 122.62, units: cardUnits(c, () => S63) });
   };
-  // the label of the Moon side runs through the three suited shots
-  const where = (ctx, t) => hud(ctx, 'GUANGHAN  ·  FULL EARTH  ·  4.8° ABOVE THE HORIZON', 64, 72, { size: 13, rgb: '240,232,214', a: 0.8 }, smooth(S62 + 0.15, S62 + 0.6, t) * (1 - smooth(S62b - 0.35, S62b - 0.05, t)));
-  const moonType = (ctx, t) => { column(ctx, t); think(ctx, t); where(ctx, t); };
+  // (Jade, Oct 8, round three: the two small sky labels, Austin and the Moon side, are gone)
+  const moonType = (ctx, t) => { column(ctx, t); think(ctx, t); };
   // views (no parallax, so the Earth registers exactly). 6.1 and 6.2a both tilt UP: heads are raised on both worlds
   const P61 = { from: { x: 0.52, y: 0.615, zoom: 1.3 }, to: { x: 0.53, y: 0.40, zoom: 1.3 } };
   const P62a = { from: { x: 0.56, y: 0.49, zoom: 1.13 }, to: { x: 0.52, y: 0.47, zoom: 1.08 } };
@@ -147,12 +146,17 @@ export default function shots(B, X, L) {
   return [
     // 6.1 — EARTH, a moonless night: Kenton lifts M, M holds her toy Moon where the Moon should be, T's flashlight finds
     //       it: they make their own bright Moon; the camera tilts up with their faces
+    //       (rev3, Jade Oct 8: "make T's movement more fluid and natural, like maybe he starts earlier"; lit Moon brighter;
+    //       Kenton turned further away. K_6.1/take_8 is generated from K_6.1_dark.jpg (flashlight off) and played reversed;
+    //       the beam and the lit Moon are drawn on the tracked hand by tools/beam_61.py. Played at rate 1 from prepared
+    //       frame 12 (the take is drawn on twos by the model, so any other rate steps unevenly): T's arm is already rising
+    //       at the cut, the beam climbs the tree, swings over the sky and is on the toy Moon at prepared frame 77 =
+    //       2.71 s into the shot = the sung 月 (114.665 s); the shot ends on the painted frame)
     { id: '6.1', t0: S61, t1: S62, paper: 'rubbing', grain: 61, focus: [1040, 430],
-      scene: [moving('K_6.1', P61, 0.5, 'The family make their own Moon on a moonless night')],
+      scene: [moving('K_6.1', P61, 12 / 24, 'The family make their own Moon on a moonless night')],
       type(ctx, t, lt) {
         lyricZH(ctx, L.L14a, { size: 118, x: 1720, y: 300, color: WHITE, seed: 131, until: S62 + 0.05, dy: (tt) => -150 * smooth(S61, S62, tt) }, t, 'over');
         gloss(ctx, 'g61', 'I raise my head and gaze at the bright Moon,', t, S61 + 0.4, S62 + 0.05);
-        edge(ctx, 'AUSTIN  ·  NEW MOON  ·  15 DAYS TO MID-AUTUMN', lt, S62 - S61);
       } },
     // 6.2a — MOON, the same hour: on the rim of Shackleton she lifts her head from the crater and turns to the Earth
     //        (two beats: the take from 1.0 s at 1.4x: her head is already up at the cut and she turns; it ends where 6.3 picks the take up)

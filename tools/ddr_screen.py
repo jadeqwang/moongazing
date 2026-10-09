@@ -19,6 +19,12 @@ blue), so the dancers stay in front of the picture.
                            in take_10 the dancers light the mat's right panel on beat 1, its down panel on beat 2, nothing
                            on beat 3 and the right panel on beat 4 (found by searching all four double charts)
          [--no-matte]      no take: matte with the quad only (painted still)
+         [--style dance-single]   rev3 KIDS (Oct 8; Jade: "show single-pad mode"): one player on one pad, as the room has.
+                           Four targets (left, down, up, right) on the first player's side of the screen (StepMania puts
+                           player 1's field a quarter of the way across: x = 160 of 640), judgment and combo over them,
+                           the second player's half empty ("NOT PRESENT", as in her video). With
+                           --diff Easy --chart0 63: Easy Single beats 63-66 = right, down, rest, right: the three panels
+                           the dancers light in take_10, and nothing on the beat where they light nothing.
 Writes OUT.png and OUT.json { bbox, cols, rows, n, fps, k0 (global frame index of atlas frame 0), target, quad, ... }.
 """
 import json
@@ -44,7 +50,8 @@ KF_SIZE = (2752, 1536)
 
 # ---- the real layout, as fractions of the 4:3 game picture (measured on rectified frames of the sample) -------------
 GW, GH, SS = 640, 480, 3              # game picture px (StepMania's own 640x480), supersampling
-LANE_X0, LANE_DX = 0.132, 0.1058      # centre of column 0, column pitch (of width)
+LANE_X0, LANE_DX = 0.132, 0.1058      # centre of column 0, column pitch (of width); double. main() resets LANE_X0 for single
+NCOL, FIELD_X = 8, 0.5                # columns, and the field's centre (judgment, combo); single: 4 and 0.25
 TARGET_Y = 0.204                      # receptor row (of height)
 ARROW = 0.104                         # arrow size (of width) = 0.139 of height
 PPB = 2 * 64 / 480                    # scroll: heights per beat at 2x (measured 0.27)
@@ -143,7 +150,7 @@ def draw_game(cb, rows, meter, bg, phase_beats):
     # ---- receptors: pulse on every beat; a hit flashes its column yellow-white for ~0.2 beat
     size = X(ARROW)
     pulse = math.exp(-beat_ph * 5.0)
-    for c in range(8):
+    for c in range(NCOL):
         cx, cy = X(LANE_X0 + LANE_DX * c), Y(TARGET_Y)
         put(im, sprite('recep', DIRS[c], size), cx, cy)
         if pulse > 0.03:
@@ -167,14 +174,14 @@ def draw_game(cb, rows, meter, bg, phase_beats):
     if last is not None:
         z = 1 + 0.22 * math.exp(-since / 0.12)
         f = font(FONT_B, Y(0.052) * z); s = 'PERFECT!!'
-        w = d.textlength(s, font=f); x, y = X(0.5) - w / 2, Y(0.435) - Y(0.031) * z
+        w = d.textlength(s, font=f); x, y = X(FIELD_X) - w / 2, Y(0.435) - Y(0.031) * z
         e = max(2, int(SS * 1.3))
         for dx, dy in ((e, e), (-e, e), (e, -e), (-e, -e), (0, e * 1.6), (e * 1.4, 0), (-e * 1.4, 0)):
             d.text((x + dx, y + dy), s, font=f, fill=COL['perfect_edge'] + (255,))
         d.text((x, y), s, font=f, fill=COL['perfect'] + (255,))
         zc = 1 + 0.15 * math.exp(-since / 0.12)
         fn = font(FONT_B, Y(0.075) * zc); ft = font(FONT_B, Y(0.043)); num = str(k)
-        wn = d.textlength(num, font=fn); wt = d.textlength('combo', font=ft); x0 = X(0.545) - (wn + wt) / 2 - X(0.008)
+        wn = d.textlength(num, font=fn); wt = d.textlength('combo', font=ft); x0 = X(FIELD_X + 0.045) - (wn + wt) / 2 - X(0.008)
         d.text((x0 + SS, Y(0.57) - Y(0.045) * zc + SS), num, font=fn, fill=(110, 30, 120, 255))
         d.text((x0, Y(0.57) - Y(0.045) * zc), num, font=fn, fill=COL['combo_n'] + (255,))
         d.text((x0 + wn + X(0.012), Y(0.57) - Y(0.017)), 'combo', font=ft, fill=COL['combo_t'] + (255,))
@@ -243,13 +250,16 @@ def register(src_gray, key_gray, mask):
 
 
 def main():
-    global DIFF_COL
+    global DIFF_COL, LANE_X0, NCOL, FIELD_X
     o = {}; a = sys.argv[1:]; i = 0
     while i < len(a):
         if a[i] in ('--no-matte',): o[a[i]] = True; i += 1
         else: o[a[i]] = a[i + 1]; i += 2
     diff = o.get('--diff', 'Medium'); chart0 = float(o.get('--chart0', 112)); offset = float(o.get('--offset', 0.5))
-    rows, meter, desc = parse_chart('dance-double', diff)
+    style = o.get('--style', 'dance-double')
+    rows, meter, desc = parse_chart(style, diff)
+    if style == 'dance-single':
+        NCOL, FIELD_X = 4, 0.25; LANE_X0 = FIELD_X - 1.5 * LANE_DX
     DIFF_COL = {'Beginner': ((70, 200, 255), ''), 'Easy': ((250, 196, 40), ''), 'Medium': ((240, 60, 110), ''), 'Hard': ((60, 235, 80), '')}[diff]
     B = Beats(); i0 = B.idx[(SHOT[0], SHOT[1])]; t0, t1 = B.t[i0], B.t[B.idx[(SHOT[2], SHOT[3])]]
     k0 = math.ceil(t0 * FPS - 1e-6); k1 = math.ceil(t1 * FPS - 1e-6); n = k1 - k0 + 1          # one spare frame
@@ -321,7 +331,7 @@ def main():
     cv2.imwrite(o['--out'], atlas)
     meta_o = {'bbox': [round(float(x0) / tw, 5), round(float(y0) / th, 5), round(float(x1) / tw, 5), round(float(y1) / th, 5)], 'cols': cols, 'rows': rws, 'n': n, 'fps': FPS,
               'k0': k0, 'quad': [[round(float(x) / tw, 5), round(float(y) / th, 5)] for x, y in qt], 'target': [tw, th], 'take': o.get('--take'), 'offset': offset,
-              'chart': f'dance-double {diff} ({desc}), beat {chart0:g} on bar {SHOT[0]} beat {SHOT[1]}', 'light': light}
+              'chart': f'{style} {diff} ({desc}), beat {chart0:g} on bar {SHOT[0]} beat {SHOT[1]}', 'light': light}
     json.dump(meta_o, open(o['--out'].rsplit('.', 1)[0] + '.json', 'w'), indent=1)
     print(json.dumps({k: v for k, v in meta_o.items() if k != 'light'}))
 

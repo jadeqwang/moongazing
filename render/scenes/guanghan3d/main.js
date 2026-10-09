@@ -60,6 +60,10 @@ function camera(shot, scene) {
     if (c.orthoTop) { cam.position.set(t.x, 1000, t.z + 1e-3); cam.up.set(0, 0, -1); }
     else { const d = dirFrom(c.from.bearing, c.from.elev); cam.position.set(t.x + d[0] * 800, t.y + d[1] * 800, t.z + d[2] * 800); }
     cam.lookAt(t); cam.updateProjectionMatrix(); cam.updateMatrixWorld();
+    // plan-oblique ("military") projection for the 5.2 plate: the plan stays true to scale and north-up, and every
+    // height is drawn straight up the page, `shear` px-metres per metre (1 = heights at the plan's own scale)
+    if (c.orthoTop && c.shear) { cam.projectionMatrix.multiply(new THREE.Matrix4().set(1, 0, 0, 0, 0, 1, c.shear, c.shear * cam.position.y, 0, 0, 1, 0, 0, 0, 0, 1));
+      cam.projectionMatrixInverse.copy(cam.projectionMatrix).invert(); }
     const dist = cam.position.distanceTo(t); return { cam, near: Math.max(1, dist - 400), far: dist + 300 };
   }
   const vfov = 2 * Math.atan(Math.tan((c.hfov * Math.PI) / 360) / aspect) * 180 / Math.PI;

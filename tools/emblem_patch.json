@@ -11,7 +11,7 @@
     "ax": 90
    }
   ],
-  "_orig": "K_7.C4_c1_chen_v2.jpg"
+  "_orig": "K_7.C4_c1_chen_v3.jpg"
  },
  "K_7.C4_c2_anastasia": {
   "take": "take_2",
@@ -99,7 +99,7 @@
   "_orig": "K_7.C5a_v1.jpg"
  },
  "K_7.C5c": {
-  "take": "take_1",
+  "take": "take_3",
   "emblems": [
    {
     "x": 1911,
@@ -107,7 +107,7 @@
     "d": 106
    }
   ],
-  "_orig": "K_7.C5c_v1.jpg"
+  "_orig": "K_7.C5c_v3.jpg"
  },
  "K_7.D3e": {
   "take": "take_2",
@@ -120,61 +120,43 @@
   ],
   "_orig": "K_7.D3e_v1.jpg"
  },
- "K_7.E1b": {
-  "take": "take_3",
-  "emblems": [
-   {
-    "x": 1071,
-    "y": 849,
-    "mode": "replace",
-    "search": 60,
-    "d": 68
-   },
-   {
-    "x": 362,
-    "y": 677,
-    "d": 66
-   }
-  ],
-  "_orig": "K_7.E1b_v3.png"
- },
  "K_1.4a": {
-  "take": "take_6",
+  "take": "take_7",
   "emblems": [
    {
-    "x": 1799,
-    "y": 436,
+    "x": 1586,
+    "y": 688,
     "mode": "replace",
-    "search": 55
-   },
-   {
-    "x": 1244,
-    "y": 575,
-    "mode": "replace",
-    "search": 40
-   },
-   {
-    "x": 918,
-    "y": 668,
-    "mode": "replace",
-    "search": 30,
+    "search": 50,
     "old": [
-     918,
-     668,
-     28,
-     0.85,
+     1586,
+     688,
+     44,
+     0.95,
      90
     ]
    },
    {
-    "x": 680,
-    "y": 737,
+    "x": 2056,
+    "y": 754,
     "mode": "replace",
-    "search": 22
+    "search": 40
+   },
+   {
+    "x": 2217,
+    "y": 825,
+    "mode": "replace",
+    "search": 32
+   },
+   {
+    "x": 2440,
+    "y": 879,
+    "mode": "replace",
+    "search": 26
    }
   ],
-  "_orig": "K_1.4a_v3.jpg",
-  "_note": "rev2_hair Oct 8: _orig is K_1.4a_v3.jpg = the hair-fixed painting without emblem patches (v1 = old hair, braid over the neck ring)"
+  "_orig": "K_1.4a_v7.jpg",
+  "_note": "rev3_polish Oct 8: _orig is now K_1.4a_v7.jpg = K_1.4a_v5.jpg with the rocket repainted as the film's vehicle (core, two boosters, capsule, escape tower); K_1.4a_v6.jpg = the keyframe with emblems and the old rocket. rev3_astro Oct 8: new front-view walkout keyframe. _orig is K_1.4a_v5.jpg = the new painting with the image model's plain dark discs (no emblems). Before: take_6 on K_1.4a_v3.jpg (rear-left staging; K_1.4a_v4.jpg = that painting with its emblems), emblems at [{\"x\": 1799, \"y\": 436, \"mode\": \"replace\", \"search\": 55}, {\"x\": 1244, \"y\": 575, \"mode\": \"replace\", \"search\": 40}, {\"x\": 918, \"y\": 668, \"mode\": \"replace\", \"search\": 30, \"old\": [918, 668, 28, 0.85, 90]}, {\"x\": 680, \"y\": 737, \"mode\": \"replace\", \"search\": 22}]"
  },
  "K_1.4b": {
   "take": "take_3",
@@ -236,7 +218,7 @@
   "_orig": "K_7.B1_v4.jpg"
  },
  "K_7.B3": {
-  "take": "take_11",
+  "take": "take_16",
   "emblems": [
    {
     "x": 1426,
@@ -270,7 +252,7 @@
   "_orig": "K_7.B3_v4.jpg"
  },
  "K_5.1": {
-  "take": "take_2",
+  "take": "take_5",
   "emblems": [
    {
     "x": 1462,
@@ -297,6 +279,7 @@
     "rot": 10
    }
   ],
-  "_orig": "K_5.1_v1.jpg"
+  "_orig": "K_5.1_v1.jpg",
+  "_note": "rev3_astro Oct 8: take_5 (was take_2)"
  }
 }

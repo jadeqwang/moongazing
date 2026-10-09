@@ -118,9 +118,28 @@ def treat_frame(f, mx, my, fh, upper_only=True):
     return full_b, full_c, ground, tooth
 
 
-def treat_all(frames, mx, my, fh, teeth_tone=0.3):
-    """Two passes: masks per frame, then a 3-frame temporal blend of the masks (the band must not flicker), then paint."""
+def lens_shape(band):
+    """Each tooth band rounded to a stadium (ends fully round): at 1080p the plain convex outline of two closed tooth
+    rows is a box with square corners and reads as a plaque between the lips (rev3_face, Oct 8)."""
+    b8 = (band > 0.5).astype(np.uint8)
+    n, lab_, stats, _ = cv2.connectedComponentsWithStats(b8, connectivity=8)
+    out = np.zeros_like(b8)
+    for j in range(1, n):
+        h, w = stats[j, cv2.CC_STAT_HEIGHT], stats[j, cv2.CC_STAT_WIDTH]
+        d = int(0.9 * min(h, w)) | 1
+        c = (lab_ == j).astype(np.uint8)
+        if d >= 3:
+            c = cv2.morphologyEx(c, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (d, d)))
+        out = np.maximum(out, c)
+    return out.astype(np.float32)
+
+
+def treat_all(frames, mx, my, fh, teeth_tone=0.3, lens=False):
+    """Two passes: masks per frame, then a 3-frame temporal blend of the masks (the band must not flicker), then paint.
+    lens: round each band to a stadium and give it a softer edge (see lens_shape)."""
     M = [treat_frame(f, mx[i], my[i], fh) for i, f in enumerate(frames)]
+    if lens:
+        M = [(lens_shape(b), np.maximum(c, b - lens_shape(b)), g, t) for b, c, g, t in M]   # the cut corners: ground
     n = len(frames)
     teeth = [t for *_, t in M if t is not None]
     tooth = np.median(np.array(teeth), 0) if teeth else None
@@ -132,7 +151,7 @@ def treat_all(frames, mx, my, fh, teeth_tone=0.3):
         ground = M[i][2]
         if band.max() == 0 and cav.max() == 0:
             outs.append(f); shares.append(0.0); continue
-        bf = np.clip(cv2.GaussianBlur(band, (0, 0), max(1.2, 0.006 * fh)) * 1.15, 0, 1)[..., None]   # soft, rounded corners
+        bf = np.clip(cv2.GaussianBlur(band, (0, 0), max(1.2, (0.010 if lens else 0.006) * fh)) * 1.15, 0, 1)[..., None]   # soft, rounded corners
         cf = np.clip(cv2.GaussianBlur(cav, (0, 0), 1.0), 0, 1)[..., None]
         out = f.astype(np.float32)
         out = out * (1 - cf) + ground[None, None, :] * cf
@@ -201,7 +220,7 @@ def carry_upper_face(frames, key_path, smooth_frames=1.5, feather=6.0, nose=True
     return out, stats
 
 
-def run(clip, out_take=None, teeth_tone=0.3, sheet=None, carry=True, nose=True):
+def run(clip, out_take=None, teeth_tone=0.3, sheet=None, carry=True, nose=True, lens=False):
     shot, take = clip.split("/")
     gdir = os.path.join(ROOT, "media", "gen", shot)
     src = os.path.join(gdir, take + ".mp4")
@@ -222,7 +241,7 @@ def run(clip, out_take=None, teeth_tone=0.3, sheet=None, carry=True, nose=True):
         frames, cstats = carry_upper_face(frames, key_path, nose=nose)
     tmp = os.path.join(gdir, "_treat_" + out_take)
     os.makedirs(tmp, exist_ok=True)
-    outs, shares = treat_all(frames, mx, my, fh, teeth_tone)
+    outs, shares = treat_all(frames, mx, my, fh, teeth_tone, lens=lens)
     for i, g in enumerate(outs):
         cv2.imwrite(os.path.join(tmp, f"f_{i:04d}.png"), g)
     dst = os.path.join(gdir, out_take + ".mp4")
@@ -233,7 +252,7 @@ def run(clip, out_take=None, teeth_tone=0.3, sheet=None, carry=True, nose=True):
     os.rmdir(tmp)
     side = json.load(open(os.path.join(gdir, take + ".json")))
     side.update(take=out_take, file=os.path.relpath(dst, ROOT), treated_from=f"{shot}/{take}",
-                treatment={"tool": "tools/ls_mouth_treat.py", "teeth_tone": teeth_tone, "upper_face_carry": cstats,
+                treatment={"tool": "tools/ls_mouth_treat.py", "teeth_tone": teeth_tone, "lens": lens, "upper_face_carry": cstats,
                            "what": "teeth flattened to one pale band, tongue/cavity to the face's dark ground; nothing moved or re-timed",
                            "teeth_share_per_frame": shares})
     json.dump(side, open(os.path.join(gdir, out_take + ".json"), "w"), indent=1, ensure_ascii=False)
@@ -262,5 +281,6 @@ if __name__ == "__main__":
     ap.add_argument("--sheet")
     ap.add_argument("--no-carry", action="store_true", help="do not lay the painted upper face over the take")
     ap.add_argument("--no-nose", action="store_true")
+    ap.add_argument("--lens", action="store_true", help="round the tooth band to a stadium with a softer edge")
     a = ap.parse_args()
-    run(a.clip, a.out_take, a.teeth, a.sheet, carry=not a.no_carry, nose=not a.no_nose)
+    run(a.clip, a.out_take, a.teeth, a.sheet, carry=not a.no_carry, nose=not a.no_nose, lens=a.lens)

@@ -41,8 +41,8 @@ async function boot() {
   ctx.store = store;
   await store.discover();
   // identity assets are used at init (title seal) — load them eagerly and pin them
-  await store.need(['seal_wangyue', 'seal_guanghan', 'emblem_final']);
-  store.pinned = new Set(['seal_wangyue', 'seal_guanghan', 'emblem_final']);
+  await store.need(['seal_wangyue', 'emblem_final']);   // (the 廣寒 station seal is retired: nothing draws it since Oct 8)
+  store.pinned = new Set(['seal_wangyue', 'emblem_final']);
   assets.sealWangyue = assets.seal_wangyue;
   window.__assets = Object.keys(store.urls);
   ctx.type = new TypeKit(ctx);

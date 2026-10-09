@@ -1,0 +1,190 @@
+{
+ "u0": {
+  "hfov": 52,
+  "f_px": 1714,
+  "px": {
+   "cupNear": 141,
+   "cupFar": 124,
+   "rosette": 117,
+   "portInner": 471,
+   "headHeight": 366,
+   "gloveHandLengthFlat": 550,
+   "gloveKnuckleWidth": 308,
+   "gloveFinger": 89,
+   "bareHandWidthAtGlove": 204
+  },
+  "at": {
+   "head": [
+    893,
+    156
+   ],
+   "mouth": [
+    875,
+    251
+   ],
+   "shoulderL": [
+    1112,
+    380
+   ],
+   "portActive": [
+    1155,
+    414
+   ],
+   "portIdle": [
+    338,
+    404
+   ],
+   "wrist": [
+    1128,
+    559
+   ],
+   "tip": [
+    1049,
+    804
+   ],
+   "rosette": [
+    515,
+    882
+   ]
+  },
+  "depth_m": {
+   "cups": 0.365,
+   "glove": 0.639,
+   "port": 0.739,
+   "head": 1.094
+  },
+  "world": {
+   "shoulderL": [
+    -0.319,
+    1.108,
+    0.67
+   ],
+   "elbowL": [
+    -0.254,
+    1.029,
+    0.407
+   ],
+   "wristL": [
+    -0.124,
+    0.99,
+    0.109
+   ],
+   "head": [
+    -0.134,
+    1.239,
+    0.561
+   ],
+   "portC": [
+    -0.17,
+    1.05,
+    0.2
+   ]
+  },
+  "arm": {
+   "reach": 0.99,
+   "crossesWallAt": [
+    -0.164,
+    1.002,
+    0.2
+   ],
+   "offPortCentre_mm": 49,
+   "clearInPort_mm": 57,
+   "faceToWall_mm": 253,
+   "mouthToWall_mm": 271
+  }
+ },
+ "u1": {
+  "hfov": 52,
+  "f_px": 1714,
+  "px": {
+   "cupNear": 141,
+   "cupFar": 124,
+   "rosette": 117,
+   "portInner": 471,
+   "headHeight": 380,
+   "gloveHandLengthFlat": 590,
+   "gloveKnuckleWidth": 331,
+   "gloveFinger": 97,
+   "bareHandWidthAtGlove": 219
+  },
+  "at": {
+   "head": [
+    904,
+    180
+   ],
+   "mouth": [
+    884,
+    280
+   ],
+   "shoulderL": [
+    1133,
+    398
+   ],
+   "portActive": [
+    1155,
+    414
+   ],
+   "portIdle": [
+    338,
+    404
+   ],
+   "wrist": [
+    1070,
+    579
+   ],
+   "tip": [
+    892,
+    828
+   ],
+   "rosette": [
+    515,
+    882
+   ]
+  },
+  "depth_m": {
+   "cups": 0.365,
+   "glove": 0.596,
+   "port": 0.739,
+   "head": 1.055
+  },
+  "world": {
+   "shoulderL": [
+    -0.317,
+    1.091,
+    0.622
+   ],
+   "elbowL": [
+    -0.239,
+    1.016,
+    0.362
+   ],
+   "wristL": [
+    -0.089,
+    0.983,
+    0.072
+   ],
+   "head": [
+    -0.133,
+    1.216,
+    0.523
+   ],
+   "portC": [
+    -0.17,
+    1.05,
+    0.2
+   ]
+  },
+  "arm": {
+   "reach": 0.99,
+   "crossesWallAt": [
+    -0.155,
+    0.998,
+    0.2
+   ],
+   "offPortCentre_mm": 54,
+   "clearInPort_mm": 57,
+   "faceToWall_mm": 215,
+   "mouthToWall_mm": 234
+  }
+ }
+}

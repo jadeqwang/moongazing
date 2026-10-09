@@ -66,12 +66,25 @@ Use 5–6 workers. At 10 or more, SwiftShader pages run short of memory, images 
 `--frames` keeps going if a frame fails (for example a browser crash or a broken shader mid-edit). It reports the frames that failed and exits non-zero; rerun with `--resume` to fill them in.
 
 **Type rules:**
-- Lyrics are revealed on the sung onsets: words for English, characters for Chinese.
+- Lyrics are revealed on the sung onsets: words for English, characters for Chinese. No wipes: a word fades in whole,
+  a character is brushed on its own clock, short phrases and anything already sung at a cut are simply there (the rules
+  are written out above `lyricEN` in `sections/_lib.js`).
 - Lyrics never cover faces. Place them in the frame's 留白 and use `panel` when the ground is busy.
 - **One focal point per shot.** Lyrics and HUD never compete with the subject. In busy frames, guide the eye with the slow push (`from`/`to`) and a focal vignette: set `focus: [x, y]` on the shot (optional `vignette`, default 0.32).
 - Verse 1 is in inscription mode. Verse 2 is bigger. The hook is huge. The breakdown is white-on-black rubbing.
 - The drop uses HUD and data type only.
 - The outro closes on the 海上生明月 inscription.
+
+## Checks added Oct 8 (round three)
+
+```
+node tools/type_reveal_check.mjs --plot out/type_curves     # every piece of type: revealed ink per frame; flags anything early, popped, fast or uneven
+../.venv/bin/python tools/type_reveal_strips.py out/type_reveal_check.json out/frames_540 out/type_strips   # consecutive-frame strips to look at
+node tools/roto_holds.mjs                                   # how long each roto drawing is held; every hold on twos should be 2 film frames
+```
+
+A roto take played at a rate other than 1 (or through a `time` function) counts its twos in film frames
+(`drawingAt` in `src/roto/index.js`), so its drawings are held evenly.
 
 ## Assets
 
@@ -89,6 +102,15 @@ says how far each thing is built at `u` = 0..1 through the cut. The Sun's bearin
 counter (`buildDay`), the shadows, the mast panels and the mounds' hatching all agree. Three layers per frame: shadows
 (ink), line (gold, with hidden lines erased as it is drawn), light (screen). It resets the canvas shadow state the
 drop's HUD leaves on the shared 2D layer context (see `docs/reviews/rev2_build_report.md`).
+
+## Work lamps (`src/scenes/worklamps.js`, shot 7.B6)
+
+The station's exterior lamps live in the layout (`scenes/guanghan3d/layout.js`: `L.lamps`, `lampList()`); the 3D model
+builds them (`build.js`). `lampView(shotId)` projects them through a model shot's own camera (`shots.js`) into the uv of
+that shot's painted plate: each lamp's pool on the ground as a polygon, a mast lamp's pole and tripod shadows, and the
+mast's pole as an occluder. `lampNight` lifts the shot's night off the painting where the light lands (inside the 'ink'
+layer that holds the night); `lampLight` adds the lit regolith in a 'screen' layer of its own. No halos: there is no air.
+In a section file: see `habitatLights` in `07_drop.js` (which lamps, when each strikes, which are counted by the HUD).
 
 ## Roto: redrawing generated clips (`src/roto/`)
 

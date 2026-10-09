@@ -66,188 +66,83 @@ textarea { width: 100%; min-height: 56px; font: inherit; font-size: 15px; color:
 .shelf b { font-weight: 600 }
 .note { font-size: 14px; color: var(--muted) }
 section { display: flex; flex-direction: column; gap: 14px }
+/* round four */
+.asked { margin: 0; padding: 10px 12px; background: var(--bg); border-radius: 4px; display: flex; flex-direction: column; gap: 4px }
+.asked .who, .short b { font-family: var(--mono); font-weight: 500; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted) }
+.asked p { font-family: var(--display); font-size: 17px; line-height: 1.4 }
+.short { font-size: 14px; color: var(--muted) }
+.short b { margin-right: 6px }
+.older > summary { cursor: pointer; font-family: var(--display); font-weight: 600; font-size: 22px; padding-block: 6px }
+.older > section { margin-top: 20px }
 </style>
-
 <div class="wrap">
   <header class="head">
-    <h1>Moongazing: your notes of 8 October, before and now</h1>
-    <p class="lede">The first seven cards are this round: each plays the passage as it is now beside the cut you watched, and asks the one thing that is yours to decide. Below them are the choices still open from the last round. Pick an option, add a note if you like; answers are saved here and Claude reads them back. Times are the same as in the cut you watched.</p>
+    <h1>Moongazing: the fixes from your answers, round four</h1>
+    <p class="lede">You answered the round-three cards on the evening of 8 October. Each fix that followed is below as a short clip of just that passage, with the same passage from the cut you watched under it. Only these passages were re-rendered. Nobody has watched them at speed with sound: every check was made on frames. Tick a card when it is right, or say what is still off; answers save here and Claude reads them back.</p>
   </header>
 
   <div class="bar" id="bar">
-    <span><strong id="count">0 / 0</strong> answered</span>
+    <span><strong id="count">0 / 0</strong> looked at</span>
     <span class="state" id="state">Connecting…</span>
-    <nav class="jump" id="jump" aria-label="Jump to a decision"></nav>
+    <nav class="jump" id="jump" aria-label="Jump to a card"></nav>
   </div>
 
   <section>
-    <h2>This round: yours to decide</h2>
-    <div class="cards" id="cards-new"></div>
+    <h2>Fixed tonight</h2>
+    <div class="cards" id="cards-r4"></div>
   </section>
 
   <section>
-    <h2>Done this round, nothing to decide</h2>
-    <ul class="settled">
-      <li><span class="t">Whole film</span><b>Words flashing in and out.</b> The cut you watched had kept frames in which the whole text layer had dropped out. Three faults in the renderer were found and fixed, and every frame of the new cut was rendered twice and the two compared.</li>
-      <li><span class="t">0:19</span><b><span class="zh">月球基地</span>, not <span class="zh">月宫</span>.</b> The card reads <span class="zh">这一次，全世界共建一座月球基地</span>, in four columns so it clears the launch pad.</li>
-      <li><span class="t">2:13 – 2:18</span><b>True sizes.</b> The oxygen pipe is finger-thick and the wheel fits one glove; the cups and the rosette are at their real size.</li>
-      <li><span class="t">2:58</span><b>Adaeze's cup hand.</b> A left hand on her left arm, fingers across the front of the cup.</li>
-      <li><span class="t">3:02 – 3:07</span><b>The scale label in the pull-back.</b> It showed two overlapping numbers for a frame each time the scale stepped. It now shows one.</li>
-      <li><span class="t">1:41, 2:13, 2:17</span><b>The pale blue dot.</b> Now also on the suits at first steps, in the drill shot and on Lúcia's polo.</li>
-    </ul>
+    <h2>Settled by your answers</h2>
+    <ul class="settled" id="settled"></ul>
+  </section>
+
+  <details class="older">
+    <summary>Round three: the cards you answered</summary>
+    <section>
+      <h2>Yours to decide</h2>
+      <div class="cards" id="cards-new"></div>
+    </section>
+    <section>
+      <h2>Done as you asked</h2>
+      <div class="cards" id="cards-old"></div>
+    </section>
+  </details>
+
+  <section>
+    <h2>The lyric video</h2>
+    <p class="note">Two versions on the film's night sky. In the karaoke version the lead vocal is removed during the sung lines only, so the humming and the vocalise in the drop are the original. Nobody has listened to the separation yet. Smaller copies play here; the full-quality files are on your machine.</p>
+    <div class="shelf">
+      <figure><video controls preload="none" playsinline src="lyric/full.mp4" poster="img6/lyric.jpg"></video><figcaption><b>With vocals</b> the full master</figcaption></figure>
+      <figure><video controls preload="none" playsinline src="lyric/karaoke.mp4" poster="img6/lyric.jpg"></video><figcaption><b>Karaoke</b> lead vocal removed, backing vocals kept</figcaption></figure>
+    </div>
   </section>
 
   <section>
-    <h2>Still open from the last round</h2>
-    <p class="note">These have not changed since you last saw them, except where a card says so. Their clips play the new cut.</p>
-    <div class="cards" id="cards-old"></div>
-  </section>
-
-  <section>
-    <h2>Already settled</h2>
-    <ul class="settled">
-      <li><b>The Earth hangs south-up.</b> Kept as seen from the lunar south pole (Australia upper left).</li>
-      <li><b>On 乡 the picture returns to the suited figure facing the Earth</b> and pushes into the Earth, not your face.</li>
-      <li><b>0:27 and 1:19 staging.</b> The rocket sits to the right of the family so M's pointing arm is clear against the sky.</li>
-      <li><b>Full Earth at 1:56.</b> It is the real sky of 9 Sept 2037, fifteen days before Mid-Autumn; on Mid-Autumn night the Earth is below the station's horizon.</li>
-      <li><b>The push at 2:01 enters the whole Earth.</b> No zoom toward any one country; it dissolves to you and M at the museum globe.</li>
-      <li><b>One subject per shot.</b> Applied to the toast, the crew scenes and the walkout.</li>
-      <li><b>The rover's solar ears at 2:13</b> stay upright: you approved the pipe, wheel, cup and rosette fixes and left this one.</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>The whole new cut, in parts</h2>
-    <p class="note">Cut v5 in eleven parts, half size, with the song. Every fix from both rounds is in it except the sung close-up at 1:22, which waits for your answer above.</p>
+    <h2>The whole cut, in parts</h2>
+    <p class="note">Cut v6 in eleven parts, half size, with the song. This is the cut you watched: tonight's fixes are not in these parts.</p>
     <div class="shelf" id="shelf"></div>
   </section>
 </div>
 
 <script>
 const CLIPS = [
-  { n: 1, t0: 0, t1: 17.54, name: "0:00 – 0:17", what: "Opening: the ink Moon, Chang'e, the rooftops, the Shanghai roof deck" },
-  { n: 2, t0: 17.54, t1: 32.42, name: "0:17 – 0:32", what: "Rocket card with 月球基地, the two crew shots, the family at the shore, the title" },
+  { n: 1, t0: 0, t1: 17.54, name: "0:00 – 0:17", what: "Opening: the ink Moon, Chang'e, the rooftops, the terrace over the Huangpu" },
+  { n: 2, t0: 17.54, t1: 32.42, name: "0:17 – 0:32", what: "The International Moonbase card, the walkout, the family at the shore, the title" },
   { n: 3, t0: 32.42, t1: 46.82, name: "0:32 – 0:47", what: "West Lake, the ribbons, the boat from behind, the silk, the teahouse begins" },
-  { n: 4, t0: 46.82, t1: 61.65, name: "0:47 – 1:02", what: "Teahouse (the kiss, the pour, the spoon, the reading finger), the lesson, the envelope" },
+  { n: 4, t0: 46.82, t1: 61.65, name: "0:47 – 1:02", what: "Teahouse, the reading finger, the lesson with the eclipse, the envelope" },
   { n: 5, t0: 61.65, t1: 76.11, name: "1:02 – 1:16", what: "Training, the desk, the museum, strapping in" },
-  { n: 6, t0: 76.11, t1: 101.33, name: "1:16 – 1:41", what: "Ignition, the shore, the capsule, splash park, the tear, orbit, the pouch toast, landing" },
-  { n: 7, t0: 101.33, t1: 122.77, name: "1:41 – 2:03", what: "First steps, the station seal, name cards, the ridge, the rooftop, the crew looking up, 乡 and home" },
-  { n: 8, t0: 122.77, t1: 147.64, name: "2:03 – 2:28", what: "Building the base (new), the drill, the oxygen valve, the rosette, the radio array, the dust kick, lights on" },
-  { n: 9, t0: 147.64, t1: 161.77, name: "2:28 – 2:42", what: "Playroom with the cat and the real game, sofa and Rare Earth, the crew and their families, the call" },
-  { n: 10, t0: 161.77, t1: 189.86, name: "2:42 – 3:10", what: "The play, the crew watching, the bow, the toast, the pull-back to the pale blue dot" },
+  { n: 6, t0: 76.11, t1: 101.33, name: "1:16 – 1:41", what: "Ignition, the shore, the sung close-up, splash park, orbit, the pouch toast, landing" },
+  { n: 7, t0: 101.33, t1: 122.77, name: "1:41 – 2:03", what: "First steps, the plan of the base, name cards, the ridge, the rooftop, the crew looking up, 乡" },
+  { n: 8, t0: 122.77, t1: 147.64, name: "2:03 – 2:28", what: "Building the base, the drill, the valve, the glovebox, the radio array, lights on" },
+  { n: 9, t0: 147.64, t1: 161.77, name: "2:28 – 2:42", what: "Playroom, sofa, the crew and their families, the call" },
+  { n: 10, t0: 161.77, t1: 189.86, name: "2:42 – 3:10", what: "The play, one fingertip, the toast, the pull-back to the pale blue dot" },
   { n: 11, t0: 189.86, t1: 221.04, name: "3:10 – 3:41", what: "Splashdown, the reunion, the rooftop, the tea cup, credits" },
 ];
-// r2: this round. before: also play the cut Jade watched (v4) from the same time. extra: [file, poster, caption] clips of their own.
-const D = [
-  { r2: true, id: "r2_tea", when: "0:45", title: "The teahouse kiss",
-    img: [["r2_tea", "You kiss M on the forehead; your mother watches the pour"]], at: 45.29, before: true,
-    body: "You asked for natural movement from a video model. You now turn and kiss M on the forehead while your mother keeps her eyes on the tea she pours. Two things to check. The kiss is held almost still for about a second and a half (0:47 to 0:49). And while your head is turned, your face is the video model's drawing with your glasses, not the face painted from your photos.",
-    q: "Keep this take?",
-    opts: [["keep", "Keep it"], ["shorter", "Keep it, but draw back sooner so the hold is shorter"], ["away", "Turn my face further away during the kiss", "New take; your face would be mostly hair and glasses."], ["other", "A different movement", "Say what in the note."]] },
-  { r2: true, id: "r2_sung", when: "1:22", title: "A sung close-up, lip-synced by a video model",
-    img: [["r2_sung_now", "In the cut now: not singing"]], at: 80.6,
-    extra: [["sung_4.3", "r2_sung", "The new sung close-up (1:20 – 1:24). Not in the cut yet."]],
-    body: "A different model this time: it animates the painted portrait to the isolated vocal, and its mouth is redrawn in gold line with no invented shapes. Checked frame by frame, <span class='zh'>我</span>, <span class='zh'>思</span> and <span class='zh'>念</span> each land within about a frame of the voice. What may bother you: at full size the teeth read as a pale band during <span class='zh'>思</span>; the lower face is the model's (fuller lips, and the chin narrows as the jaw drops); the head tilts a few degrees; and the framing is tighter than the current shot.",
-    q: "Which goes in the cut?",
-    opts: [["sung", "Use the sung close-up"], ["keep", "Keep the non-singing shot"], ["again", "Try once more", "Say what to change in the note."]] },
-  { r2: true, id: "r2_brk", when: "1:56", title: "“I think of home”, a shorter face, two crew looking up",
-    img: [["r2_brk", "Adaeze looks up from a power connector"], ["r2_brk_layla", "Layla stops mid-carry by the lander"], ["r2_brk_home", "乡 arrives with “home” under it"]], at: 115.2, before: true,
-    extra: [["brk_noface", "r2_brk_layla", "The same passage with no face shot (1:51 – 2:03)"]],
-    body: "The English is now “I think of home”, and <span class='zh'>乡</span> arrives with “home” under it. Your face is on screen for half a second; it was a second and a half. In the freed time Adaeze looks up from a power connector and Layla stops mid-carry by the lander, visors down, both turned to the Earth. That makes four cuts in three seconds in the quietest bars, so judge it at speed. A version with no face shot is rendered too.",
-    q: "Tick what you want (leave unticked to keep it as it is).", multi: true,
-    opts: [["noface", "Take my face out of this passage entirely"], ["one", "One crew shot instead of two, held longer"], ["subs", "Change the subtitle files to “I think of home” as well", "They still say “I lower my head and think of home.”"]] },
-  { r2: true, id: "r2_build", when: "2:03", title: "The build montage, redrawn so every cut builds something",
-    img: [["r2_build", "The printer lays the shell, one course a day"], ["r2_build_fins", "The radiator fins fan open"], ["r2_build_pad", "The laser sinters the pad, pass by pass"]], at: 122.77, before: true,
-    body: "Before, twelve cuts moved across four still drawings and the captions did the telling. Now the station is drawn live from the layout's own numbers: the survey is ruled out, a mast telescopes up, the modules dock, the printer lays a course a day, the tower rises, the crew lander comes down, the fins fan open, the cable is laid, the cupola opens, the pad is sintered, the lights come on. The Sun goes round the horizon with the day counter, so the long shadows sweep. What it costs: the mounds and machines are plainer than the hand-drawn plates, and the paper changes from slate to deep indigo after the first hit. Captions were corrected to the layout (masts 20 m, pad 50 m, shell 2.5 m).",
-    q: "Which direction?",
-    opts: [["new", "Keep the new montage"], ["richer", "Keep it, and make the drawing richer", "Hand-drawn mounds and machines, and one paper throughout."], ["mix", "Mix: the old plates for the wide cuts, the new action for the close ones"], ["old", "Go back to the old montage"]] },
-  { r2: true, id: "r2_ddr", when: "2:28", title: "The cat, and the real game on the TV",
-    img: [["r2_ddr", "The cat bats at the hem of M's dress"], ["r2_ddr_tv", "The TV, enlarged: eight targets, arrows on the beat, PERFECT, combo, score"]], at: 147.64, before: true,
-    body: "The toy dog is gone. The cat sits beside M and bats at the swinging hem of her dress. The TV now shows the game as it really looks, redrawn from your own step pack: two groups of four targets, arrows arriving on the film's beats, PERFECT, combo, score. One mismatch: the screen is the two-pad layout, and the painting still has one soft mat with four arrows, where your video shows two hard white pads.",
-    q: "What about the mat?",
-    opts: [["leave", "Leave the single mat"], ["pads", "Paint the two real pads", "New keyframe and take."], ["single", "Show single-pad mode on the screen instead"]] },
-  { r2: true, id: "r2_toast", when: "2:59", title: "The two cups no longer clink",
-    img: [["r2_toast", "Each arm comes from its owner's shoulder; the cups rise either side of the Earth"]], at: 176.4, before: true,
-    body: "In the two-cup shot each arm now comes from its owner's shoulder and you see the backs of the hands. Two inner hands seen from behind cannot touch rims (the knuckles meet first), so the cups rise apart on either side of the Earth and do not touch. Lúcia's hair also reads more like a plait than loose tied curls as her head tips back.",
-    q: "Is losing the clink all right?",
-    opts: [["fine", "Yes, rising apart is fine"], ["clink", "I want the clink", "Needs a side-on or front angle."]] },
-  { r2: true, id: "r2_hair", when: "0:24", title: "Hair inside the suit",
-    img: [["r2_hair", "Your tail goes down inside the collar"], ["r2_hair_head", "Before and now, enlarged"]], at: 22.3, before: true,
-    body: "Your tail now goes down inside the collar, as you suggested; Anastasia's braid and Lúcia's loose tail are low buns. Nothing crosses a neck ring. Every helmeted shot in the film was checked and these were the only ones. What is left: the thrown-back helmet hangs between the camera and the back of your head, so the hair knot is seen through the clear visor.",
-    q: "Good enough?",
-    opts: [["ok", "Yes"], ["lower", "Lower the helmet behind my shoulders so the knot is in the clear", "New keyframe and take."]] },
-
-  { id: "crew24", when: "0:24", title: "The look of the two crew shots",
-    img: [["r2_crew_a", "Walkout: Adaeze leads Anastasia, Arjun and Lúcia"], ["r2_hair", "Chen Yu looks up; Layla, Kenji and you (from behind) beside him"]], at: 22.75,
-    body: "Both shots were taken again this round for the hair, and the walkout now really advances. Still open: both are flat illustration on indigo, not the gold-line look of the rocket shot just before them.",
-    q: "What should happen to these two shots?",
-    opts: [["keep", "Keep both as they are"], ["gold", "Redraw both in gold line to match the rocket shot"], ["one", "Drop the walkout; hold on Chen Yu looking up for the whole slot"]] },
-  { id: "chopsticks", when: "0:51", title: "The chopsticks are gone from the tangyuan shot",
-    img: [["spoon", "The spoon hand now lifts and turns the bitten tangyuan"]], at: 50.49,
-    body: "Your note was about the frozen left hand. The take that fixed it has no chopsticks; no take had both a live spoon hand and a believable chopstick action.",
-    q: "Do the chopsticks matter?",
-    opts: [["fine", "Fine without them"], ["back", "Bring them back", "Needs a new keyframe with the chopsticks already held, and new takes."]] },
-  { id: "moonsize", when: "0:54", title: "The toy Moon is a third the size of the toy Earth",
-    img: [["lesson_side", "The Moon's shadow lands as a round spot on the globe"]], at: 54.09,
-    body: "The character bible says the two toys are the same size. A Moon as big as the Earth would shade the whole globe, so the eclipse spot you asked for would be impossible. One third is close to the true ratio and matches the small Moon M holds in the opening.",
-    q: "Which wins?",
-    opts: [["small", "Keep the small Moon and correct the bible"], ["match", "Make the toys match", "The dark spot on the globe goes away."]] },
-  { id: "tclose", when: "0:57", title: "T's face is fairly large in the third lesson view",
-    img: [["lesson_close", "The view along the beam: T grins at his sister"]], at: 56.21,
-    body: "Your rule for the kids is stylized and not close-up. This is stylized, but closer than the other shots of them.",
-    q: "Is this framing all right?",
-    opts: [["ok", "Fine as it is"], ["wider", "Pull back so his face is smaller"], ["hands", "Show only the hands, the Moon and the globe"]] },
-  { id: "envelope", when: "0:58", title: "The envelope: front, then the flap and the memo",
-    img: [["env_front", "Front"], ["env_seal", "The flap lifts across the seal (soft for about eight frames)"], ["env_letter", "The memo comes part-way out"]], at: 57.85,
-    body: "Three rough edges. As the flap lifts, the seal under your thumb is a pale smudge for about eight frames. The second take plays at 1.6× to fit, so the hands are brisk. And the cut from front to back implies you turned the envelope over between shots. The Chinese paragraph in the memo also needs one read by you.",
-    q: "How far should this go?",
-    opts: [["fine", "Good enough; leave it"], ["polish", "Fix the seal frames and slow the hands", "Probably means starting the second shot with the flap already lifting."], ["one", "One shot only: the front, with the flap opening from below"]] },
-  { id: "hudred", when: "1:14", title: "“HARNESS · LOCKED” is still drawn in red",
-    img: [["buckle", "The buckle seats on the click; the label appears lower left"]], at: 71.14,
-    body: "No red is left on suits or emblems. The on-screen labels in the training and launch passages have always been red and white.",
-    q: "Does the no-red rule cover on-screen labels too?",
-    opts: [["keep", "Labels may stay red"], ["nored", "No red in labels either", "I would switch them to white or pale gold throughout."]] },
-  { id: "rooftop", when: "1:52", title: "The rooftop is a moonless-night rehearsal",
-    img: [["roof_a", "M holds her toy Moon up where the Moon should be"], ["roof_b", "T's flashlight finds it on 月"]], at: 111.95,
-    body: "This follows your rehearsal idea, with one addition of mine: T lights the toy Moon with the flashlight from the Copernican lesson, so the children make their own bright Moon. Kenton is in three-quarter profile lifting M (the bible prefers his back), she is near the railing, and the frame is dark with a small lit Moon.",
-    q: "Keep this staging?",
-    opts: [["keep", "Keep it as it is"], ["tune", "Keep the idea; make the lit Moon brighter and turn Kenton further away"], ["noflash", "Keep the moonless night but drop the flashlight"], ["fullmoon", "Go back to a real full Moon over the roof", "Then the Earth cannot honestly be full at 1:56."]] },
-  { id: "push", when: "1:52 and 1:56", title: "Two small sky labels",
-    img: [["push_a", "2:01: the push goes into the Earth as a whole, south-up"], ["push_b", "…and dissolves to you and M over the museum globe"]], at: 118.8,
-    body: "Two quiet labels were added so reviewers see the phase logic is deliberate: “AUSTIN · NEW MOON · 15 DAYS TO MID-AUTUMN” at 1:52 and “GUANGHAN · FULL EARTH · 4.8° ABOVE THE HORIZON” at 1:56.",
-    q: "Keep the labels?",
-    opts: [["keep", "Keep both labels"], ["drop", "Remove both"], ["earthonly", "Keep only the full-Earth label"]] },
-  { id: "crewscenes", when: "2:32 – 2:38 and 2:52", title: "Three calls in the crew scenes",
-    img: [["falcon", "Layla shows you her father's falcon (you are on the right)"], ["stripe", "Chen Yu's collar stripe, muted to cinnabar-brown, still reads dull red"], ["tear", "2:52: Arjun, with a visible tear"]], at: 151.18,
-    body: "You appear in one sharing scene, from behind, which reverses an earlier note that you are not in these shots. Chen Yu's accent colour on the crew sheet is vermilion, which collides with no red on uniforms. And Arjun's tear may read as sentimental.",
-    q: "Tick what you want changed (leave unticked to keep).", multi: true,
-    opts: [["swapme", "Swap me out of the falcon scene for another crew member"], ["stripe_new", "Give Chen Yu a different accent colour", "Say which in the note; otherwise I'll propose one."], ["stripe_red", "Collar accents are exempt: let Chen Yu keep true vermilion"], ["notear", "No tear on Arjun"]] },
-  { id: "toast", when: "2:56", title: "The toast: the Adaeze close-up and the day label",
-    img: [["r2_toast_wide", "The wide, with its “DAY 388” label"], ["r2_toast_adaeze", "Adaeze: a fully painted, realistic face (her hand is now fixed)"]], at: 175.85,
-    body: "The hands are fixed this round. Still open: the middle shot is more realistic than its neighbours and is the frame most likely to read as an AI illustration, and there is a small continuity slip (Adaeze sips in the wide and holds her cup by her head in the close).",
-    q: "Tick what you want changed (leave unticked to keep).", multi: true,
-    opts: [["adaeze", "Restyle or replace the Adaeze close-up"], ["cont", "Fix the continuity slip between the views"], ["day", "Remove the “DAY 388” label"]] },
-  { id: "emblemstyle", when: "Every uniform", title: "What the pale blue dot looks like on a uniform",
-    img: [["emb_polo", "Enlarged: the patch on Adaeze's polo at 2:32"], ["emb_wide", "The same frame at normal size"]], at: -1,
-    body: "The patch on every polo and suit is the emblem from the identity sheet: a small navy roundel with a gold rim, the sunbeam across it and the pale blue dot inside the beam. At normal size it reads as a dark disc with a slash; the dot itself is tiny.",
-    q: "Is the roundel what you meant?",
-    opts: [["roundel", "Yes, keep the roundel"], ["bigdot", "Keep the roundel but make the dot larger and brighter"], ["dotonly", "A bare pale blue dot, no roundel", "One change in one file, re-run across all the shots."]] },
-  { id: "reunion", when: "3:13", title: "The reunion is one held hug",
-    img: [["reunion_a", "M runs in while the torn halves of the scroll rejoin"], ["reunion_b", "T kneels in; the three of you hold"], ["reunion_c", "The closer view (a 2× punch-in, soft at full size)"]], at: 193.41,
-    body: "The old version was stills. It is now one continuous take. Three things changed with it. The bowl-over onto the rug is gone, because no take of it was clean. Kenton stands still in the doorway in the take, so the camera pushes past him after about two seconds. And the closing tear crosses the children's faces for about a second.",
-    q: "Tick what you want changed (leave unticked to accept).", multi: true,
-    opts: [["bowl", "Bring back M bowling you over", "Needs a new keyframe and takes."], ["kenton", "Keep Kenton in the picture, moving"], ["tearpath", "Move the rejoining tear so it does not cross the children's faces"], ["closer", "Make a proper close painting of the hug instead of the punch-in"]] },
-  { id: "chute", when: "3:10", title: "The parachutes are orange-red and white",
-    img: [["chute", "Splashdown under three parachutes"]], at: 189.86,
-    body: "Real capsule parachutes are orange-red and white. It is the one remaining red on a vehicle.",
-    q: "Does the no-red rule reach the parachutes?",
-    opts: [["keep", "Keep them as they are"], ["recolour", "Recolour them", "For example white with pale blue or gold gores."]] },
-  { id: "calendar", when: "Whole film", title: "The mission calendar and two crews of four",
-    img: [], at: -1,
-    body: "Two facts were fixed so the letter, the launch sky and the Earth agree. The real capsule seats far fewer than eight, so Expedition 1 flies as two launches of four (you with Chen Yu, Layla and Kenji), and no launch-day frame shows more than four people. The calendar is: assignment memo 9 June 2036; launch about 8 August 2037 under a thin waning crescent; landing about 11 August; the full-Earth night 9–10 September; Mid-Autumn 24 September 2037; the toast 30 August 2038; home for Mid-Autumn 13 September 2038.",
-    q: "Confirm?",
-    opts: [["yes", "Confirmed"], ["change", "Something should change", "Say what in the note."]] },
-];
+const D = [{"id": "r3_street", "decide": true, "when": "0:10", "title": "A festival street through the rooftops", "at": 10.09, "p": 280, "body": "You remembered people moving here. There never was such a version: the only take ever made told the figures to stay put. Now the Moon is whole, lower and amber, sky lanterns rise over the lake, and a crowd walks a lantern-lit street. The street is new to the picture. It is there because figures shut inside walled courtyards could only shuffle on the spot.", "q": "Keep the street?", "opts": [["keep", "Keep the street"], ["roofs", "Unbroken rooftops, with people who only turn and gesture", "That version exists and can be wired in."]]}, {"id": "r3_card", "decide": true, "when": "0:20", "title": "The card, and the Chinese name", "at": 17.54, "p": 500, "body": "English as you wrote it. The Chinese is mine and needs your eye: <span class='zh'>这一次，全世界的航天计划共建国际月球基地</span>, in five columns with the name largest. <span class='zh'>国际月球基地</span> is also the name at 1:45 and in the subtitles.", "q": "Is this the Chinese you want?", "opts": [["ok", "Yes"], ["change", "Change it", "Write the wording in the note."]]}, {"id": "r3_walk", "decide": true, "when": "0:23", "title": "The walkout, and what the cases are", "at": 22.0, "p": 562, "body": "The cases are portable ventilators. A sealed launch suit has no air of its own until it is plugged into the spacecraft, so Apollo and Soyuz crews carry a small fan unit to the pad, with its hose plugged in at the belly. Crew Dragon, Artemis and recent Shenzhou crews carry nothing. In eight reference photographs nobody walks in step. The four now come toward us across a wet apron with the lit rocket behind, each at their own rhythm; the units are lunch-box size with the hose plugged in at both ends, and the rocket is the same one as at 0:19 and 1:17. What falls short: this painting is more softly modelled than the flat crew picture that follows it.", "q": "Tick what you want changed (leave unticked to keep).", "multi": true, "opts": [["nothing", "The crew carry nothing", "Removes the units and hoses."], ["flat", "Flatten this painting to match the shot after it"]]}, {"id": "r3_eclipse", "decide": true, "when": "0:57", "title": "The eclipse over Anatolia", "at": 54.09, "p": 1362, "more": [[1330, "The side view, same spot"]], "body": "The toy globe now has real coastlines, checked against a map, and the Moon's shadow sits on central Anatolia in all three views of the lesson. T's cheeks are fuller here and everywhere else he appears; his character sheet was the thing that was wrong. The shadow is a dark core about the size of Anatolia with a soft edge. A crisp disc would be truer to a small lamp, and would cover everything from Greece to the Caspian. Separately, the toy Earth on your desk at 0:58, floating at 1:33 and on the parapet at 3:19 still has invented continents.", "q": "Tick what you want changed (leave unticked to keep).", "multi": true, "opts": [["crisp", "Make the shadow crisper or smaller", "Say which in the note."], ["globe", "Paint the same real map on the toy Earth at 0:58, 1:33 and 3:19"]]}, {"id": "r3_env", "decide": true, "when": "0:58", "title": "The envelope, handed over and opened", "at": 57.5, "p": 1400, "more": [[1432, "You turn it over"], [1466, "The letter opens"]], "body": "Three shots at real speed. Kenton's hand gives you the envelope and leaves, and the front stays readable. You turn it over with both hands and the flap falls open. A letter folded in three comes out and its top opens to show lines of print. What falls short: the cut at 0:59 jumps a little within the turn, and the envelope is about one and a half times true size against your hands, which keeps the words readable. There is no seal on the flap now.", "q": "Tick what you want changed (leave unticked to keep).", "multi": true, "opts": [["true", "Make the envelope true size", "The words on it get smaller."], ["sticker", "Seal the flap with a small pale-blue-dot sticker"]]}, {"id": "r3_sung", "decide": true, "when": "1:22", "title": "The sung close-up, with a still upper face", "at": 80.9, "p": 1968, "body": "The sung close-up is in the film. Everything except your mouth is now the painted portrait, stable, which fixes the glitching upper face. The cost: your jaw and chin do not move, only the lips and the inside of the mouth. The take's lower face would not fit the portrait, so the two could not be joined along the cheeks. In frames it reads as a moving mouth on a still face. Please judge it at speed.", "q": "Which goes in the film?", "opts": [["keep", "Keep this"], ["nosing", "Go back to the non-singing shot"], ["portrait", "Paint a new portrait with the chin clear of the neck ring, so the jaw can drop", "A new painting over your photo, then a new take."]]}, {"id": "r3_plan", "decide": true, "when": "1:45", "title": "One station design", "at": 104.6, "p": 2560, "more": [[615, "0:25: the tower at its true height"], [3540, "2:23: heaped mounds without windows"]], "body": "The plan is redrawn in the same ink style from the 3D model, so it is the station seen everywhere else. The old one had the comms tower in the wrong place and twice too large, masts two to three times too tall, and no cable or rovers. The roundel replaces the red seal and is a fifth smaller than my first try. Two other pictures were brought to the model: the tower at 0:25 and the lit windows at 2:23. What differs now is the hand: the mounds are soft hatched heaps on this plan and peaked heaps at 0:25 and 2:23, where the old plan had painted rocks.", "q": "Tick what you want changed (leave unticked to keep).", "multi": true, "opts": [["rocks", "Repaint the plan's mounds with the old brushwork, on the same footprints"], ["onehand", "Draw the mounds the same way in all three shots", "Say which look in the note."]]}, {"id": "r3_glove", "decide": true, "when": "2:18", "title": "The glove is the right size", "at": 136.6, "p": 3326, "body": "Your question, with numbers: against the 3 cm cups the glove's forefinger is about 13 mm thick. That is a bare hand in a thin glove, and about half the bulk of a real heavy lab gauntlet. It reads as large because the cups are the size of bottle caps and the hand is nearest the lens. Nothing was rescaled. She now leans in as the glove slides the card to the plant, so the body and the hand move in one beat, and the breath fog is gone.", "q": "Leave it hand-sized?", "opts": [["keep", "Yes"], ["bulk", "Make it a bulkier, truer gauntlet", "About twice the size in frame; it would crowd the plant."]]}, {"id": "r3_lights", "decide": true, "when": "2:23", "title": "Seventeen lights, the ones the station has", "at": 143.2, "p": 3540, "body": "The mounds no longer have windows, since they are under metres of soil. The lights that come on are the ones the model has from this camera: the dome first, then the tower's windows, the portholes of two tunnels and the airlock node. The counter reads 17 / 17. It is quieter than with 26.", "q": "Enough light?", "opts": [["keep", "Yes, keep the true seventeen"], ["more", "Add work lamps on the masts and along the road", "The station model would get them too."]]}, {"id": "r3_ddr", "decide": true, "when": "2:28", "title": "Single mode on the TV", "at": 147.64, "p": 3566, "body": "The TV shows single mode: four targets, with the arrows it scores matching the panels Kenton and T step on, still on the film's beats. I had no picture of your game in single mode, so the four targets sit in the left half, the game's default for a single first player. T's cheek is fuller here too.", "q": "Where do the targets sit on your setup?", "opts": [["left", "Left half is right"], ["centre", "Centred", "One number to change."]]}, {"id": "r3_wave", "decide": true, "when": "2:36", "title": "The odd hand was a third hand", "at": 155.2, "p": 3746, "body": "Lúcia's right hand was already on her chest; the hand hovering over the tablet was a third one, child-sized. It is gone. She keeps her hand on her heart and tips her head to Kenji's shoulder, which means she no longer waves at the dog on the screen. Kenji's glasses go white with the tablet's reflection in some frames.", "q": "Do you miss the wave?", "opts": [["fine", "Fine without it"], ["wave", "Paint a proper wave back in"]]}, {"id": "r3_split", "decide": true, "when": "2:44", "title": "One fingertip to her hand", "at": 161.77, "p": 3990, "more": [[4068, "2:49: the same gesture, closer"]], "body": "One index finger goes out to M's raised hand on the screen and rests there, at 2:44 and again at 2:49. The shoulder, elbow and forearm were posed with a 3D figure at your height, and the screen now stands a real arm's reach away. Your profile is the original painting, untouched. In the split screen your profile is cut just behind the glasses so that M's hand stays in the picture. The fingertip stops a few pixels short of her fingers, with a point of light between.", "q": "How should the split screen frame you?", "opts": [["keep", "As it is"], ["uneven", "Make the split uneven so my whole profile shows"], ["profile", "Show my whole profile and lose more of the screen"]]}, {"id": "r3_toast", "decide": true, "when": "2:56", "title": "The toast, restaged as one moment", "at": 175.6, "p": 4262, "more": [[4232, "The wide: one arm each, forward and up"], [4316, "The two cups"]], "body": "All three shots now share one staging. In the wide everyone faces the glass and raises one arm forward and up with a straight wrist, as in your reference; nobody sips, so the continuity slip is gone, and the ground outside matches the station model. The realistic Adaeze close-up is replaced by a flat profile: her arm one line to her cup, a tear, her eyes on the Earth. From any camera in front of her, an arm raised toward the Earth foreshortened into a cup thrust at the lens. In the two-cup shot each hand continues its forearm. What falls short: the wide is a wholly new painting, a shade more violet-grey, and its figures wear dark shoes; Adaeze's shot has little motion beyond breath and the tear.", "q": "Tick what you want changed (leave unticked to keep).", "multi": true, "opts": [["chen", "Put Chen Yu beside Adaeze in her shot", "He stands next to her in the wide."], ["socks", "Socks, not shoes, in the wide"]]}, {"id": "r3_reunion", "decide": true, "when": "3:13", "title": "The reunion, with Kenton coming in", "at": 193.2, "p": 4725, "more": [[4660, "The tear closes below the faces"], [4752, "The close painting of the hug"]], "body": "Kenton now walks in from the doorway, crouches and kneels at the near edge of the hug with his back to us, one hand on T's back. The rejoining tear sits lower and crosses floor, legs and your back, never a face. The close view is its own painting with its own small movement, not an enlargement. What falls short: while Kenton walks he is seen from the shoulders down; for the first second he stands small in the doorway facing us, as before; one stretch of his walk plays at double speed and has not been judged in motion; and he and T look shod indoors.", "q": "Tick what you want changed (leave unticked to keep).", "multi": true, "opts": [["wider", "A wider picture so Kenton is whole while he walks", "The hug gets smaller."], ["behind", "Kenton from behind in the opening second too"], ["wrap", "Use the take where he wraps both arms round all three"], ["socks", "Kenton and T in socks"]]}, {"id": "r3_small", "decide": true, "when": "0:33", "title": "Lyrics and the camera, whole film", "at": 32.42, "p": 815, "more": [[1160, "0:47: nothing shows before its word"]], "body": "The jerk at 0:33 was the engine's own pan: it sat still for most of a second and then jumped to speed. It is now one slow move. Sung lines no longer wipe on. English words fade in whole; short or fast lines fade in once or are simply there at the cut; each Chinese character is brushed on its own note. The specks at 0:47 were the next word's ink leaking through the old wipe. A separate fault that made eight shots step unevenly is fixed in the engine. Two small calls remain.", "q": "Tick what you want changed (leave unticked to keep).", "multi": true, "opts": [["drift", "0:33: cut into a pan that is already drifting, not one that starts from rest"], ["pairs", "0:57 and 1:22: brush each character on its own note, even if one is half-written at the cut", "Now 三人 and 思念 arrive as pairs, the second character half a second early."]]}, {"id": "d_name", "when": "Whole film", "title": "International Moonbase", "at": -1, "body": "Every caption, card, label and subtitle says International Moonbase / <span class='zh'>国际月球基地</span>. The red seal is gone. No painted picture carried the old name; the one place it was baked in, a byline on the laptop at 1:05, is corrected. Folder and file names inside the project keep the old word so nothing breaks."}, {"id": "d_terrace", "when": "0:14", "title": "The terrace over the Huangpu", "at": 13.1, "p": 340, "body": "You settle from a crouch onto one knee, breathe, and turn a little toward M, whose raised arms wobble. The river carries what photographs of that reach show: a tarpaulined cargo barge and a coal barge, the white cross-river ferry, a three-deck sightseeing boat outlined in coloured light, and a light-strung mock sailing ship. None of the reference photographs shows a barge at night, so the barges' lights are a guess."}, {"id": "d_finger", "when": "0:52", "title": "The reading finger", "at": 52.06, "p": 1275, "body": "The finger runs down the column in one glide. It never went back up; the old timing made it stop and start five times. The line is sung just after this shot, so the finger reads ahead of your voice."}, {"id": "d_desk", "when": "1:05", "title": "The headphones", "at": 63.4, "p": 1552, "body": "Your face was held from the painting while the headphones were redrawn from the take, so they slid up to 18 pixels against your head. They now ride with the head."}, {"id": "d_chin", "when": "1:10", "title": "The chin", "at": 68.88, "p": 1687, "body": "From 1:09.3 the take's own jaw came out from under the painted face as a second chin line. It is gone. Your head now moves about half as far in this shot."}, {"id": "d_plume", "when": "1:17", "title": "The whole plume", "at": 76.11, "p": 1870, "body": "Three flickering flames, a column of smoke that lengthens and thins as the rocket climbs, and a ground cloud that keeps rolling for the whole shot."}, {"id": "d_hair", "when": "1:19", "title": "M's hair on launch day", "at": 78.96, "p": 1925, "more": [[660, "0:27, the same day"]], "body": "The two paintings already agreed; the takes had changed her hair, to three braids at 0:27 and no braid at 1:19. Both now carry the painted hair: one side braid, a pink elastic, a curly tail. It reads slightly redder at 1:19 in the flame's light."}, {"id": "d_tcheeks", "when": "1:23", "title": "T's cheeks", "at": 82.88, "p": 2005, "body": "T's character sheet was corrected, since you said it three times, and his face was repainted to it here, in the lesson, the viewing room at 1:29, the playroom, the call home at 2:38 and the reunion."}, {"id": "d_elbow", "when": "1:33", "title": "The left elbow", "at": 92.21, "p": 2249, "body": "The painted elbow stayed behind as a stub while the redrawn arm drifted up. Fixed, along with a smaller copy of the same fault under the raised arm."}, {"id": "d_legs", "when": "1:41", "title": "Astronaut legs", "at": 101.33, "p": 2464, "more": [[2660, "1:50: the boots stay put"]], "body": "At 1:41 the take shuffled on the spot and was played at a speed that made the drawing stutter about three times a second; it is a new take with long planted strides. At 1:50 smeared shins were being blended onto painted boots; the whole figure is now drawn from the same movement. The 1:50 figure sways in small uneven steps, not perfectly fluidly. Every other suited shot was checked frame by frame and no leg fault was found."}, {"id": "d_roof", "when": "1:52", "title": "The rooftop", "at": 111.95, "p": 2764, "body": "T's arm is already moving at the cut and does not stop: the beam climbs the tree, sweeps the sky and finds the toy Moon as <span class='zh'>月</span> is sung. The lit Moon is the brightest thing in the frame, and Kenton has his back to us. What falls short: for about half a second the beam points up while the drawn flashlight lies level in his fist, and the last half second is close to still."}, {"id": "d_brk", "when": "1:56", "title": "Your face is out of this passage", "at": 115.2, "p": 2830, "body": "It goes from Adaeze to Layla to <span class='zh'>乡</span>. Both small sky labels are gone."}, {"id": "d_valve", "when": "2:15", "title": "The valve and the needle", "at": 135.22, "p": 3270, "body": "One slow continuous turn, anticlockwise to open. The needle is drawn by the engine: it trembles from the first frame, starts to rise a third of a second after the valve opens, and lags the wheel."}, {"id": "d_chen", "when": "2:33", "title": "Chen Yu's vermilion", "at": 153.3, "p": 3686, "body": "True vermilion is back on his collar here and on his name card at 1:48. Blotchy marks on the back of his neck at 2:34, left by the earlier colour change, are gone."}];
+const R4 = [{"id": "r4_card", "bp": 490, "when": "0:20", "title": "The card, in your wording", "at": 17.54, "clips": [["card", "Now", "0:17 – 0:22"]], "asked": "streamline it to: <span class='zh'>全世界的航天计划共建国际月球基地</span>", "body": "<span class='zh'>这一次</span> is gone. The line now stands in four columns, <span class='zh'>全世界的 / 航天计划 / 共建 / 国际月球基地</span>, with the name largest, and the subtitles carry the same sentence.", "q": "Is it right?", "opts": [["ok", "It is right now"], ["off", "Still off", "Say what in the note."]]}, {"id": "r4_desk", "bp": 1552, "when": "1:05", "title": "The gulp at your throat", "at": 63.4, "clips": [["desk", "Now", "1:02 – 1:07"]], "asked": "there's a bit of a 'gulp' like motion at my throat that looks ... glitchy?", "body": "Your head in this shot is the painting, carried along on the take's movement. Last round that painting stopped at the jaw line, so the patch of neck just under it was still being redrawn in ink from the moving take: its grey shading spread and shrank, and the take's own jaw rose to your still chin and sank again. The painting now runs down over the neck into the hair under your jaw, so head, headphones and neck move as one body.", "short": "Head and neck are one flat painting that slides and tilts a few degrees. It does not turn in depth, and your eyes do not move to the laptop.", "q": "Is the gulp gone?", "opts": [["ok", "It is right now"], ["off", "Still off", "Say what in the note."]]}, {"id": "r4_chin", "bp": 1687, "when": "1:10", "title": "M's hair against your face", "at": 68.88, "clips": [["globe", "Now", "1:07 – 1:12"]], "asked": "there's something glitchy about the way M's hair interacts with my face. is it because the movement was generated without a video model helping with the collision?", "body": "Not quite, and the fault was mine. A video model did move this shot, and in its own frames the contact is right: M's fringe lies in front of your cheek and stays there. Last round, to remove the second chin line, I replaced your head with a painted still, moved it half as far as the model had moved it, and laid it on top of M's hair, which was still the model's. So two things that touch were moving by different rules with the wrong one in front, and her fringe was clipped along the edge of your cut-out. Now M's whole head is carried as a painting too, in front of yours, and the two meet hair on hair.", "short": "M's hair moves with her head as one piece, without strand or curl movement of its own. Your head still moves half as far as your shoulders. The curls below M's chin are still redrawn from the take.", "q": "Does the hair sit right against your face?", "opts": [["ok", "It is right now"], ["off", "Still off", "Say what in the note."]]}, {"id": "r4_photo", "bp": 1968, "when": "1:22", "title": "You, looking at a picture of the kids", "at": 80.9, "multi": true, "clips": [["photo", "Now", "1:19 – 1:25"]], "asked": "it's pretty bad, and I'm not fond of the non-singing shot either. It makes more sense to do a shot of me looking longingly at a picture of the kids without singing.", "body": "A new shot. You are seen from behind your left shoulder in the capsule seat, helmet on, mouth closed, eyes lowered to a snapshot of M and T taped below the window. It is the photograph that is taped up at 1:15, now close enough to read their faces, and it is the only warm colour in the frame. Your head tips toward it about a degree through the shot. Your profile was painted over your own photograph; the children come from their sheets. <span class='zh'>我思念</span> stands on the headrest behind you.", "short": "The shot lasts 1.4 seconds, which is short for the photograph and your look to both register: please judge it at speed. The visor is clear here and opaque gold at 1:15. The snapshot at 1:15 is a different drawing (T on the left, faces blurred). No blink and no capsule shake.", "q": "Tick what applies.", "opts": [["ok", "This works"], ["profile", "The profile does not read as me"], ["gold", "Make the visor gold as at 1:15, so my face is hidden"], ["match", "Repaint the 1:15 snapshot and visor to match this shot"], ["splash", "Make the photo the splash-park day, so the next shot is the photograph coming alive"]]}, {"id": "r4_plan", "bp": 2560, "when": "1:45", "title": "The solar masts on the plan", "at": 104.6, "clips": [["plan", "Now", "1:41 – 1:50"]], "asked": "it's better, but I think the solar masts were larger in the other artwork and this should match?", "body": "You were right. At 0:25 and 2:23 a mast stands about three mounds tall, and those pictures agree with the station model. On the plan a mast came out shorter than a mound is wide, because a view from above shows a mound's whole 22-metre footprint. The six masts are now drawn 1.4 times larger from the same feet, with gridded panels, which is about how they read in the look-down view of the build at 2:12. Only the masts were redrawn; the rest of the plan is last round's painting. Four small marks on the road are the new lamp posts.", "short": "1.4 times is the most the sheet takes with every mast clear of the mounds, and it is still well short of the side views. The east mast's feet are turned so none stands on the road. One leg of each tripod is drawn slightly knobbly.", "q": "Large enough?", "opts": [["ok", "It is right now"], ["bigger", "Larger still, about 1.6 times", "The two lower masts' panels would overlap the edges of the mounds in front, as masts do in the side views."], ["off", "Still off", "Say what in the note."]]}, {"id": "r4_lights", "bp": 3540, "when": "2:23", "title": "Work lamps on the mast and the road", "at": 143.2, "clips": [["lights", "Now", "2:20 – 2:28"]], "asked": "You chose: add work lamps on the masts and along the road.", "body": "The station model now has seventeen work lamps: one on each of the six masts, eight low posts along the road to the landing pad, a floodlight at the airlock and two at hatches. From this camera four of them are in view. After the habitat's lights come on as before, the near mast's lamp throws a hard-edged white pool round its tripod, then three road lamps light one after another toward the pad. There are no halos, since there is no air. The counter reads STATION · LIGHTS 21 / 21.", "short": "Only one mast's pool is in view; the others are behind mounds or out of frame. The third road lamp is clipped by the frame edge at the end of the push. The pool is a clean ellipse on brushed ground. The view at 0:25 is unchanged: from eye height the pools would be two-pixel slivers.", "q": "Enough light now?", "opts": [["ok", "It is right now"], ["more", "Still too dark: bring more lamps into view"], ["off", "Still off", "Say what in the note."]]}, {"id": "r4_toast", "bp": 4316, "when": "2:59", "title": "The two cups, held like the group's", "at": 178.5, "clips": [["toast", "Now", "2:55 – 3:02"]], "asked": "shoes are fine, it's not Jade's personal home. hands are weird in the 2 cup shot, but correct in the group shot. can you fix the 2 hand shot using the hands in the group shot as guidance?", "body": "What was wrong: each hand lay flat on the near face of its cup with four fingers splayed across it and the thumb hidden behind, so nothing told you which hand it was. In the group shot each hand is a fist round the lower half of the cup, thumb on the near side, rim clear. Both hands are repainted to that grip, seen from behind: your right hand on the celadon cup, Lúcia's left on the grey one, wrists straight. The picture was painted from a posed 3D hand and the group shot's hands, without the old painting in front of the model. Your cup rises a little to the height of hers and both hold; no clink.", "short": "The forearms are repainted too and stand more upright. The cups sit wide apart on either side of the Earth, while in the group shot the pair's cups are close together. Fingertips show just under each cup's base.", "q": "Are the hands right?", "opts": [["ok", "It is right now"], ["off", "Still off", "Say what in the note."]]}, {"id": "r4_reunion", "bp": 4725, "when": "3:13", "title": "Kenton's arms round all three: two versions", "at": 193.2, "clips": [["reunion_a", "A, in the cut", "3:11 – 3:20. He kneels and lays an arm across T and you"], ["reunion_b", "B", "He hurries in and opens both arms"]], "asked": "where do I find the shot where he wraps both arms?", "body": "It was never on the page: last round I only described it. Looking at it properly, that version shows one of his arms, not two; the other is behind T. So there are two versions here, and the one-hand version you watched is under them as Before. <b>A</b> is the one I described: four real steps in, he bends with a hand on your back, kneels behind T, lays his arm across T and you with his hand on your hair, and rests his head on T's. The cut to the close view comes one beat later so that he has time to get down at natural speed. <b>B</b> is new: he hurries in and visibly opens both arms, and in the close view the children's faces sit side by side. Each has its own close painting.", "short": "A: his head is out of frame for about two seconds while he walks in, and the close view is 1.4 seconds. B: his face shows in profile, with glasses, for about a second at 3:16, where every other shot keeps him from behind or far away; the children's run-in steps a little less evenly. A is in the cut for that reason only.", "q": "Which goes in the film?", "opts": [["a", "A: he kneels and lays an arm across us"], ["b", "B: he opens both arms, and his profile shows for a second"], ["onehand", "Go back to one hand on T's back"]]}];
+const SETTLED = [["0:10", "The festival street stays", "As you chose."], ["0:23", "The walkout stays as it is", "Nothing ticked: the crew keep their ventilator cases."], ["0:57", "The eclipse over Anatolia", "No answer, so nothing changed."], ["2:18", "The glove stays hand-sized", "As you chose."], ["2:28", "Single mode stays on the left", "“it's not perfect but it's fine for now”"], ["2:36", "No wave at the dog", "As you chose."], ["2:44", "The split screen stays", "As you chose."], ["2:56", "Shoes stay in the toast and the reunion", "“shoes are fine, it's not Jade's personal home”"]];
+const ALL = [...R4, ...D];
 
 const $ = (s, el = document) => el.querySelector(s);
 const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag);
@@ -261,42 +156,66 @@ function video(dir, at, poster) {
   const c = partAt(at); if (!c) return null;
   const start = Math.max(0, at - c.t0);
   const v = el("video", { controls: "", preload: "none", playsinline: "", src: `${dir}/part_${c.n}.mp4#t=${start.toFixed(1)}` });
-  if (poster) v.setAttribute("poster", `img/${poster}.jpg`);
+  if (poster) v.setAttribute("poster", poster);
   return v;
 }
 const fig = (node, label, cap) => el("figure", {}, node, el("figcaption", {}, ...(label ? [el("b", {}, label)] : []), cap));
+function options(d, what) {
+  const fs = el("fieldset", { class: "opts" }, el("legend", {}, d.q));
+  d.opts.forEach(([val, label, hint]) => {
+    const inp = el("input", { type: d.multi ? "checkbox" : "radio", name: `o-${d.id}`, value: val, id: `o-${d.id}-${val}` });
+    const lab = el("label", { class: "opt", for: inp.id }, inp, el("span", {}, label, ...(hint ? [el("small", {}, hint)] : [])));
+    inp.addEventListener("change", () => { collect(d); save(d); });
+    fs.append(lab);
+  });
+  what.append(fs);
+}
+function noteBox(d, what, placeholder) {
+  const ta = el("textarea", { id: `n-${d.id}`, placeholder, "aria-label": `Note for: ${d.title}` });
+  let timer; ta.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => { collect(d); save(d); }, 900); });
+  what.append(ta, el("div", { class: "saved", id: `s-${d.id}` }));
+}
+function stills(d, dir, media) {
+  const rest = d.more || []; if (!rest.length) return;
+  const p = el("div", { class: rest.length > 1 ? "pair" : "" });
+  rest.forEach(([, cap], k) => p.append(el("figure", {}, el("img", { src: `${dir}/${d.id}_${k}.jpg`, alt: cap, loading: "lazy" }), el("figcaption", {}, cap))));
+  media.append(p);
+}
 function render() {
-  const jump = $("#jump"); let n = 0, sepDone = false;
+  const jump = $("#jump");
+  R4.forEach((d) => {
+    const media = el("div", { class: "media" });
+    const from = `from ${d.when.split(" ")[0]}`;
+    (d.clips || []).forEach(([file, label, cap]) => media.append(fig(el("video", { controls: "", preload: "none", playsinline: "", src: `clips7/${file}.mp4`, poster: `img7/${file}.jpg` }), label, cap)));
+    const before = d.at >= 0 ? video("clips6", d.at, d.bp ? `img7/${d.id}_before.jpg` : "") : null;
+    if (before) media.append(fig(before, "Before", `The cut you watched, ${from}`));
+    stills(d, "img7", media);
+    const what = el("div", { class: "what" }, el("div", { class: "when" }, d.when), el("h3", {}, d.title));
+    if (d.asked) what.append(el("blockquote", { class: "asked" }, el("span", { class: "who" }, "You wrote"), el("p", { html: d.asked })));
+    what.append(el("p", { html: d.body }));
+    if (d.short) what.append(el("p", { class: "short", html: `<b>Still short</b> ${d.short}` }));
+    options(d, what);
+    noteBox(d, what, "Still off? Say what.");
+    $("#cards-r4").append(el("article", { class: "card", id: d.id }, media, what));
+    jump.append(el("a", { href: `#${d.id}`, id: `j-${d.id}`, title: d.title }, d.when.split(" ")[0]));
+  });
+  SETTLED.forEach(([when, what, how]) => $("#settled").append(el("li", {}, el("span", { class: "t" }, when), el("b", {}, what), how)));
+  let n = 0;
   D.forEach((d) => {
     const media = el("div", { class: "media" });
     const from = `from ${d.when.split(" ")[0]}`;
-    const now = d.at >= 0 ? video("clips5", d.at, d.img[0] && d.img[0][0]) : null;
-    if (now) media.append(fig(now, d.r2 ? "Now" : "", `Play ${from}${d.img[0] ? " · " + d.img[0][1] : ""}`));
-    (d.extra || []).forEach(([file, poster, cap]) => media.append(fig(el("video", { controls: "", preload: "none", playsinline: "", src: `clips5/${file}.mp4`, poster: `img/${poster}.jpg` }), "New", cap)));
-    if (d.before) { const b = video("clips", d.at); if (b) media.append(fig(b, "Before", `The cut you watched, ${from}`)); }
-    const rest = now ? d.img.slice(1) : d.img;
-    if (rest.length) { const p = el("div", { class: rest.length > 1 ? "pair" : "" });
-      rest.forEach(([f, cap]) => p.append(el("figure", {}, el("img", { src: `img/${f}.jpg`, alt: cap, loading: "lazy" }), el("figcaption", {}, cap))));
-      media.append(p); }
-    const fs = el("fieldset", { class: "opts" }, el("legend", {}, d.q));
-    d.opts.forEach(([val, label, hint]) => {
-      const inp = el("input", { type: d.multi ? "checkbox" : "radio", name: `o-${d.id}`, value: val, id: `o-${d.id}-${val}` });
-      const lab = el("label", { class: "opt", for: inp.id }, inp, el("span", {}, label, ...(hint ? [el("small", {}, hint)] : [])));
-      inp.addEventListener("change", () => { collect(d); save(d); });
-      fs.append(lab);
-    });
-    const ta = el("textarea", { id: `n-${d.id}`, placeholder: "Note (optional)", "aria-label": `Note for: ${d.title}` });
-    let timer; ta.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => { collect(d); save(d); }, 900); });
-    const what = el("div", { class: "what" }, el("div", { class: "when" }, `${String(++n).padStart(2, "0")} · ${d.when}`), el("h3", {}, d.title),
-      el("p", { html: d.body }), fs, ta, el("div", { class: "saved", id: `s-${d.id}` }));
+    const now = d.at >= 0 ? video("clips6", d.at, d.p ? `img6/${d.id}.jpg` : "") : null;
+    if (now) media.append(fig(now, "Then", `Cut v6, ${from}`));
+    stills(d, "img6", media);
+    const what = el("div", { class: "what" }, el("div", { class: "when" }, d.decide ? `${String(++n).padStart(2, "0")} · ${d.when}` : d.when), el("h3", {}, d.title), el("p", { html: d.body }));
+    if (d.opts) options(d, what);
+    noteBox(d, what, d.decide ? "Note (optional)" : "Still off? Say what.");
     const card = el("article", { class: "card", id: d.id }, media, what);
     if (!media.childNodes.length) { card.style.gridTemplateColumns = "minmax(0, 1fr)"; media.remove(); }
-    $(d.r2 ? "#cards-new" : "#cards-old").append(card);
-    if (!d.r2 && !sepDone) { jump.append(el("span", { class: "sep", "aria-hidden": "true" })); sepDone = true; }
-    jump.append(el("a", { href: `#${d.id}`, id: `j-${d.id}`, title: d.title }, d.when.split(" ")[0]));
+    $(d.decide ? "#cards-new" : "#cards-old").append(card);
   });
   const shelf = $("#shelf");
-  CLIPS.forEach((c) => shelf.append(el("figure", {}, el("video", { controls: "", preload: "none", playsinline: "", src: `clips5/part_${c.n}.mp4`, poster: `img/v5_part_${c.n}.jpg` }),
+  CLIPS.forEach((c) => shelf.append(el("figure", {}, el("video", { controls: "", preload: "none", playsinline: "", src: `clips6/part_${c.n}.mp4`, poster: `img6/part_${c.n}.jpg` }),
     el("figcaption", {}, el("b", {}, c.name), ` ${c.what}`))));
 }
 function collect(d) {
@@ -309,27 +228,28 @@ function paint(d) {
   document.querySelectorAll(`input[name="o-${d.id}"]`).forEach((i) => {
     const on = d.multi ? (a.choice || []).includes(i.value) : a.choice === i.value;
     i.checked = on; i.closest(".opt").classList.toggle("on", on); });
-  const done = !!a.touched && (d.multi ? true : !!a.choice || !!(a.note && a.note.trim()));
-  $(`#j-${d.id}`).classList.toggle("done", done);
-  $("#count").textContent = `${D.filter((x) => $(`#j-${x.id}`).classList.contains("done")).length} / ${D.length}`;
+  const j = $(`#j-${d.id}`); if (!j) return;
+  const noted = !!(a.note && a.note.trim());
+  j.classList.toggle("done", !!a.touched && (!!(a.choice && a.choice.length) || noted));
+  $("#count").textContent = `${R4.filter((x) => $(`#j-${x.id}`).classList.contains("done")).length} / ${R4.length}`;
 }
 async function save(d) {
   const a = answers[d.id], s = $(`#s-${d.id}`);
-  try { localStorage.setItem("mg-decisions-r2", JSON.stringify(answers)); } catch (e) { /* private window */ }
+  try { localStorage.setItem("mg-decisions-r3", JSON.stringify(answers)); } catch (e) { /* private window */ }
   if (!db) { s.textContent = "Kept in this browser only"; return; }
   s.textContent = "Saving…";
   try { await db.doc(`decisions/${d.id}`).set({ choice: a.choice, note: a.note, title: d.title, when: d.when, at: new Date().toISOString() }); s.textContent = "Saved"; }
   catch (e) { s.textContent = "Could not save here; tell Claude in the chat instead"; }
 }
 function apply(id, data) {
-  const d = D.find((x) => x.id === id); if (!d || !data) return;
+  const d = ALL.find((x) => x.id === id); if (!d || !data) return;
   answers[id] = { choice: data.choice ?? (d.multi ? [] : ""), note: data.note || "", touched: true };
   const ta = $(`#n-${id}`); if (document.activeElement !== ta) ta.value = answers[id].note;
   paint(d);
 }
 render();
-try { const local = JSON.parse(localStorage.getItem("mg-decisions-r2") || "{}"); for (const [id, a] of Object.entries(local)) apply(id, a); } catch (e) { /* none */ }
-D.forEach(paint);
+try { const local = JSON.parse(localStorage.getItem("mg-decisions-r3") || "{}"); for (const [id, a] of Object.entries(local)) apply(id, a); } catch (e) { /* none */ }
+ALL.forEach(paint);
 (async () => {
   const state = $("#state");
   try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }

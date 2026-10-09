@@ -91,6 +91,17 @@ export function clipTimeOf(p, t, lt) {
   if (typeof p.time === 'function') return p.time(lt, t);   // custom retiming: clip seconds as a pure function of shot time
   return (p.ref_t0 !== undefined ? t - p.ref_t0 : lt * (p.rate || 1) + (p.offset || 0)) + (p.lag || 0);
 }
+// The drawing shown at song time t. A take played 1:1 shows its even frames, two film frames each. A take played at
+// another rate (rate, or a time function) would hold those unevenly (rate 0.9: 2, 2, 2, 2, 3 film frames; 0.75: 3, 3,
+// 2; 1.14: 2, 2, 2, 1), which reads as a stutter a few times a second. There the twos are counted in FILM frames instead: one drawing for every two
+// film frames from the shot's first frame, and it is the take's frame at the first of the two. (Oct 8, round three.)
+// oldTwos = true gives the old rule for any take (tools/roto_holds.mjs compares the two).
+export function drawingAt(meta, p, t, lt, oldTwos = false, fps = 24) {
+  const twos = p.twos !== false;
+  const rated = typeof p.time === 'function' || (p.ref_t0 === undefined && p.rate !== undefined && p.rate !== 1);
+  if (twos && rated && !oldTwos) { const back = (Math.floor(lt * fps + 1e-3) % 2) / fps; return drawingIndex(meta, clipTimeOf(p, t - back, lt - back), false); }
+  return drawingIndex(meta, clipTimeOf(p, t, lt), twos);
+}
 
 export const roto = {
   init(ctx) { this.prog = ctx.gl.program(ROTO_FS, 'roto'); },
@@ -101,7 +112,7 @@ export const roto = {
     const M = C.meta;
     const ct = clipTimeOf(p, t, lt);
     const fi = Math.max(0, Math.min(M.frames - 1, Math.floor(ct * M.fps + 1e-3)));   // camera: on ones
-    const fd = drawingIndex(M, ct, p.twos !== false);                                 // drawing: on twos
+    const fd = drawingAt(M, p, t, lt);                                                // drawing: on twos
     const F = await loadFrame(gl, p.clip, fd);
     const paperName = p.paper || FROM_SHOT[shot.paper] || 'silk';
     const S = { ...STYLE[paperName], ...(p.style || {}) };

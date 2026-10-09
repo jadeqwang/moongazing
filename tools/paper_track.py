@@ -13,6 +13,11 @@ Writes media/gen/<shot>/roto/<take>/paper.json (merged per track) and occlusion 
   env     the envelope is the largest pale, unsaturated region; its rectangle is fitted on frame 0 (convex hull ->
           minimum-area rectangle; a hand on a corner does not matter) and then followed per frame; if it never moves
           more than ~1.5 px it is stored as static (the same quad in every frame), which keeps the type rock steady.
+          --follow B (with --static N): from frame N to frame B the envelope is picked up and turned, so its face is a
+          general quadrilateral: the four straight edges are fitted as lines to the outline that no hand touches and
+          intersected, and the corners keep their names by continuity with the frame before (not by sorting on y, which
+          swaps them past about 31 degrees). Each of those frames also gets `a`, the print's strength: 1 while the face
+          is toward the camera, falling to 0 as it turns edge-on. After B the face has turned away: no quad.
   letter  the sheet is the pale region that appears BEYOND the envelope's far (top) long edge, i.e. over the opened
           flap and the desk, where there was no pale paper in frame 0. Per frame: its side edges and its far edge are
           fitted; the whole panel's quad is that far edge plus the panel height (width x --panel); `vis` = the part of
@@ -92,6 +97,120 @@ def smooth(arr, k=5):
     arr = np.asarray(arr, np.float32)
     pad = np.pad(arr, [(k // 2, k // 2)] + [(0, 0)] * (arr.ndim - 1), mode="edge")
     return np.stack([np.median(pad[i:i + k], axis=0) for i in range(len(arr))])
+
+
+def _line(p, q):
+    d = (q - p) / max(np.linalg.norm(q - p), 1e-6)
+    n = np.array([-d[1], d[0]], np.float32)
+    return n, float(n @ p)                                  # n . x = c
+
+
+def _meet(l1, l2):
+    A = np.array([l1[0], l2[0]], np.float64)
+    if abs(np.linalg.det(A)) < 1e-3:
+        return None
+    return np.linalg.solve(A, np.array([l1[1], l2[1]], np.float64)).astype(np.float32)
+
+
+def fit_quad(bgr, prev, seed=0):
+    """the envelope's face as a general quad: four lines fitted (sequential RANSAC, then least squares) to the part of
+    the paper's outline that no hand touches, intersected, and named TL, TR, BR, BL by continuity with `prev`."""
+    H, W = bgr.shape[:2]
+    m = paper_mask(bgr)
+    n, lab, st, _ = cv2.connectedComponentsWithStats(m, 8)
+    if n < 2:
+        return None
+    pm = cv2.fillConvexPoly(np.zeros((H, W), np.uint8), cv2.convexHull(prev.astype(np.int32)), 255)
+    pm = cv2.dilate(pm, np.ones((61, 61), np.uint8))
+    # every pale piece that lies mostly where the envelope was a frame ago (a hand across it can cut it in two)
+    keep = [i for i in range(1, n) if st[i, cv2.CC_STAT_AREA] > 250 and np.count_nonzero((lab == i) & (pm > 0)) > 0.8 * st[i, cv2.CC_STAT_AREA]]
+    if not keep:
+        return None
+    comp = np.isin(lab, keep).astype(np.uint8)
+    cnt = np.concatenate([c[:, 0, :] for c in cv2.findContours(comp, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)[0]])
+    sk = cv2.dilate(skin_mask(bgr), np.ones((17, 17), np.uint8))
+    ok = (sk[cnt[:, 1], cnt[:, 0]] == 0) & (cnt[:, 0] > 2) & (cnt[:, 1] > 2) & (cnt[:, 0] < W - 3) & (cnt[:, 1] < H - 3)
+    pts = cnt[ok].astype(np.float32)
+    sk_all = cv2.dilate(skin_mask(bgr), np.ones((5, 5), np.uint8))
+
+    def score(q):
+        """how well a quad is the paper: the share of the paper inside it, times the share of it that is paper or hand"""
+        qm = cv2.fillConvexPoly(np.zeros((H, W), np.uint8), q.astype(np.int32), 1)
+        if qm.sum() < 200:
+            return 0.0
+        return float((comp & qm).sum()) / comp.sum() * float((qm & ((comp > 0) | (sk_all > 0))).sum()) / qm.sum()
+
+    def named(cs):
+        cs = np.array(cs, np.float32)
+        cs = cs[np.argsort(np.arctan2(cs[:, 1] - cs[:, 1].mean(), cs[:, 0] - cs[:, 0].mean()))]   # clockwise on screen (y down)
+        return min((np.roll(cs, s, axis=0) for s in range(4)), key=lambda q: float(np.linalg.norm(q - prev)))
+
+    cands = []
+    # (a) four fitted lines: finds a corner that a hand covers
+    rng = np.random.RandomState(seed)
+    lines, rest = [], pts
+    for _ in range(4):
+        if len(rest) < 20:
+            break
+        best = None
+        for _ in range(400):
+            i, j = rng.randint(0, len(rest), 2)
+            if np.linalg.norm(rest[i] - rest[j]) < 12:
+                continue
+            nrm, c = _line(rest[i], rest[j])
+            inl = np.abs(rest @ nrm - c) < 1.6
+            if best is None or inl.sum() > best.sum():
+                best = inl
+        if best is None or best.sum() < 14:
+            break
+        vx, vy, x0, y0 = cv2.fitLine(rest[best], cv2.DIST_L2, 0, 0.01, 0.01).ravel()
+        p0 = np.array([x0, y0], np.float32)
+        lines.append(_line(p0, p0 + np.array([vx, vy], np.float32)))
+        nrm, c = lines[-1]
+        rest = rest[np.abs(rest @ nrm - c) >= 3.0]
+    if len(lines) == 4:
+        cen = pts.mean(axis=0)
+        far = lambda a, b: 1e9 if _meet(lines[a], lines[b]) is None else float(np.linalg.norm(_meet(lines[a], lines[b]) - cen))
+        # opposite sides are the pairing whose own intersections lie farthest from the paper
+        pair = max([((0, 1), (2, 3)), ((0, 2), (1, 3)), ((0, 3), (1, 2))], key=lambda pr: min(far(*pr[0]), far(*pr[1])))
+        cs = [_meet(lines[a], lines[b]) for a in pair[0] for b in pair[1]]
+        if all(c is not None for c in cs):
+            cands.append(named(cs))
+    # (b) the paper's convex hull cut down to its four sharpest corners: right when all four corners show (the steep tilt)
+    hull = cv2.convexHull(cnt.astype(np.int32))[:, 0, :].astype(np.float32)
+    while len(hull) > 4:
+        a0, a1 = np.roll(hull, 1, axis=0), np.roll(hull, -1, axis=0)
+        tri = np.abs((hull[:, 0] - a0[:, 0]) * (a1[:, 1] - a0[:, 1]) - (hull[:, 1] - a0[:, 1]) * (a1[:, 0] - a0[:, 0]))
+        hull = np.delete(hull, int(np.argmin(tri)), axis=0)
+    if len(hull) == 4:
+        cands.append(named(hull))
+    if not cands:
+        return None
+    return max(cands, key=score)
+
+
+def quad_area(q):
+    x, y = q[:, 0], q[:, 1]
+    return 0.5 * float(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1)))    # > 0 for TL, TR, BR, BL facing the camera
+
+
+def follow_env(frames, q0, a, b):
+    """frames a..b: the envelope picked up and turned. Returns {frame: (quad, strength)}; a frame whose outline cannot
+    be fitted, or whose face has turned away, is left out (and so is everything after the face turns away)."""
+    out, prev, A0 = {}, q0.copy(), quad_area(q0)
+    for i in range(a, b + 1):
+        if i > a and np.abs(frames[i].astype(np.int16) - frames[i - 1]).mean() < 0.6 and (i - 1) in out:
+            out[i] = out[i - 1]; continue                    # a held drawing: the same quad, exactly
+        q = fit_quad(frames[i], prev)
+        if q is None:
+            print(f"  f{i}: no quad fitted"); continue
+        r = quad_area(q) / A0
+        if r <= 0.02:
+            print(f"  f{i}: the face is edge-on or turned away (area ratio {r:.3f}); stopping"); break
+        s = float(np.clip((r - 0.08) / 0.25, 0, 1)); s = s * s * (3 - 2 * s)
+        out[i] = (q, s); prev = q
+        print(f"  f{i}: area {r:.2f} of flat, strength {s:.2f}, long edge turned {np.degrees(np.arctan2(q[1][1] - q[0][1], q[1][0] - q[0][0])):.0f} deg")
+    return out
 
 
 def track_env(frames):
@@ -181,6 +300,7 @@ def main():
     ap.add_argument("--panel", default="990/2100", help="sheet height/width (letter)")
     ap.add_argument("--aspect", default="1460/2290", help="sheet height/width (env)")
     ap.add_argument("--static", type=int, default=0, help="use the median envelope quad of the first N frames for every frame")
+    ap.add_argument("--follow", type=int, default=0, help="with --static N: follow the turning envelope's face from frame N to this frame; no quad after it")
     ap.add_argument("--check", default="")
     a = ap.parse_args()
     rdir, meta, frames = load(a.clip)
@@ -199,9 +319,15 @@ def main():
     if a.track == "env":
         sw, sh = 458, 292
         fr = []
+        fol = follow_env(frames, env_q[0], a.static, min(a.follow, len(frames) - 1)) if a.follow and a.static else None
         for i, (f, q) in enumerate(zip(frames, env_q)):
+            s = 1.0
+            if fol is not None and i >= a.static:
+                if i not in fol:
+                    fr.append({"q": None, "vis": 0}); continue
+                q, s = fol[i]
             cv2.imwrite(os.path.join(rdir, f"p_env_{i:04d}.png"), occlusion(f, q, sw, sh))
-            fr.append({"q": [round(float(v), 2) for v in q.ravel()], "vis": 1})
+            fr.append({"q": [round(float(v), 2) for v in q.ravel()], "vis": 1, **({"a": round(s, 3)} if s < 1 else {})})
         paper["tracks"]["env"] = {"static": bool(static), "frames": fr, "mask": "p_env_"}
     else:
         res, w = track_letter(frames, np.median(env_q, axis=0), panel)

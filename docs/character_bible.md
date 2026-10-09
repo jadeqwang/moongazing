@@ -32,7 +32,7 @@ and more olive, around #C9B184. The sheets sit on clean #E9DCC0 so the character
 | 0 | **Family heights lineup (to scale)** | `media/chars/family_heights.jpg` | `family/heights_gpt_v1.jpg`, figures rescaled in PIL to exact cm | gpt (refs: new sheets + Jade casual) |
 | 1 | M, side Dutch braid + pink elastics, pink strawberry dress, embroidered flats, 109 cm | `media/chars/M/SHEET.jpg` (white-dress/bob v1: `SHEET_v1.jpg`) | `M/M_gpt_v2.jpg` | gpt edit of M_gpt_v1 (ref `inputs/daughter_hair.png`) |
 | 1b | M, Chang'e costume | `media/chars/M/SHEET_change.jpg` | `M/M_change_gpt_v1.jpg` | gpt (refs: new M sheet, old costume sheet, Su Hanchen) |
-| 2 | T, 132 cm, big head, hiking boots | `media/chars/T/SHEET.jpg` | `T/T_gpt_v2.jpg` | gpt edit of T_gpt_v1 (longer legs) |
+| 2 | T, 132 cm, big head, **full round cheeks (v3, Oct 8)**, hiking boots | `media/chars/T/SHEET.jpg` (v2, thinner cheeks: `SHEET_v2.jpg`) | `T/T_nbp_v3.jpg` | nano-banana-pro edit of the v2 sheet (cheeks only) + local composite; v2 = `T/T_gpt_v2.jpg` |
 | old | Mei / Bao v1 sheets (retired: old names, wrong heights, sneakers) | `media/chars/mei/`, `media/chars/bao/` | | |
 | 3 | M + T, Copernican lesson (**old heights and shoes; superseded by K_3.4_lesson**) | `media/chars/kids/SHEET.jpg` | `kids/kids_gpt_v3.jpg` | gpt-image-2.5-sunburst (refs: both sheets + grok draft) |
 | 4 | Kenton, new look (back / 3/4 / distance) | `media/chars/kenton/SHEET.jpg` (old: `SHEET_v1.jpg`) | `kenton/kenton_gpt_v4.jpg` | gpt (refs: `media/refs/lanparty/kenton_ref_crop.jpg`, old sheet, Su Hanchen; v4 = edit for black trousers) |
@@ -131,8 +131,9 @@ Slightly stylized gongbi child, sweet, never doll-like.
 
 ### T (boy, 7)
 **ID:** T, a 7-year-old schoolboy of mixed heritage (half East Asian, half white). His head is noticeably large for
-his body (20–25% larger than typical), with a very round face, full plump cheeks, large dark-brown eyes and strong
-straight dark eyebrows. Very dark brown, almost black, hair: a short neat schoolboy cut grown out to about one inch,
+his body (20–25% larger than typical), with a very round face, FULL ROUND PLUMP CHEEKS (the face is widest at the
+cheeks, level with the nose tip and mouth, and rounds in to a short soft chin with no jaw angle), large dark-brown eyes
+and strong straight dark eyebrows. Very dark brown, almost black, hair: a short neat schoolboy cut grown out to about one inch,
 soft on top, forehead visible. Earnest, studious "little professor". VERY TALL: 132 cm, a 10-year-old's height, but a
 7-year-old's proportions simply scaled up (long legs, soft young face); with the big head he is about 5–5¼ heads tall
 and his head is nearly the size of his father's. Reads young but tall, never a teenager. Deep azurite knitted
@@ -140,6 +141,15 @@ crew-neck sweater with small white stars, a ringed planet and a little rocket on
 leather hiking boots like his father's (no sneakers).
 - **Props:** always holds the toy Earth.
 - **Never:** toddler proportions, a fringe over the brows, light hair, an anime face.
+- **Cheeks (sheet v3, Oct 8 2026).** Jade said it three times of cut v5 ("T's cheeks are a bit fuller", "his cheeks
+  should be fuller", "T's cheeks are fuller than what's shown"), so the sheet was wrong, not a shot. `T/SHEET.jpg` is now
+  v3: the same boy, with only the cheek and jaw outline redrawn. Front: widest at the cheeks, a full round U below the
+  eyes. Three-quarter: the far cheek is a round bump that passes the corner of the mouth. Profile: the cheek rounds
+  forward beside the mouth and the jaw is a low soft curve. Draw it as OUTLINE only: no crease beside the mouth, no
+  jowl or double-chin line, no heavy blush (a first edit with those read as a caricature: `T/work/T_nbp_cheeks_a.jpg`),
+  and his body stays slim. In a painted frame his head is often under 150 px: there the cheek reads as the lower face
+  being as wide as the forehead, not as detail. `family_heights.jpg`, `CAST_BOARD.jpg` and `kids/SHEET.jpg` still show
+  the v2 face.
 
 ### M + T together
 **ID:** use both blocks.
@@ -345,7 +355,7 @@ that the other person can actually see the screen ... no one's arm should be sti
   |---|---|---|---|---|---|
   | `K_7.C5a` | galley bench | Adaeze → Anastasia | the twins' first lost tooth | FRONT: Anastasia's laugh | the laugh arrives, fingertips to her lips, she rocks against Adaeze's shoulder |
   | `K_7.C5b` | crew quarters, Arjun's bunk edge | Arjun → Chen Yu | the newborn in the *thottil* | REAR: the picture, cradled in Arjun's hands | Chen Yu's arm round his back, the hand pats his far shoulder |
-  | `K_7.C5c` | greenhouse, hips against the bench | Kenji → Lúcia | Haruto waving Daizu's paw | FRONT: Lúcia's face | hand on her heart, a tiny wave back at the dog |
+  | `K_7.C5c` | greenhouse, hips against the bench | Kenji → Lúcia | Haruto waving Daizu's paw | FRONT: Lúcia's face | hand on her heart, her head tips to his shoulder (the wave is gone since Oct 8: it was a third hand) |
   | `K_7.C5d` | airlock suit bench | Layla → Jade (from behind only) | Saeed and the falcon | REAR: the picture | Jade tips her head onto Layla's shoulder |
 
 - **Edit (v6):** alone, alone, together — four times. Each sharing scene follows the two singles of the people in it
@@ -490,8 +500,8 @@ Friendly and toy-like. Stands on its hind legs to "dance", holding M's hands.
 
 | Prop | Description |
 |---|---|
-| **Toy Earth** | Grapefruit-sized sphere hand-painted in 青绿 (Qianli Jiangshan) style: azurite oceans, malachite continents with tiny painted mountain ridges, white 祥云 cloud scrolls. No stand. T's; it travels to the Moon with Jade. |
-| **Toy Moon** | Matching size, matte pale grey with darker grey maria and a few ink craters. M's; it stays home. |
+| **Toy Earth** | Grapefruit-sized sphere hand-painted in 青绿 (Qianli Jiangshan) style: azurite oceans, malachite continents with tiny painted mountain ridges, white 祥云 cloud scrolls. No stand. T's; it travels to the Moon with Jade. **Its coastlines are real** (since Oct 8: Natural Earth land, `tools/globe_ortho.py`; painted reference `media/keyframes/work/rev3_kids/beam_painted_clean.png`): a simple toy map, never an invented one. In the lesson (3.4) the Moon's shadow falls on central Anatolia. The globes painted before that date in 3.5, 4.7 and 8.3 still carry invented continents. |
+| **Toy Moon** | **About a third of the toy Earth's diameter** (a small ball that fits in M's two hands; Jade confirmed the small Moon on Oct 8: the true ratio is 0.27, and it is what lets its shadow fall as a round spot on the globe in 3.4). Matte pale grey with darker grey maria and a few ink craters. M's; it stays home. (The props sheet `props/SHEET.jpg` still draws the two the same size: follow this row, not the sheet.) |
 | **Celadon tea cup** | Small Song-style Longquan celadon bowl, pale jade-green glaze with fine crackle, small foot. It reflects the Moon (V2) and Earth (the drop). |
 | **Flashlight** | Ordinary camping flashlight, matte vermilion body, black knurled grip, round lens. The beam is a soft pale warm wash. It is the Sun in the Copernican lesson. |
 

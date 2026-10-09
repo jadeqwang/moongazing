@@ -69,9 +69,11 @@ CARDS = [
     dict(lang='en', mono=(S05 + 0.25, S06 - 0.02, '公元726年，李白举头望月，写下了对故乡的思念。', 'In 726, Li Bai looked up at the Moon\nand wrote about missing home.'),
          bi=[(S05 + 0.25, S05 + 1.61, '公元726年，李白举头望月，', 'In 726, Li Bai looked up at the Moon'),
              (S05 + 1.63, S06 - 0.02, '写下了对故乡的思念。', 'and wrote about missing home.')]),
-    dict(lang='en', mono=(T9 + 0.3, T11 - 0.02, '这一次，地球上所有的航天机构都要一起去。', 'This time, every space agency on Earth\nis going together.'),
-         bi=[(T9 + 0.3, T9 + 2.0, '这一次，地球上所有的航天机构', 'This time, every space agency on Earth'),
-             (T9 + 2.02, T11 - 0.02, '都要一起去。', 'is going together.')]),
+    # the 0:20 card as it is on screen since Oct 8 (round three): "Every space program on Earth / is building the /
+    # International Moonbase." and, in Jade's wording of Oct 8 night, 全世界的 / 航天计划 / 共建 / 国际月球基地 (the last two columns are brushed from +1.35 s)
+    dict(lang='en', mono=(T9 + 0.25, T11 - 0.02, '全世界的航天计划共建国际月球基地。', 'Every space program on Earth\nis building the International Moonbase.'),
+         bi=[(T9 + 0.25, T9 + 1.6, '全世界的航天计划', 'Every space program on Earth'),
+             (T9 + 1.62, T11 - 0.02, '共建国际月球基地。', 'is building the International Moonbase.')]),
     # closing inscription, Zhang Jiuling 张九龄《望月怀远》 — 海上生明月 brushes at S84+0.4, 天涯共此时 at S84+2.9
     dict(lang='zh', mono=(S84 + 0.4, DED - 0.02, '海上生明月，天涯共此时', 'The bright moon rises over the sea;\nhowever far apart, we share this moment.'),
          bi=[(S84 + 0.4, S84 + 2.9, '海上生明月，', 'The bright moon rises over the sea;'),

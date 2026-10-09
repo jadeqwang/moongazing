@@ -1,6 +1,150 @@
-# 望明月 · Moongazing — Handoff (Oct 8 2026)
+# 望明月 · Moongazing — Handoff (Oct 8 2026, night)
 
-## UPDATE, Oct 8 (written at hand-over): second revision round, cut v5 — read this first
+## UPDATE, Oct 8 night: round four, the fixes from Jade's page answers — read this first
+
+### What Jade asked
+She answered the fifteen round-three cards on the decisions page and wrote in the chat: "0:59, yes fix the envelope
+glitch" and "don't render the whole video, just the small fixes on the artifact for me to look at, and then commit
+and push". Her answers verbatim, the owner of each fix and the round's rules: the "Round four" section at the end of
+`docs/REVISION_NOTES_OCT8.md`. One report per fix: `docs/reviews/rev4_{face,photo,base,toast,home,env}_report.md`,
+each ending with "For Jade" and its shortfalls.
+
+### Where things stand
+- **Eight fixes are done, rendered and on the page; she has not looked yet.** 0:20 card in her wording; 1:05 throat;
+  1:10 M's hair; 1:22 new shot (she looks at a snapshot of the children; replaces the sung close-up); 1:45 masts 1.4x
+  on the plan; 2:23 work lamps (HUD now `STATION · LIGHTS 21 / 21`); 2:59 two-cup hands; 3:13 reunion with Kenton's
+  arm round them (`K_8.2a/take_8`, cut to the close moved one beat later, to 197.50).
+- **The envelope (0:58–1:01, shots 3.5a/b/c) is NOT done.** The ENV agent was still working when these notes were
+  written (keyframes repainted, takes of the unfolding being made). Read the Status line at the top of
+  `docs/reviews/rev4_env_report.md` first: if it still says WORK IN PROGRESS, the agent was cut off by the restart.
+  In that state `03_verse2.js` still wires the v6 takes for 3.5 while `media/keyframes/K_3.5_{front,back,letter,
+  letter_end}` are already the new paintings (old ones kept as `_v2` / `_v1`), so **the 3.5 passage does not render
+  as v6 any more** until the new takes are wired. Finish it from the report (design in §3: a measured paper blockout
+  in `render/scenes/blockouts/3.5/`, a #10 envelope, a sticker on the flap, a trifold packet that she unfolds; type
+  tracked with `tools/paper_track.py` / `tools/paper_quad.py`), brief as in the round-four rules. Then: render its
+  frame range with `render/out/v7_ranges.sh`, add its card as `release/review/card_r4_env.json` (same fields as the
+  cards in `release/review/cards_r4.py`, which inserts that file as the second card), rebuild and republish the page,
+  commit and push.
+- **Frames.** `render/out/frames_v7_540/` is cut v6 with only the fixed passages re-rendered:
+  frames 421–511, 1524–1577, 1654–1707, 1956–1989, 2519–2582, 3443–3543, 4284–4346, 4642–4772. Each range was
+  rendered twice and compared (`bash render/out/v7_ranges.sh FIRST-LAST …`, log `render/out/v7_render.log`; all
+  unresolved=0). **No v7 film file exists**: she asked for the fixes only. Nobody has watched any of it at speed
+  with sound.
+- **Page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp. Round-four cards are ids `r4_card, r4_desk, r4_chin,
+  r4_photo, r4_plan, r4_lights, r4_toast, r4_reunion` (and `r4_env` when made); answers in ArtifactData, collection
+  `decisions`. Source: `release/review/cards_r4.py` → `cards_r4.json`; `page_r4_body.html`, `page_r4.css`;
+  `bash release/review/build_page_r4.sh` cuts `render/out/rev_page/v7/{clips7,img7}/` and rewrites `decisions.html`;
+  publish that file to the same URL with `clips7/*` and `img7/*` as files (root `render/out/rev_page/v7`). The
+  round-three cards are kept under a fold; "Before" clips are the v6 parts already on the page.
+- **Git:** see `git log`. Never commit `:memory:.ses` (stray tool file) or `inputs/Moongazing - 2 semitones down.mp3`
+  (Jade's own file, appeared Oct 8; not asked about). The repository is public; `media/` and `render/out/` are not in
+  git, so the new paintings, takes and frames exist only on this machine.
+
+### Choices waiting for her on the page
+| Card | If she chooses… | Then |
+|---|---|---|
+| `r4_reunion` 3:13 | B (opens both arms; his profile shows about a second) | one word in `media/gen/picks.json`: `K_8.2a` → `take_10`; its close painting `K_8.2b_wrap10` and take are made (`rev4_home_report.md`). Re-render 4642–4772. |
+| | one hand | `K_8.2a` → `take_9` reproduces v6 byte for byte. |
+| `r4_photo` 1:22 | gold visor / repaint 1:15 to match / splash-park photo | `rev4_photo_report.md`; the 1:15 snapshot is shot 3.8f. Rebuild order for `J_4.3p/take_1s` is in `picks.json` (`roto_prep` wipes `roto_only` and `roto_keep` data). |
+| `r4_plan` 1:45 | larger still (1.6x) | `mastDraw` on shot `5.2o` in `render/scenes/guanghan3d`, then `media/keyframes/work/rev4_base/k52_masts.py`; the lower masts' panels will overlap the mounds. |
+| `r4_lights` 2:23 | more lamps in view | `LAMPS` in `07_drop.js`, `render/src/scenes/worklamps.js`; lamps live in the layout (`L.lamps`). |
+
+### Things that went wrong, so they are not repeated
+- **Codex's sandbox cannot run the renderer** now (`listen EPERM` on the local server): the job handed to pane
+  `moongazing:0.1` deleted the first range's frames and failed every pass. It was stopped and the render run from this
+  session instead. Hand codex only work that needs no local server (encoding, image edits), or have it ask to run
+  outside its sandbox.
+- **Renders under load save wrong frames silently** (three owners saw it with six agents rendering at once). Final
+  frames must come from `render_verified.sh` (through `v7_ranges.sh`), never from an agent's test render.
+- **`tools/ffcheck.py` run with no shot name** (TOAST's slip) rewrote `ff_r`, `ff_shift_px` and `aspect` in 215 take
+  sidecars against today's keyframes. Nothing reads those fields except `ffcheck.py`; the picks' original scores
+  survive as text in `picks.json` notes and `docs/production_tracker.md`.
+- A frame number divided by 24 and printed to six decimals can round across a frame: `v7_ranges.sh` pads half a
+  frame either side.
+- The five finished agents used about 1.5 M tokens between them (250–370 k each), 18 to 42 minutes each; ENV was still running.
+- Spend this round, up to the eight fixes: about 4 USD of video and 1.4 USD of images; ENV's takes come on top
+  (`media/gen/spend.jsonl`).
+
+### Next, in order
+1. Finish the envelope (above) and put it on the page.
+2. Her answers on the `r4_*` cards, then those fixes.
+3. A watch at speed, a full verified render (v7), then 1080p. Items 2–5 of the round-three list below still stand.
+
+
+## UPDATE, Oct 8 evening: third revision round, cut v6 (superseded by the block above)
+
+### Where things stand
+- **Cut v6** `render/out/fullcut_v6_540p.mp4` (frames `render/out/frames_v6_540/`, sheet `fullcut_v6_sheet.jpg`) holds
+  every note of Jade's third round (23 from the chat, 12 from her answers on the page). All 5,305 frames were rendered
+  twice by codex and compared (`render/out/v6_render.log`); one frame (f_003430, 2:22.9) differs between runs in 24
+  pixels at the bottom edge by at most 2 levels, the rest are byte-identical. **Nobody has watched v6 at speed with
+  sound.** Every judgement is from frames, consecutive-frame strips and measurements.
+- **Her notes verbatim, the owner of each and the outcome:** `docs/REVISION_NOTES_OCT8.md` (brief at the top, outcome
+  table and "things learned" at the bottom). One report per workstream, each ending with "For Jade" and its
+  shortfalls: `docs/reviews/rev3_{type,open,astro,hands,face,kids,base,crew,home,polish}_report.md`.
+- **Decisions page:** https://claude.ai/artifact/Hhnwakg7vSnB1h3MFEHaDp (private to Jade). Fifteen cards to decide
+  (ids `r3_*`) and fourteen done cards with a note box (ids `d_*`); answers in ArtifactData, collection `decisions`
+  (the 21 older documents there are round two's answers, all acted on). Source: `release/review/cards_r3.json` (the
+  cards), `page_r3_body.html` (the page), `build_page_r3.sh` (cuts clips and posters into `render/out/rev_page/v6/`
+  and rewrites `decisions.html`). "Now" clips are `clips6/part_N.mp4`, "Before" are the v5 parts `clips5/part_N.mp4`.
+- **Lyric videos** (asked for mid-round): `render/out/lyric_video/Moongazing_lyric_video.mp4` and
+  `…_karaoke.mp4` (lead removed during sung lines only; `Moongazing_karaoke_audio_nohumming.wav` is the variant with
+  the lead removed everywhere). Made by codex; scripts and README in `release/lyric_video/`. Nobody has listened.
+- **Git:** nothing from this round is committed. The tree is on `round2-v5` (PR #5 still open). Jade was not asked to
+  commit this round; ask before committing or pushing (the repository is public). `:memory:.ses` in the repo root is a
+  stray 51-byte file from a tool at 12:59; do not commit it.
+- **The station is "International Moonbase" / 国际月球基地** in everything a viewer sees. Folder and file names keep
+  "guanghan".
+
+### What to do with each answer on the page
+Each `r3_*` card's options are written in `release/review/cards_r3.json`; the report named below says how.
+| Card | If she ticks… | Then |
+|---|---|---|
+| `r3_street` 0:10 | unbroken rooftops | wire `K_0.5/take_3` with `media/keyframes/work/K_0.5_rev3_final.jpg` (`rev3_open_report.md`). |
+| `r3_card` 0:20 | change the Chinese | the `z12*` calli lines of shot 1.2 in `01_intro_b.js`, the same cue in `release/subs/make_subs.py`, and the 5.2 label. |
+| `r3_walk` 0:23 | carry nothing / flatten | new K_1.4a keyframe and take; after any roto prep re-run the rocket `roto_keep` line and `emblem_patch.py K_1.4a` (`rev3_polish_report.md`). |
+| `r3_eclipse` 0:57 | crisper shadow / same globe elsewhere | globe reference `media/keyframes/work/rev3_kids/beam_painted_clean.png`; shots 3.5a–c, 4.7, 8.3 carry the toy Earth. |
+| `r3_env` 0:58 | true size / sticker | new `K_3.5_front` (and letter) keyframes; type is tracked with `paper_track.py … --static 56 --follow 89`. |
+| `r3_sung` 1:22 | non-singing | restore the 4.3 block from git (`04_hook.js` at HEAD). New portrait: `rev3_face_report.md` §4.3. |
+| `r3_plan` 1:45 | old brushwork / one hand | `K_5.2`, `K_1.5`, `K_7.B6` over the model guides (`rev3_base_report.md`, `rev3_polish_report.md`). |
+| `r3_glove` 2:18 | bulkier | new K_7.B3 keyframe and take; re-run order in `rev3_base_report.md`. |
+| `r3_lights` 2:23 | more lamps | `WINDOWS`/`DOME` in `07_drop.js` and the model (`render/scenes/guanghan3d`). |
+| `r3_ddr` 2:28 | centred | one number in `tools/ddr_screen.py`, rebuild `SCR_ddr_c2`. |
+| `r3_wave` 2:36 | wave | edit `K_7.C5c`, new take. |
+| `r3_split` 2:44 | uneven split / whole profile | the 7.D3 block and its seam in `07_drop.js` (`rev3_hands_report.md`). |
+| `r3_toast` 2:56 | Chen Yu / socks | `K_7.E1b`, `K_7.E1` (`rev3_crew_report.md`; blockout `render/scenes/blockouts/7.E1/`). |
+| `r3_reunion` 3:13 | wider / behind / wrap / socks | `K_8.2a/take_8` is the wrap; the rest need a new keyframe (`rev3_home_report.md`). |
+| `r3_small` | drifting pan / single characters | an `ease` option on the roto push for 2.1; `tail` option of `lyricZH` (`rev3_type_report.md`). |
+
+### Next, in order
+1. Her answers (page and chat), then the fixes above; lint, render the shot, look at it as consecutive frames.
+2. A watch of v6 at speed. Known soft spots, most likely first: the sung close-up's still jaw (1:22); the cut inside
+   the envelope turn (0:59); Kenton's double-speed steps (3:14.7–3:15.3); the softer walkout beside the flat crew shot
+   (0:23–0:24); Adaeze's nearly still shot (2:57); the beam against the level flashlight (1:53.6–1:54.0); 16 identical
+   black frames at 3:09.9 (also in v5); shoes indoors (toast wide, reunion).
+3. The hold audit (`render/out/v6_holds.py`, `v6_holds.txt`, `v6_holds_vs_v5.txt`) flagged 20 shots as unevenly
+   stepped, but codex's comparison judged almost all of them to be small motion under the threshold, with no shot
+   confidently worse than v5. It cannot replace a watch.
+4. 1080p (codex): `render/tools/render_verified.sh 0 221.04 out/frames_v6_1080 1 3`, then encode. The cut has 5,305
+   frames, 0..5304. Not yet looked at in 1080p: almost everything new this round (each report says which stills were).
+5. Release extras still not made: thumbnails, a 15 s social cut, upload copies.
+
+### Working method this round, and what went wrong
+- **Usage limit:** nine image-heavy agents, four at a time, used the whole five-hour window in two hours and four
+  were cut off mid-work for three hours. They resumed cleanly with SendMessage because they had written progress to
+  disk, except that two had not yet started a report. Plan about six such agents per window, and make every agent
+  write its report file before its first job.
+- **Codex across the tmux wall** did the lyric videos, the verified render, the encode, the audits and the page
+  media. It stops for approval before Chrome, network and GPU use; each command was read before approving. Its own
+  render driver blocks `--resume` (`render/out/v6_bin/node`).
+- **Do not undo:** everything in the Oct 8 morning block below still holds. New this round: `drawingAt` in
+  `render/src/roto/index.js` (rate-changed takes hold drawings two film frames); the lyric helpers' new options in
+  `_lib.js` (`reveal`, `ramp`, `fout`, `tail`); `Card.drawReveal` is gone; `render/tools/type_reveal_check.mjs`,
+  `type_reveal_strips.py`, `roto_holds.mjs`.
+- **Spend:** about 30 USD of video (log at 301 of the 380 cap) and about 10 USD of images.
+
+
+## UPDATE, Oct 8 morning: second revision round, cut v5 (superseded by the block above)
 
 ### Where things stand
 - **Cut v5** `render/out/fullcut_v5_540p.mp4` (frames `render/out/frames_v5_540/`, sheet `fullcut_v5_sheet.jpg`) holds
@@ -25,7 +169,7 @@
 |---|---|---|
 | `r2_tea` 0:45 | shorter hold | Retime only: the `rate`/`time` values in the 3.1 block of `03_verse2.js` (kiss lands 46.9, released 48.9 now). No new take needed. |
 | | face further away / different movement | New take from `media/keyframes/jade/J_3.1.png` (v3). Takes 7 and 8 exist but their lean-in is too slow. Going back to `take_3` needs `J_3.1_v2.png` restored and roto prep + keep re-run. |
-| `r2_sung` 1:22 | use the sung close-up | Paste `docs/reviews/rev2_ls_block_4.3_sung.js` over the 4.3 block of `04_hook.js` (`CLIP` = `LS3c/take_7m`, anchors in `rev2_ls_report.md` §6). To rebuild the roto folder use `tools/ls_sung_prep.py LS3c/take_7`, never `roto_prep.py` alone. Check the teeth at 1080p before calling it done. |
+| `r2_sung` 1:22 | use the sung close-up | **Chosen and wired in round three** (`docs/reviews/rev3_face_report.md`): the 4.3 block of `04_hook.js` plays `LS3c/take_7pm` (the painted portrait with the take's mouth; anchors in `rev2_ls_report.md` §6). To rebuild the roto folder use `tools/ls_sung_prep.py LS3c/take_7 --portrait`, never `roto_prep.py` alone. Check the teeth at 1080p before calling it done. |
 | | try once more | The method that worked: `pruna/p-video-avatar` on a 1.3× crop of the painted portrait with the isolated stem; measure with `tools/sync/viseme_check.py`. Seedance 2.5 does not sync to the file (it re-sings it). |
 | `r2_brk` 1:56 | no face | `const FACE = false` at the top of `06_breakdown.js` (already rendered as `render/out/rev2_brk/breakdown_after_noface.mp4`). |
 | | subtitles too | `release/subs/make_subs.py` line 54 (`L14b`), then regenerate; ask whether 举头 keeps "I raise my head". Her line breaks in the English follow the rhyme: do not reflow them. |

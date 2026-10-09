@@ -58,7 +58,10 @@ export default function shots(B, X, L) {
       // K_2.1 round 6 (Jade with her mother in the boat): the boat is its own layer (K_2.1_boat over the boat-less
       // K_2.1_lake, split by scratchpad boat.py) and drifts right→left under the slow scroll pan; the water breathes.
       // (The h3 take_1 base was generated from the earlier painting, so it is not used.)
-      scene: [K21_ROTO ? { type: 'roto', clip: 'K_2.1/take_2', paper: 'silk', offset: 0.55, lock: 0, subject: false, maskGain: 8, from: { x: 0.62, y: 0.52, zoom: 1.22 }, to: { x: 0.44, y: 0.53, zoom: 1.25 } }
+      // Oct 8, round three ("something about the camera movement is jerky"): the pan used to start at x 0.62, which a
+      // zoom of 1.22 cannot show (the view centre is clamped to 0.59), so the frame stood still for 0.9 s and then
+      // jumped to speed in two frames. It now starts inside the picture and is one eased move from the first frame.
+      scene: [K21_ROTO ? { type: 'roto', clip: 'K_2.1/take_2', paper: 'silk', offset: 0.55, lock: 0, subject: false, maskGain: 8, from: { x: 0.595, y: 0.52, zoom: 1.24 }, to: { x: 0.44, y: 0.53, zoom: 1.25 } }
         : X.has('K_2.1_lake') && X.has('K_2.1_boat')
         ? kf('K_2.1_lake', { from: { x: 0.62, y: 0.52, zoom: 1.22 }, to: { x: 0.44, y: 0.53, zoom: 1.25 }, par: [-0.012, 0], dolly: 0.03, ease: 'linear',
           over: { img: 'K_2.1_boat', from: [0.007, 0], to: [-0.008, 0.0015] },

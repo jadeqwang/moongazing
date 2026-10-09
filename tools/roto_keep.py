@@ -16,6 +16,13 @@ the redraw. Run AFTER tools/roto_prep.py (it needs the roto folder and the extra
   --feather  Gaussian sigma (work px) of the matte edge.
   --smooth   Gaussian sigma (frames) applied to the tracked motion (the model's micro-jitter is not head motion).
   --still    do not track: the regions stay where the painting has them (identity).
+  --still-regions "0"  only these regions (indices, comma-separated) stay still; the others are tracked.
+  --track    polygon whose corners give a region's motion instead of the region's own; give it once per region, in
+             order ("-" = that region's own; a single --track applies to every tracked region). Use it to carry a
+             larger rigid object on the motion of its best-tracked part: 3.6e carries the whole head with the
+             headphones on the motion of the face, so the headphones cannot move against the head.
+  --feather  may be a comma list, one value per region.
+  The second region is drawn over the first (shader: k2 over k1).
 Writes roto/<take>/keep.png and meta.json["keep"] = {mask, A[, B], regions, stats}. A[i] / B[i] = 2x3 affine, row-major,
 mapping frame-i px -> frame-0 px (what the shader needs). Remove the "keep" key from meta.json to turn it off.
 """
@@ -86,9 +93,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("clip")
     ap.add_argument("--region", action="append", required=True)
-    ap.add_argument("--feather", type=float, default=5.0)
+    ap.add_argument("--feather", default="5.0")
     ap.add_argument("--smooth", type=float, default=2.5)
     ap.add_argument("--still", action="store_true")
+    ap.add_argument("--still-regions", default="")
+    ap.add_argument("--track", action="append")
     ap.add_argument("--debug")
     a = ap.parse_args()
     shot, take = a.clip.split("/")
@@ -99,6 +108,13 @@ def main():
     polys = [np.array([[float(v) for v in p.split(",")] for p in r.split()], np.float32) for r in a.region]
     if len(polys) > 2:
         raise SystemExit("at most two regions")
+    feathers = [float(v) for v in str(a.feather).split(",")]
+    feathers = (feathers * len(polys))[:len(polys)] if len(feathers) == 1 else feathers
+    still_k = {int(v) for v in a.still_regions.split(",") if v.strip() != ""}
+    tr = [None if t.strip() == "-" else np.array([[float(v) for v in p.split(",")] for p in t.split()], np.float32)
+          for t in (a.track or [])]
+    track_polys = (tr * len(polys))[:len(polys)] if len(tr) == 1 else tr + [None] * (len(polys) - len(tr))
+    a.feather = feathers[0] if len(set(feathers)) == 1 else feathers
     files = sorted(f for f in os.listdir(fdir) if f.endswith(".jpg"))[:N]
     grays = []
     for f in files:
@@ -109,22 +125,28 @@ def main():
     keep = np.zeros((H, W, 3), np.float32)
     out = {"mask": "keep.png", "regions": [p.round(1).tolist() for p in polys], "feather": a.feather, "smooth": a.smooth,
            "still": bool(a.still), "stats": []}
+    if still_k:
+        out["still_regions"] = sorted(still_k)
+    if any(t is not None for t in track_polys):
+        out["track"] = [None if t is None else t.round(1).tolist() for t in track_polys]
     Ps = []
     for k, poly in enumerate(polys):
         m = np.zeros((H, W), np.float32)
         cv2.fillPoly(m, [poly.astype(np.int32)], 1.0)
         # feather INWARD only: the matte never reaches outside the polygon the user drew
-        if a.feather > 0:
-            er = cv2.erode(m, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(a.feather * 4) | 1, int(a.feather * 4) | 1)))
-            m = np.minimum(m, cv2.GaussianBlur(er, (0, 0), a.feather) * 1.0)
+        fe = feathers[k]
+        if fe > 0:
+            er = cv2.erode(m, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (int(fe * 4) | 1, int(fe * 4) | 1)))
+            m = np.minimum(m, cv2.GaussianBlur(er, (0, 0), fe) * 1.0)
             m = np.clip(m / max(m.max(), 1e-6), 0, 1)
         keep[..., 2 - k] = m                                   # cv2 is BGR: region 0 -> R, region 1 -> G
-        if a.still:
+        src = track_polys[k] if track_polys[k] is not None else poly  # whose corners are followed
+        if a.still or k in still_k:
             P = np.zeros((N, 4)); inl = np.zeros(N, int); n0 = 0
         else:
-            P, inl, n0 = track_region(grays, poly, a.smooth)
+            P, inl, n0 = track_region(grays, src, a.smooth)
         Ps.append(P)
-        out["AB"[k]] = to_inverse_affines(P, poly)
+        out["AB"[k]] = to_inverse_affines(P, src)
         st = {"corners": int(n0), "min_inliers": int(inl[1:].min()) if N > 1 else 0,
               "max_shift_px": round(float(np.hypot(P[:, 0], P[:, 1]).max()), 2),
               "max_rot_deg": round(float(np.abs(np.degrees(P[:, 3])).max()), 2),

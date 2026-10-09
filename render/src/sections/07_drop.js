@@ -5,6 +5,7 @@ import { hud, kf, ph, bump, smooth, clamp } from './_lib.js';
 import { CREW, CELLS, crewCell } from './05_interlude.js';
 import { earthView, EARTH_KEYS } from '../scenes/earthview.js';
 import { CUTS as BUILD } from '../scenes/buildsite.js';
+import { lampView, lampNight, lampLight } from '../scenes/worklamps.js';
 
 export const range = [122.77, 189.86];
 
@@ -92,35 +93,58 @@ function spectrogram(ctx, x, y, w, h, t, a) {
   }, { mode: 'over', seed: 784 });
 }
 
-// 7.B6 — the habitat windows in K_7.B6 (image uv, size in image px), lit one by one
-const WINDOWS = [[0.5854, 0.5518, 46], [0.7254, 0.5704, 50], [0.4785, 0.4876, 30], [0.4056, 0.5248, 26], [0.6075, 0.516, 24], [0.6814, 0.517, 26],
-  [0.6475, 0.5146, 28], [0.5321, 0.5594, 22], [0.4779, 0.553, 20], [0.404, 0.552, 16], [0.4169, 0.5487, 14], [0.4284, 0.5447, 13], [0.3886, 0.5569, 13],
-  [0.4636, 0.4874, 14], [0.4739, 0.5521, 14], [0.5261, 0.5561, 12], [0.5856, 0.5505, 16], [0.5894, 0.5491, 16], [0.6258, 0.5421, 14], [0.648, 0.5205, 18],
-  [0.6625, 0.5482, 14], [0.6976, 0.5518, 14], [0.6977, 0.5453, 14], [0.7235, 0.591, 14], [0.4316, 0.5444, 10], [0.4078, 0.534, 10]];
-// lighting order: from the central node outward (the airlock end last), one per sixteenth note
-const WIN_ORDER = WINDOWS.map((w, i) => [Math.abs(w[0] - 0.585) + Math.abs(w[1] - 0.55) * 0.5, i]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+// 7.B6 — the lights of K_7.B6 (image uv, size in image px), lit one by one. Since the plate was repainted against the
+// station model (rev 3, Oct 8: the regolith mounds have no windows) these are the lights the model has from this camera
+// (media/guanghan/guides/7.B6_flat.png): the cupola's glass dome (DOME, first), then 3 arched hub windows, 5 portholes in
+// the cupola's sill wall, 4 portholes on the west tunnel, 2 on the south tunnel, the south node's window and its hatch lamp.
+const DOME = [0.5004, 0.4596, 75, 86];   // centre of the sill line (uv), half-width and height of the glass (image px)
+const WINDOWS = [[DOME[0], 0.4342, 0], [0.4640, 0.4883, 16], [0.4793, 0.4902, 34], [0.4985, 0.4889, 34], [0.4742, 0.4609, 9], [0.4797, 0.4616, 9], [0.4902, 0.4622, 9], [0.5055, 0.4616, 9], [0.5174, 0.4603, 9], [0.3895, 0.5553, 22], [0.4037, 0.5514, 22], [0.4168, 0.5488, 22], [0.4295, 0.5449, 22], [0.6257, 0.5417, 20], [0.6628, 0.5482, 20], [0.6977, 0.5456, 22], [0.7213, 0.5677, 56, 0.3]];   // (the hatch lamp: a wide glow on the ground, a small lamp)
+// lighting order: the dome, then outward from the hub (the node and its hatch last), one per eighth note
+const WIN_ORDER = WINDOWS.map((w, i) => [i ? Math.abs(w[0] - DOME[0]) + Math.abs(w[1] - DOME[1]) * 0.5 : -1, i]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+// Round four (Oct 8; Jade: "Add work lamps on the masts and along the road"): the work lamps are L.lamps of the station
+// layout, seen through this shot's own model camera (scenes/worklamps.js): cut-off floods aimed down, so each shows only
+// as a hard-edged pool on the regolith (no air, no halo), with the mast's pole and tripod throwing shadows across it.
+// In frame from this camera: the near mast's lamp (M4) and the first three bollards of the pad road (R1 to R3), which
+// run off to the right behind that mast. M3 and R4 are drawn too, but lie at or beyond the frame's right edge and are
+// not counted; the other masts' pools are behind mounds or left of frame. A separate circuit from the habitat: the
+// mast lamp strikes when the habitat is half lit, then the road runs outward, each on an off-eighth between two
+// windows. (The layout's HATCH_S lamp is window 16 above, the hatch lamp this shot already had.)   [lamp id, eighths after the cut, counted]
+const LAMPS = [['M4', 9.5, 1], ['M3', 9.5, 0], ['R1', 11.5, 1], ['R2', 12.5, 1], ['R3', 13.5, 1], ['R4', 14.5, 0]];
+const N_LIGHTS = WINDOWS.length + LAMPS.filter((l) => l[2]).length;
+let B6_LAMPS = null, B6_POLES = null;
 function habitatLights(ctx, M, lt, step) {
   const on = (j) => smooth(0, 0.07, lt - 0.05 - WIN_ORDER.indexOf(j) * step);
+  if (!B6_LAMPS) { const V = lampView('7.B6'); B6_LAMPS = LAMPS.map((l) => V[l[0]]).filter(Boolean); B6_POLES = [V.M4.pole, V.M3.pole];
+    for (const v of B6_LAMPS) if (v.kind === 'road') v.gain = 1.7; }   // 180 to 250 m off and seen at 4 degrees, a road pool is a sliver two or three pixels deep: drawn brighter so it survives
+  const lampOn = (id) => smooth(0, 0.05, lt - 0.05 - LAMPS.find((l) => l[0] === id)[1] * step);
   // night: the mounds sink into the terrain shadow; only the sunlit upper panels keep their paper white
   ctx.pipe.layer((g) => {
     const gr = g.createLinearGradient(0, 0, 0, 1080);
     gr.addColorStop(0, 'rgb(235,235,240)'); gr.addColorStop(0.27, 'rgb(225,225,232)'); gr.addColorStop(0.42, 'rgb(70,70,80)'); gr.addColorStop(0.6, 'rgb(52,52,60)'); gr.addColorStop(1, 'rgb(40,40,46)');
     g.fillStyle = gr; g.fillRect(0, 0, 1920, 1080);
+    // the dome, lit from inside: the night is lifted off the glass and it takes the lamps' amber (the ribs stay ink)
+    if (on(0) > 0) { const [dx, dy] = M.at(DOME), rx = DOME[2] * M.s, ry = DOME[3] * M.s;
+      g.save(); g.beginPath(); g.rect(dx - rx - 8, dy - ry - 8, 2 * rx + 16, ry + 8); g.clip(); g.filter = 'blur(2px)'; g.globalAlpha = on(0);
+      g.fillStyle = 'rgb(255,214,150)'; g.beginPath(); g.ellipse(dx, dy, rx, ry, 0, 0, Math.PI * 2); g.fill(); g.restore(); }
     g.filter = 'blur(4px)'; g.fillStyle = 'rgb(28,28,32)';
-    WINDOWS.forEach((w, j) => { const [x, y] = M.at(w); const r = w[2] * M.s * 0.75 + 3; g.globalAlpha = 1 - on(j); g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); });
+    WINDOWS.forEach((w, j) => { if (!w[2]) return; const [x, y] = M.at(w); const r = w[2] * M.s * 0.75 + 3; g.globalAlpha = 1 - on(j); g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); });
+    g.globalAlpha = 1; g.filter = 'none'; lampNight(g, M, B6_LAMPS, lampOn, { night: 'rgb(47,47,54)', occluders: B6_POLES });   // the night lifted off the ground where a lamp's light lands
   }, { mode: 'ink', seed: 801 });
+  ctx.pipe.layer((g) => { lampLight(g, M, B6_LAMPS, lampOn, { occluders: B6_POLES }); }, { mode: 'screen', seed: 803 });           // the lit regolith
   ctx.pipe.layer((g) => {
     WINDOWS.forEach((w, j) => {
       const a = on(j); if (a <= 0) return;
+      if (!w[2]) { const [x, y] = M.at(w), R = DOME[2] * M.s * 1.7, g0 = g.createRadialGradient(x, y, 0, x, y, R);   // the dome's glow on the roof and the mounds beside it
+        g0.addColorStop(0, `rgba(255,176,96,${0.28 * a})`); g0.addColorStop(1, 'rgba(255,140,50,0)'); g.fillStyle = g0; g.beginPath(); g.arc(x, y, R, 0, Math.PI * 2); g.fill(); return; }
       const [x, y] = M.at(w), r = w[2] * M.s;
       const fl = 0.92 + 0.08 * Math.sin(lt * 23 + j * 1.7) * Math.exp(-(lt - WIN_ORDER.indexOf(j) * step) * 3);
       const R = r * 1.5 + 6, g1 = g.createRadialGradient(x, y, 0, x, y, R);
       g1.addColorStop(0, `rgba(255,170,90,${0.45 * a * fl})`); g1.addColorStop(1, 'rgba(255,140,50,0)');
       g.fillStyle = g1; g.beginPath(); g.arc(x, y, R, 0, Math.PI * 2); g.fill();
-      g.fillStyle = `rgba(255,205,135,${0.9 * a * fl})`; g.beginPath(); g.ellipse(x, y, r * 0.42 + 1, r * 0.5 + 1, 0, 0, Math.PI * 2); g.fill();
+      g.fillStyle = `rgba(255,205,135,${0.9 * a * fl})`; g.beginPath(); g.ellipse(x, y, r * 0.42 * (w[3] ?? 1) + 1, r * 0.5 * (w[3] ?? 1) + 1, 0, 0, Math.PI * 2); g.fill();
     });
   }, { mode: 'screen', seed: 802 });
-  return WINDOWS.reduce((n, w, j) => n + (on(j) > 0.5 ? 1 : 0), 0);
+  return WINDOWS.reduce((n, w, j) => n + (on(j) > 0.5 ? 1 : 0), 0) + LAMPS.reduce((n, l) => n + (l[2] && lampOn(l[0]) > 0.5 ? 1 : 0), 0);
 }
 
 // a chat window typed live (mono on indigo): lines [{ who, text, t }] — each line types at ~22 chars/s
@@ -343,7 +367,7 @@ export default function shots(B, X, L) {
     ['7.A3c', 'cable', 'POWER ON THE GRID  ·  1.0 KM CABLE'],
     ['7.A4', 'cupola', 'CUPOLA  ·  SHUTTERS OPEN  ·  DAY 030'],
     ['7.A4b', 'pad', 'LANDING PAD  ·  ⌀ 50 M  ·  LASER-SINTERED REGOLITH'],
-    ['7.A5', 'lights', 'GUANGHAN STATION  ·  89.5° S  ·  LIGHTS ON'],
+    ['7.A5', 'lights', 'INTERNATIONAL MOONBASE  ·  89.5° S  ·  LIGHTS ON'],
   ];
   const A_SHOTS = [
     // the drop downbeat: the whole station plan detonates into glowing gold line in one frame
@@ -354,7 +378,7 @@ export default function shots(B, X, L) {
         flashLight(ctx, lt);
         glowLines(ctx, 'K_7.A', M, 1.0 * Math.exp(-lt / 0.35), 7);      // halo, dying away over the two beats
         glowLines(ctx, 'K_7.A', M, 0.85 * Math.exp(-lt / 0.22), 0);     // the lines themselves white-hot on the hit
-        blueprint(ctx, lt, 1, 960, 600, 1.2, 1); hud(ctx, 'GUANGHAN STATION  ·  89.5° S  ·  THE PLAN', 64, 72, CAP, 1); hud(ctx, 'CONSTRUCTION DAY −640  ·  ROBOTIC PRE-BUILD', 64, 1030, { size: 20, rgb: '255,255,255' }, 1); } },
+        blueprint(ctx, lt, 1, 960, 600, 1.2, 1); hud(ctx, 'INTERNATIONAL MOONBASE  ·  89.5° S  ·  THE PLAN', 64, 72, CAP, 1); hud(ctx, 'CONSTRUCTION DAY −640  ·  ROBOTIC PRE-BUILD', 64, 1030, { size: 20, rgb: '255,255,255' }, 1); } },
     ...BUILD_CUTS.map(([id, cut, c1, c2], j) => ({ id, scene: [{ name: 'buildsite', params: { cut } }], post: cut === 'radiator' ? (t, lt) => bump(lt, 0.02) : undefined,
       type(ctx, t) { buildHud(ctx, t, j + 1, cut); cap(ctx, c1); if (c2) hud(ctx, c2, 64, 98, { size: 13, rgb: '240,232,214' }, 1); } })),
   ].map((s, i) => ({ paper: 'indigo', grain: 71 + i, ...s, post: s.post || ((t, lt) => kick(lt)), t0: SA[i], t1: SA[i + 1] }));
@@ -377,14 +401,20 @@ export default function shots(B, X, L) {
         : has(k) ? kf(k, { from, to, dolly: 0.06, glow: 0.5, masks: { base: [0.1, 0.6] } }) : ph('Arjun drills into a permanently shadowed crater', k)],
       type(ctx) { cap(ctx, 'ARJUN RAMAN  ·  PSR'); cap(ctx, 'BITE 07  ·  0.70 m', 98); cap(ctx, 'H₂O 3.1 wt%', 124); } })),   // stacked: clear of the mast, stays and ribbon
     // 7.B2 / 7.B3 (rev_7B): silk redraw with a gold line on the indigo paper (as 3.8), lock 0, cut in at >= 0.5 s.
-    //        7.B3 runs its take at 1.6x so the card slide and the breath on the glass both land inside the bar; Lúcia's
-    //        painted face is carried by the take's meta.keep (tools/roto_keep.py).
-    { id: '7.B2', t0: T.B2, t1: T.B3, paper: 'indigo', grain: 76, post: (t, lt) => kick(lt), focus: [560, 660],
-      scene: [X.pick('K_7.B2') ? rot('K_7.B2/take_7', { paper: 'silk', style: { ink: [0.80, 0.66, 0.38], lineA: 0.8 }, offset: 0.5, lock: 0, glow: 0.5, from: { x: 0.48, y: 0.52, zoom: 1.03 }, to: { x: 0.44, y: 0.55, zoom: 1.1 } })
-        : has('K_7.B2') ? kf('K_7.B2', { from: { x: 0.48, y: 0.52, zoom: 1.03 }, to: { x: 0.44, y: 0.55, zoom: 1.1 }, dolly: 0.05, grade: 'native' }) : ph('Jade at the ISRU reactor; molten regolith glows', 'K_7.B2')],
+    //        7.B3 (rev3_base, Oct 8): K_7.B3/take_16 at rate 1 from 0.5 s: she leans in and down as the gauntlet slides
+    //        the scale card to beside the rosette cup, glove and body in the same beat; no breath fog. Lúcia's painted
+    //        face is carried by the take's meta.keep (tools/roto_keep.py), her roundel by meta.patch.
+    // 7.B2 (rev3_base, Oct 8): K_7.B2/take_9 is ONE slow counter-clockwise (opening) turn in slow motion, drawn on twos,
+    //        so it plays at rate 1 from an even frame (22/24 s in, the turn under way). The gauge's needle is not in
+    //        the painting or the take: scenes/gauge.js draws it, pinned to the dial by the same push (B2 view below):
+    //        it trembles from the first frame and begins a slow rise 0.3 s after the seat opens at 0.2 s, lagging it.
+    { id: '7.B2', t0: T.B2, t1: T.B3, paper: 'indigo', grain: 76, post: (t, lt) => kick(lt), focus: [500, 590],
+      scene: X.pick('K_7.B2') ? ((V) => [rot('K_7.B2/take_9', { paper: 'silk', style: { ink: [0.80, 0.66, 0.38], lineA: 0.8 }, offset: 22 / 24, lock: 0, glow: 0.5, ...V }),
+          { name: 'gauge', params: { ...V, hub: [0.17625, 0.46], r: 0.031, p0: 0.10, k: 0.2, open: 0.2, lag: 0.3, tau: 0.35, tremble: 4 } }])({ from: { x: 0.42, y: 0.52, zoom: 1.12 }, to: { x: 0.385, y: 0.525, zoom: 1.28 } })   // the pipe loop stays below the HUD lines
+        : [has('K_7.B2') ? kf('K_7.B2', { from: { x: 0.48, y: 0.52, zoom: 1.03 }, to: { x: 0.44, y: 0.55, zoom: 1.1 }, dolly: 0.05, grade: 'native' }) : ph('Jade at the ISRU reactor; molten regolith glows', 'K_7.B2')],
       type(ctx) { cap(ctx, 'JADE WANG  ·  ISRU  ·  MOLTEN REGOLITH ELECTROLYSIS'); cap(ctx, '1,600 °C  ·  3.6 kA  ·  O₂ 1.0 kg/h', 98); } },   // two lines: clear of the anode lift
     { id: '7.B3', t0: T.B3, t1: T.B4, paper: 'indigo', grain: 77, post: (t, lt) => kick(lt), focus: [980, 760],
-      scene: [X.pick('K_7.B3') ? rot('K_7.B3/take_11', { paper: 'silk', style: { ink: [0.80, 0.66, 0.38], lineA: 0.8 }, offset: 0.9, rate: 1.6, lock: 0, from: { x: 0.52, y: 0.55, zoom: 1.05 }, to: { x: 0.54, y: 0.58, zoom: 1.16 } })
+      scene: [X.pick('K_7.B3') ? rot('K_7.B3/take_16', { paper: 'silk', style: { ink: [0.80, 0.66, 0.38], lineA: 0.8 }, offset: 0.5, lock: 0, from: { x: 0.52, y: 0.55, zoom: 1.05 }, to: { x: 0.54, y: 0.58, zoom: 1.16 } })
         : has('K_7.B3') ? kf('K_7.B3', { from: { x: 0.52, y: 0.55, zoom: 1.05 }, to: { x: 0.54, y: 0.58, zoom: 1.16 }, dolly: 0.05, grade: 'native' }) : ph('Lúcia: a purple-tinged rosette in a sealed growth chamber', 'K_7.B3', { dark: true })],
       type(ctx) { cap(ctx, 'LÚCIA FERREIRA  ·  ARABIDOPSIS IN LUNAR REGOLITH'); cap(ctx, 'FIRST ROSETTE', 98); } },   // two lines: clear of her hair
     { id: '7.B4', t0: T.B4, t1: T.B5, paper: 'indigo', grain: 78, post: (t, lt) => kick(lt), focus: [900, 700],
@@ -407,8 +437,8 @@ export default function shots(B, X, L) {
     { id: '7.B6', t0: T.B6, t1: T.C2, paper: 'xuan', grain: 80, flash: true, post: (t, lt) => bump(lt, 0.012), focus: [1050, 560],
       scene: [has('K_7.B6') ? flat('K_7.B6', B6V.from, B6V.to) : has('K_1.5') ? kf('K_1.5', { flicker: 1.6, from: { x: 0.5, y: 0.55, zoom: 1.1 }, to: { x: 0.5, y: 0.5, zoom: 1.2 } }) : ph('The habitat lights come on, window by window', 'K_7.B6')],
       type(ctx, t, lt) {
-        const n = has('K_7.B6') ? habitatLights(ctx, pmap(B6V, lt, T.C2 - T.B6), lt, BEAT / 4) : WINDOWS.length;
-        hud(ctx, `HABITAT  ·  LIGHTS ${String(n).padStart(2, '0')} / ${WINDOWS.length}`, 64, 72, { size: 15, rgb: '240,214,170', a: 0.95 }, 1);
+        const n = has('K_7.B6') ? habitatLights(ctx, pmap(B6V, lt, T.C2 - T.B6), lt, BEAT / 2) : N_LIGHTS;
+        hud(ctx, `STATION  ·  LIGHTS ${String(n).padStart(2, '0')} / ${N_LIGHTS}`, 64, 72, { size: 15, rgb: '240,214,170', a: 0.95 }, 1);
       } },
   ];
 
@@ -427,7 +457,7 @@ export default function shots(B, X, L) {
   const SHARE = {
     a: { clip: 'K_7.C5a/take_1', offset: 0.5, cap: 'ADAEZE + ANASTASIA  ·  THE TWINS’ FIRST LOST TOOTH  ·  ENUGU', focus: [1080, 330], from: { x: 0.5, y: 0.47, zoom: 1.06 }, to: { x: 0.53, y: 0.44, zoom: 1.16 } },
     b: { clip: 'K_7.C5b/take_2', offset: 1.5, cap: 'ARJUN + CHEN YU  ·  A DAUGHTER, BORN ON DAY 200  ·  CHENNAI', focus: [990, 520], from: { x: 0.52, y: 0.5, zoom: 1.08 }, to: { x: 0.52, y: 0.5, zoom: 1.2 } },
-    c: { clip: 'K_7.C5c/take_1', offset: 0.5, cap: 'KENJI + LÚCIA  ·  HARUTO AND DAIZU  ·  KAMAKURA', focus: [700, 430], from: { x: 0.47, y: 0.5, zoom: 1.06 }, to: { x: 0.44, y: 0.47, zoom: 1.16 } },
+    c: { clip: 'K_7.C5c/take_3', offset: 0.5, cap: 'KENJI + LÚCIA  ·  HARUTO AND DAIZU  ·  KAMAKURA', focus: [700, 430], from: { x: 0.47, y: 0.5, zoom: 1.06 }, to: { x: 0.44, y: 0.47, zoom: 1.16 } },
     d: { clip: 'K_7.C5d/take_1', offset: 0.5, cap: 'LAYLA + JADE  ·  HER FATHER’S FALCON  ·  AL AIN', focus: [940, 560], from: { x: 0.5, y: 0.52, zoom: 1.1 }, to: { x: 0.5, y: 0.52, zoom: 1.22 } },
   };
   const share = (k, a0, b0) => { const S = SHARE[k], key = `K_7.C5${k}`;
@@ -445,7 +475,7 @@ export default function shots(B, X, L) {
   // 7.C1 — the call home (bass out 158.5): Earth SILK | Moon GOLD, the words crossing the seam at the speed of light
   const C1 = 158.5, C6 = bar(88);
   const callShot = { id: '7.C1', t0: C1, t1: C6, paper: 'silk', grain: 81,
-    scene: [has('K_7.C1_earth') ? rot('K_7.C1_earth/take_4', { paper: 'silk', rect: [0, 0, 960, 1080], offset: 0.6, lock: 0, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: 0.47, y: 0.42, zoom: 1.08 }, to: { x: 0.48, y: 0.42, zoom: 1.14 } }) : ph('Earth side: M mid-sentence at the laptop', 'K_7.C1_earth'),
+    scene: [has('K_7.C1_earth') ? rot('K_7.C1_earth/take_6' /* rev3 KIDS: from the keyframe with T's fuller cheeks; f14, the take is on twos */, { paper: 'silk', rect: [0, 0, 960, 1080], offset: 14 / 24, lock: 0, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: 0.47, y: 0.42, zoom: 1.08 }, to: { x: 0.48, y: 0.42, zoom: 1.14 } }) : ph('Earth side: M mid-sentence at the laptop', 'K_7.C1_earth'),
       has('K_7.C1_moon') ? rot('K_7.C1_moon/take_2', { paper: 'silk', rect: [960, 0, 960, 1080], fill: [0.09, 0.13, 0.245], offset: 1.5, lock: 0, subject: false, maskGain: 8, style: { snapAmt: 0.12, lineTh: 0.64, lineA: 0.4 }, from: { x: 0.46, y: 0.5, zoom: 1.12 }, to: { x: 0.47, y: 0.52, zoom: 1.2 } }) : ph('Moon side: Jade at the galley table', 'K_7.C1_moon'),
       { name: 'seam', params: {} }],
     type(ctx, t, lt) {
@@ -463,7 +493,7 @@ export default function shots(B, X, L) {
         else { const r = 10 + (lt - 1.36) * 120; g.strokeStyle = `rgba(255,214,140,${0.9 * fade})`; g.lineWidth = 2; g.beginPath(); g.arc(x1, y1, r, 0, Math.PI * 2); g.stroke(); }
       }, { mode: 'over', seed: 811 });
       const rt = clamp(lt / 3.1);
-      hud(ctx, `AUSTIN → GUANGHAN  ${Math.min(1.28, Math.max(0, lt - 0.08)).toFixed(2)} s`, 64, 72, { size: 15, rgb: '120,40,30', a: 0.9 }, 1, 'ink');
+      hud(ctx, `AUSTIN → INTERNATIONAL MOONBASE  ${Math.min(1.28, Math.max(0, lt - 0.08)).toFixed(2)} s`, 64, 72, { size: 15, rgb: '120,40,30', a: 0.9 }, 1, 'ink');
       hud(ctx, `RTT 3.1 s (light 2.6)  ·  ${'▮'.repeat(Math.floor(rt * 12)).padEnd(12, '·')}`, 1024, 72, { size: 15, rgb: '212,168,75', a: 0.95 }, 1);
     } };
   // 7.C3b view and the screen atlas's meta (media/keyframes/SCR_rare_earth.json, written by tools/screen_atlas.py)
@@ -478,10 +508,13 @@ export default function shots(B, X, L) {
     //        point, bounces and laughs as the family cat bats at the hem of her dress (rev2_c2, Oct 8: the cat of 7.C3
     //        instead of the toy robot dog; K_7.C2 v6, take_10 cut in at 0.375 s so M lands on the bar's four beats; the
     //        take moves from its first frame). The TV shows the real game: "Rare Earth (Techno Remix)" in StepMania,
-    //        double mode, redrawn by tools/ddr_screen.py with the step pack's own chart and background, its arrows
-    //        reaching the targets on the film's beats; keyed per frame on the take's blue screen (the dancers stay in front).
+    //        SINGLE mode (rev3 KIDS, Oct 8: one mat, so four targets on player 1's side; Easy Single beats 63-66 = right,
+    //        down, rest, right: the panels the dancers light), redrawn by tools/ddr_screen.py with the step pack's own
+    //        chart and background, its arrows reaching the targets on the film's beats; keyed per frame on the take's
+    //        blue screen (the dancers stay in front). K_7.C2 v7: T's cheek repainted fuller and carried on the take
+    //        (tools/roto_keep.py; keepOcc off, or the take's thinner cheek would show through).
     { id: '7.C2', t0: T.C2, t1: T.C3, paper: 'silk', grain: 82, flash: true, focus: [1300, 640], needs: ['SCR_ddr_c2'],
-      scene: [has('K_7.C2') ? rot('K_7.C2/take_10', { paper: 'silk', offset: 0.375, lock: 0, style: { lineA: 0, snapAmt: 0, gran: 0 }, ...C2V }) : ph('Kenton teaches T DDR; M bounces as the cat bats at her dress', 'K_7.C2')],
+      scene: [has('K_7.C2') ? rot('K_7.C2/take_10', { paper: 'silk', offset: 0.375, lock: 0, keepOcc: false, style: { lineA: 0, snapAmt: 0, gran: 0 }, ...C2V }) : ph('Kenton teaches T DDR; M bounces as the cat bats at her dress', 'K_7.C2')],
       type(ctx, t, lt) {
         if (has('SCR_ddr_c2')) screenClip(ctx, 'SCR_ddr_c2', DDR_SCR, rview(C2V, lt, T.C3 - T.C2), (Math.round(t * 24) - DDR_SCR.k0 + 0.5) / 24, { glow: 0.5, rgb: '120,150,255', seed: 762 });
         hud(ctx, 'AUSTIN  ·  21:40 CDT', 64, 72, { size: 15, rgb: '110,40,30', a: 0.85 }, 1, 'ink'); } },
@@ -516,31 +549,36 @@ export default function shots(B, X, L) {
     // 1 · the stage, wide: M rises on her wires toward the paper moon
     { id: '7.D1', t0: D.D1, t1: D.D2, paper: 'silk', grain: 91, post: (t, lt) => hit(lt, [1.0, 0.95, 0.85]), type(ctx, t, lt) { flashLight(ctx, lt, '255,246,225'); },
       scene: [has('K_7.D1') ? { type: 'roto', clip: 'K_7.D1/take_3', paper: 'silk', offset: 0.5, lock: 0, style: { lineA: 0.3 }, from: { x: 0.5, y: 0.53, zoom: 1.1 }, to: { x: 0.52, y: 0.5, zoom: 1.16 } } : ph('School play: M as Chang’e on wires', 'K_7.D1')] },
-    // 2 · over Jade's shoulder: the livestream, her hand begins to rise to the glass
+    // 2 · Jade and the livestream. Rev 3 (Jade: one fingertip to M's little hand; an arm that works as an arm): the
+    //     keyframe J_7.D2 is the TOUCH pose, its right arm painted from a 3D blockout (scenes/blockouts/7.D2); take_5
+    //     starts there, rests, then she draws the hand back. All three shots play it BACKWARDS (rate -1) so the finger
+    //     travels in and lands on the painted pose: 7.D2 = take 5.0 -> 4.03 s (the hand coming up), 7.D3 = 4.03 -> 1.46
+    //     (contact at about 2.4, 1.6 s into the shot), 7.D3c = 0.15 -> 1.91 forwards (the fingertip resting, breath).
+    //     Her head is the painting itself, carried on the take (tools/roto_keep.py), never the model's redraw.
     { id: '7.D2', t0: D.D2, t1: D.D3, paper: 'indigo', grain: 92,
-      scene: [has('J_7.D2') ? { type: 'roto', clip: 'J_7.D2/take_4', paper: 'gold', fill: J_GROUND, offset: 0.5, lock: 0, glow: 0.35, from: { x: 0.5, y: 0.52, zoom: 1.08 }, to: { x: 0.49, y: 0.52, zoom: 1.12 } } : ph('Jade watches the livestream, hand to the glass', 'J_7.D2')],
-      type(ctx) { hud(ctx, 'LIVE  −7 s', 64, 72, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); } },
+      scene: [has('J_7.D2') ? { type: 'roto', clip: 'J_7.D2/take_5', paper: 'gold', fill: J_GROUND, rate: -1, offset: 5.0, lock: 0, glow: 0.35, from: { x: 0.55, y: 0.45, zoom: 1.14 }, to: { x: 0.545, y: 0.44, zoom: 1.19 } } : ph('Jade watches the livestream, one finger out to the glass', 'J_7.D2')],
+      type(ctx) { hud(ctx, 'LIVE', 64, 72, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); hud(ctx, '−7 s', 64, 98, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); } },   // two short lines: one line ran into the screen's corner (TYPE, Oct 8)
     // 3 · the held C#5: match cut, same reach, two moons — SILK left | GOLD right. Both halves move (rev Oct 7): M drifts
     //     on her wires, ribbons rippling, hand closing on the moon; Jade's hand comes up to the glass and her head follows
     { id: '7.D3', t0: D.D3, t1: D.D3b, paper: 'silk', grain: 93,
       scene: [has('K_7.D1') ? { type: 'roto', clip: 'K_7.D1/take_4', paper: 'silk', rect: [0, 0, 960, 1080], offset: 0.5, lock: 0, style: { lineA: 0.3 }, from: { x: 0.47, y: 0.5, zoom: 1.1 }, to: { x: 0.5, y: 0.47, zoom: 1.2 } } : ph('Split: M reaches the paper moon', 'K_7.D1'),
-        has('J_7.D2') ? { type: 'roto', clip: 'J_7.D2/take_4', paper: 'gold', rect: [960, 0, 960, 1080], fill: J_GROUND, offset: 1.4, lock: 0, glow: 0.35, from: { x: 0.645, y: 0.5, zoom: 1.08 }, to: { x: 0.64, y: 0.48, zoom: 1.16 } } : ph('Split: Jade touches the screen', 'J_7.D2'),
+        has('J_7.D2') ? { type: 'roto', clip: 'J_7.D2/take_5', paper: 'gold', rect: [960, 0, 960, 1080], fill: J_GROUND, rate: -1, offset: 4.03, lock: 0, glow: 0.35, from: { x: 0.622, y: 0.5, zoom: 1.0 }, to: { x: 0.618, y: 0.5, zoom: 1.0 } } : ph('Split: Jade touches the screen', 'J_7.D2'),
         { name: 'seam', params: {} }] },
     // 4 · close: M's hand stretches the last few centimetres to the paper moon (its own close take, K_7.D3b = the
     //     7.D3b framing of K_7.D1, so the pose matches the split at the cut)
     { id: '7.D3b', t0: D.D3b, t1: D.D3c, paper: 'silk', grain: 94,
       scene: [(has('K_7.D3b') ? rot('K_7.D3b/take_1', { paper: 'silk', offset: 3.2, lock: 0, from: { x: 0.5, y: 0.54, zoom: 1.08 }, to: { x: 0.56, y: 0.5, zoom: 1.2 } }) : null)
         || A('K_7.D1', { from: { x: 0.6, y: 0.24, zoom: 2.0 }, to: { x: 0.64, y: 0.2, zoom: 2.3 }, flutter: [3, 2.6], glow: 0.9, masks: { base: [0.2, 0.4] } }) || ph('M’s hand meets the paper moon', 'K_7.D1')] },
-    // 5 · close: Jade's palm reaches the little gold Chang'e on the glass (the take's later hand slide)
+    // 5 · close: Jade's fingertip rests on the little gold Chang'e's hand (the take's first seconds, forwards)
     { id: '7.D3c', t0: D.D3c, t1: D.D3d, paper: 'indigo', grain: 95,
-      scene: [has('J_7.D2') ? { type: 'roto', clip: 'J_7.D2/take_4', paper: 'gold', fill: J_GROUND, offset: 1.7, lock: 0, glow: 0.45, from: { x: 0.44, y: 0.48, zoom: 1.7 }, to: { x: 0.45, y: 0.46, zoom: 1.85 } } : ph('Jade’s palm on the glass', 'J_7.D2')],
-      type(ctx) { hud(ctx, 'LIVE  −7 s', 64, 72, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); } },
+      scene: [has('J_7.D2') ? { type: 'roto', clip: 'J_7.D2/take_5', paper: 'gold', fill: J_GROUND, offset: 0.15, lock: 0, glow: 0.45, from: { x: 0.42, y: 0.34, zoom: 1.85 }, to: { x: 0.415, y: 0.325, zoom: 2.0 } } : ph('Jade’s fingertip on the glass', 'J_7.D2')],
+      type(ctx) { hud(ctx, 'LIVE', 64, 72, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); hud(ctx, '−7 s', 64, 98, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); } },   // two short lines: one line ran into the screen's corner (TYPE, Oct 8)
     // 6 · the freed slot (Oct 7: the lonely wide is cut). Jade shares M's flight with her crewmates; one focal point per
     //     shot: a hand settling on her shoulder with the real 7.D1 picture beyond (Jade from behind, low ponytail to
     //     mid-back), then Arjun's face in the screen's light, Chen Yu beyond him. Staged in scenes/blockouts (K_7.D3d).
     { id: '7.D3d', t0: D.D3d, t1: bar(94, 3), paper: 'indigo', grain: 96, focus: [900, 620],
       scene: [has('K_7.D3d') ? rot('K_7.D3d/take_2', { paper: 'silk', offset: 0.6, lock: 0, from: { x: 0.48, y: 0.53, zoom: 1.04 }, to: { x: 0.47, y: 0.55, zoom: 1.14 } }) : ph('The crew close round Jade at the wall screen', 'K_7.D3d', { dark: true })],
-      type(ctx) { hud(ctx, 'LIVE  −7 s', 64, 72, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); } },
+      type(ctx) { hud(ctx, 'LIVE', 64, 72, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); hud(ctx, '−7 s', 64, 98, { size: 16, rgb: '232,72,52', a: 0.95 }, 1); } },   // two short lines: one line ran into the screen's corner (TYPE, Oct 8)
     { id: '7.D3e', t0: bar(94, 3), t1: D.D4, paper: 'indigo', grain: 96.5, focus: [760, 420],
       scene: [has('K_7.D3e') ? rot('K_7.D3e/take_2', { paper: 'silk', offset: 2.6, lock: 0, from: { x: 0.47, y: 0.47, zoom: 1.06 }, to: { x: 0.45, y: 0.45, zoom: 1.16 } }) : ph('Arjun’s face in the light of the screen', 'K_7.D3e', { dark: true })] },
     // bass out: M bows; the theatre claps. A real bow (rev Oct 7): we cut in with her already bending, she dips, comes up
@@ -555,7 +593,7 @@ export default function shots(B, X, L) {
   ];
 
   // ---- E · THE TOAST (rev Oct 7) — one moment in the observation dome from three angles, ONE subject each: the Earth
-  //      (wide: the crew are dark shapes, cups coming up) · one face in earthlight (Adaeze, Chen's arm round her) · two
+  //      (wide: the crew are dark shapes, cups coming up) · Adaeze in profile, her arm one line to her cup (rev3: side-on, flat) · two
   //      cups and the Earth (Jade's celadon bowl, Lúcia's cup). Staging: render/scenes/blockouts/7.E1 (one arrangement,
   //      three cameras). No keyframe carries a painted Earth: scenes/earthview.js draws the toast's real sky over the
   //      clean black of the paintings (JPL Horizons, 2038-Aug-30 08:00 UT: 99.9% lit, 4.9° up, south-up). Nothing passes
@@ -569,22 +607,21 @@ export default function shots(B, X, L) {
     return { at: ([x, y]) => [((x - cx) * z + 0.5) * 1920, ((y - cy) * z + 0.5) * 1080], k: z * 1920 }; };
   // [id, keyframe, take, clip offset, push, Earth in keyframe uv [x, y, radius / width] from the blockout camera or null]
   const TOAST = [
-    ['7.E1', 'K_7.E1', 'K_7.E1/take_2', 0.5, { from: { x: 0.5, y: 0.5, zoom: 1.42 }, to: { x: 0.515, y: 0.47, zoom: 1.56 } }, [0.519, 0.38, 0.0138]],
-    ['7.E1b', 'K_7.E1b', 'K_7.E1b/take_3', 0.5, { from: { x: 0.52, y: 0.5, zoom: 1.04 }, to: { x: 0.55, y: 0.48, zoom: 1.12 }, subject: false }, null],
-    ['7.E1c', 'K_7.E1c', 'K_7.E1c/take_5', 0.5, { from: { x: 0.5, y: 0.52, zoom: 1.04 }, to: { x: 0.5, y: 0.47, zoom: 1.14 }, subject: false }, [0.502, 0.39, 0.0275]],   // subject: false = Jade's pale forearm is redrawn whole (the subject matte holed it against the pale plain)
+    ['7.E1', 'K_7.E1', 'K_7.E1/take_4', 0.5, { from: { x: 0.5, y: 0.47, zoom: 1.14 }, to: { x: 0.51, y: 0.45, zoom: 1.24 } }, [0.519, 0.38, 0.0138]],   // rev3: every arm is in frame (was 1.42 → 1.56)
+    ['7.E1b', 'K_7.E1b', 'K_7.E1b/take_9', 1.1, { from: { x: 0.5, y: 0.5, zoom: 1.02 }, to: { x: 0.52, y: 0.5, zoom: 1.07 }, subject: false }, null],   // rev3: Adaeze in profile, flat; 1.1 s = the end of her one blink, then her eyes are on the Earth
+    ['7.E1c', 'K_7.E1c', 'K_7.E1c/take_9', 0.9, { from: { x: 0.5, y: 0.52, zoom: 1.04 }, to: { x: 0.5, y: 0.47, zoom: 1.14 }, subject: false }, [0.502, 0.39, 0.0275]],   // rev4: the wide's grip (fist round the lower half, thumb on the near face); 0.9 s = Jade's cup still rising, level with Lúcia's and held from about 2.5 s. subject: false = Jade's pale forearm is redrawn whole (the subject matte holed it against the pale plain)
   ];
   const E_SHOTS = TOAST.map(([id, key, clip, offset, V, E], i) => ({
     id, t0: SE[i], t1: SE[i + 1], paper: 'indigo', grain: 97 + i * 0.1, needs: [...EARTH_KEYS],
     post: i ? (t, lt) => kick(lt) : (t, lt) => hit(lt, [0.85, 0.92, 1.0]),
-    ...(i === 1 ? { focus: [1090, 430], vignette: 0.42 } : {}),
+    ...(i === 1 ? { focus: [1230, 450], vignette: 0.42 } : {}),
     scene: [(has(key) ? rot(clip, { paper: 'silk', offset, lock: 0, style: { lineA: 0, snapAmt: 0, gran: 0 }, ...V }) : null) || ph('The observation dome: the crew raise cups to Earth', key, { dark: true })],
     type(ctx, t, lt) {
       if (i === 0) flashLight(ctx, lt, '225,236,255');
       if (E && has(key)) { const M = rview(V, lt, SE[i + 1] - SE[i]), [x, y] = M.at(E); earthView(ctx, { x, y, r: E[2] * EARTH_K * M.k, ...TOAST_SKY }); }
       // earthlight: a soft blue-white wash from the window side, breathing a little
       if (i === 1) { const a = 0.085 + 0.02 * Math.sin(lt * 3.1);
-        ctx.pipe.layer((g) => { const gr = g.createRadialGradient(1500, 180, 60, 1500, 180, 1250); gr.addColorStop(0, `rgba(170,205,255,${a.toFixed(3)})`); gr.addColorStop(1, 'rgba(170,205,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 1920, 1080); }, { mode: 'screen', seed: 975 }); }
-      if (i === 0) hud(ctx, 'DAY 388', 64, 1030, { size: 22, rgb: '255,255,255' }, 1);
+        ctx.pipe.layer((g) => { const gr = g.createRadialGradient(380, 150, 60, 380, 150, 1250); gr.addColorStop(0, `rgba(170,205,255,${a.toFixed(3)})`); gr.addColorStop(1, 'rgba(170,205,255,0)'); g.fillStyle = gr; g.fillRect(0, 0, 1920, 1080); }, { mode: 'screen', seed: 975 }); }
     } }));
 
   return [

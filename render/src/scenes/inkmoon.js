@@ -159,15 +159,17 @@ export const inkmoon = {
       this.specks.push({ x: L.cx + Math.cos(a) * d, y: L.cy + Math.sin(a) * d, rad: 1.6 + r() * r() * 5.5, land: 0.05 + r() * 0.07 });
     }
   },
-  // p: { tImpact, mode: 'bloom' | 'photo', resolveAt: [t0,t1], C:{cx,cy,R} override for photo mode }
+  // p: { tImpact, mode: 'bloom' | 'photo', resolveAt: [t0,t1], C:{cx,cy,R} override for photo mode,
+  //      pale: true | 0..1 | (t, lt) => 0..1  the shell-white moon and how present it is (a function eases it in) }
   draw(ctx, shot, t, lt) {
     const L = ctx.layout.moon;
     const p = shot.params || {};
+    const pale = typeof p.pale === 'function' ? Math.min(1, Math.max(0, p.pale(t, lt))) : p.pale === true ? 1 : Math.min(1, Math.max(0, +p.pale || 0));
     const tI = p.tImpact ?? 0.48;
     const s = t - tI;
     let U;
     if (p.mode === 'photo') {
-      U = { uTau: 1.0, uTauW: 1.03, uTau2: 1.1, uPool: 1, uMass: 0.17, uResolve: 3, uPhoto: 1, uHalo: p.halo ?? 1, uMariaAmt: 1,
+      U = { uTau: 1.0, uTauW: 1.03, uTau2: 1.1, uPool: 1, uMass: 0.17, uResolve: 3, uPhoto: 1, uHalo: (p.halo ?? 1) * (p.pale ? pale : 1), uMariaAmt: 1,
         uDrop: [0, 0, 0, 0], uShadow: [0, 0, 1, 0], uDropA: 0 };
     } else {
       const tau = s < 0 ? 0 : 1 - (1 - 0.047) * Math.exp(-s / 0.36);
@@ -207,7 +209,7 @@ export const inkmoon = {
     }
     if (p.mode === 'photo') for (let i = 2; i < sp.length; i += 4) sp[i] = p.specks ? sp[i] : 0;
     ctx.pipe.apply(this.prog, {
-      ...U, uSpecks: sp, uInkK: 1.0, uPale: p.pale ? 1 : 0, uPaleColor: p.paleColor || [0.93, 0.91, 0.85], ...extra,
+      ...U, uSpecks: sp, uInkK: 1.0, uPale: pale, uPaleColor: p.paleColor || [0.93, 0.91, 0.85], ...extra,
       uN: this.tN, uM: this.tM, uMare: this.tMare, uMoon: ctx.tex.moon,
       uF0: [this.B.x0, this.B.y0], uG: this.B.G, uC: [L.cx, L.cy], uR: L.R,
       uAlbR: this.B.albedoRange,

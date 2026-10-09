@@ -60,6 +60,7 @@ function camFor(v) {
 function setup(id, mode = 'label') {
   const v = VIEWS[id]; setRaise(v.raise ?? 1, v, id);
   const cam = camFor(v);
+  if (crew) for (const g of crew.children) if (g.userData.id) g.visible = !(v.hide || []).includes(g.userData.id);   // a figure the camera stands in for
   scene.traverse((o) => { if (o.userData.tag === 'southShutter') o.visible = !v.ortho; });
   U.uSunDir.value.set(...dirFrom(SUN.bearing, SUN.elev)); U.uSunOn.value = 1; U.uAmb.value = 0.32; U.uShadowY.value = -1e9; U.uSpOn.value = 0;
   setLights(true);
@@ -98,6 +99,16 @@ window.renderView = (id, mode) => {
     renderer.autoClear = false; renderer.render(quadScene, quadCam); renderer.autoClear = true;
   } else if (mode === 'depth') {
     U.uMode.value = 1; setLinesVisible(false); renderer.setClearColor(0x000000, 1); renderer.clear(); renderer.render(scene, cam);
+  } else if (mode === 'guide' || mode === 'outside') {
+    // rev3: layout for the image model with the ground OUTSIDE readable (the toast's real Sun is 0.4° up behind the dome,
+    // which leaves the plain black in 'flat'): a higher Sun from the same bearing and more ambient light. 'outside' also
+    // hides the crew and the bench, so what the station model puts north of the cupola (N node, NW / NE mounds, masts
+    // M6 / M1, the comms tower, the Malapert skyline) can be compared with a painting. Never carries the Earth.
+    const hid = []; if (mode === 'outside') scene.traverse((o) => { if ((o.userData.crew || o.parent === crew) && o.visible) { o.visible = false; hid.push(o); } });
+    if (mode === 'outside' && crew) { crew.visible = false; }
+    U.uSunDir.value.set(...dirFrom(SUN.bearing, 24)); U.uAmb.value = 0.5;
+    U.uMode.value = 0; setLinesVisible(true); renderer.setClearColor(0x000000, 1); renderer.clear(); renderer.render(scene, cam);
+    hid.forEach((o) => { o.visible = true; }); if (crew) crew.visible = true;
   } else if (mode === 'noarms') {
     // the flat render without the cup arms (the difference to 'flat' is a matte of the arms, hands and cups)
     const hid = []; scene.traverse((o) => { if (o.userData.cupArm && o.visible) { o.visible = false; hid.push(o); } });

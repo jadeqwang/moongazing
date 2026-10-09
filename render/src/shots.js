@@ -18,9 +18,10 @@ import { singer } from './scenes/singer.js';
 import { roto } from './roto/index.js';
 import { papertype } from './scenes/papertype.js';
 import { buildsite } from './scenes/buildsite.js';
+import { gauge } from './scenes/gauge.js';
 
 export const SCENES = { inkmoon, plate, ribbons, rocketPad, trajectory, title, tag, washes, beach, wires, earth, streak,
-  placeholder, paperfade, stamp, emblem, letter, dust, seam, earthfar, bluedot, roto, cosmos, nightlights, wallcalli, assignment, colophon, singer, papertype, earthview, buildsite };
+  placeholder, paperfade, stamp, emblem, letter, dust, seam, earthfar, bluedot, roto, cosmos, nightlights, wallcalli, assignment, colophon, singer, papertype, earthview, buildsite, gauge };
 
 // B: Beats, X: { has(key), text(key) } (asset registry), L: lyric lines by id
 export function buildShots(B, store, L, audio = { duration: 212.0 }) {

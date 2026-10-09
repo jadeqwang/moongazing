@@ -44,7 +44,8 @@ export const paperfade = {
   },
 };
 
-// a stamped image seal (media/chars/identity seal_*.png): params { seal, x, y, size, tLand, rot }
+// a stamped image seal or roundel (media/chars/identity seal_*.png, emblem_final.png): params { seal, x, y, size, tLand, rot,
+// mode ('ink' for a vermilion seal; 'over' for the agency roundel, whose indigo and pale blue must keep their colour) }
 const cache = new Map();
 export const stamp = {
   draw(ctx, shot, t, lt) {
@@ -53,7 +54,7 @@ export const stamp = {
     const k = `${p.seal}@${p.size}`;
     if (!cache.has(k)) cache.set(k, sealFromImage(ctx.type, ctx.assets[p.seal], p.size));
     let post = {};
-    ctx.pipe.layer((g) => { post = drawStamp(g, cache.get(k), { x: p.x, y: p.y, t, tLand: p.tLand, rot: p.rot ?? -0.02, approach: 0.14 }); }, { mode: 'ink', absorb: 0.5, seed: 64 });
+    ctx.pipe.layer((g) => { post = drawStamp(g, cache.get(k), { x: p.x, y: p.y, t, tLand: p.tLand, rot: p.rot ?? -0.02, approach: 0.14 }); }, { mode: p.mode || 'ink', absorb: p.mode && p.mode !== 'ink' ? 0 : 0.5, seed: 64 });
     ctx.postExtra = { ...(ctx.postExtra || {}), deflect: post.deflect, bump: post.bump };
   },
 };
